@@ -3,7 +3,7 @@ package com.truecar.mleap.spark.learning.feature
 import com.truecar.mleap.learning.estimator.StringIndexerEstimator
 import com.truecar.mleap.spark.learning.EstimatorToSpark
 import org.apache.spark.ml.Estimator
-import org.apache.spark.ml.mleap.StringIndexer
+import org.apache.spark.ml.feature.StringIndexer
 
 /**
   * Created by hwilkins on 12/3/15.

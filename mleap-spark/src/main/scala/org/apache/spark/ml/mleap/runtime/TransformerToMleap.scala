@@ -2,8 +2,8 @@ package org.apache.spark.ml.mleap.runtime
 
 import com.truecar.mleap.core.util.Atom
 import com.truecar.mleap.runtime.transformer
-import org.apache.spark.ml.feature.StandardScalerModel
-import org.apache.spark.ml.mleap.{TransformerModel, OneHotEncoderModel, StringIndexerModel, VectorAssemblerModel}
+import org.apache.spark.ml.feature.{StringIndexerModel, StandardScalerModel}
+import org.apache.spark.ml.mleap.{TransformerModel, OneHotEncoderModel, VectorAssemblerModel}
 import org.apache.spark.ml.regression.{LinearRegressionModel, RandomForestRegressionModel}
 import org.apache.spark.ml.{PipelineModel, Transformer}
 
