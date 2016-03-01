@@ -28,7 +28,7 @@ lazy val `mleap-spark` = project.in(file("mleap-spark"))
   .settings(libraryDependencies ++= Dependencies.mleapSparkDependencies)
   .dependsOn(`mleap-runtime`, `mleap-learning`)
 
-lazy val `mleap-runtime-benchmark` = project.in(file("mlea-runtime-benchmark"))
+lazy val `mleap-runtime-benchmark` = project.in(file("mleap-runtime-benchmark"))
   .settings(Common.settings)
   .settings(libraryDependencies ++= Dependencies.mleapRuntimeBenchmarkDependencies)
   .settings(testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"))
