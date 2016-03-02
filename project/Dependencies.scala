@@ -4,7 +4,7 @@ object Dependencies {
   val sparkVersion = "1.6.0"
   val akkaVersion = "2.4.1"
 
-  lazy val benchmarkDependencies = Seq("com.storm-enroute" % "scalameter_2.11" % "0.7" % "test")
+  lazy val benchmarkDependencies = Seq("com.storm-enroute" %% "scalameter" % "0.7" % "test")
 
   lazy val baseDependencies = Seq("org.scalatest" %% "scalatest" % "3.0.0-M15" % "test")
 
@@ -31,5 +31,8 @@ object Dependencies {
     .union(Seq("com.typesafe" % "config" % "1.2.1"))
 
   lazy val mleapRuntimeBenchmarkDependencies = mleapRuntimeDependencies
-      .union(benchmarkDependencies)
+    .union(benchmarkDependencies)
+
+  lazy val mleapSparkBenchmarkDependencies = mleapSparkDependencies
+    .union(benchmarkDependencies)
 }
