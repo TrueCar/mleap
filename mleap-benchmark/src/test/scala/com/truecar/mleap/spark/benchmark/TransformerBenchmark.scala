@@ -1,4 +1,4 @@
-package com.truecar.mleap.runtime.benchmark
+package com.truecar.mleap.spark.benchmark
 
 import java.io.File
 
@@ -21,21 +21,21 @@ object TransformerBenchmark extends Bench.ForkedTime {
   }
 
   val classLoader = getClass.getClassLoader
-  val linearRegressionFile = new File(classLoader.getResource("transformer/RandomForest.json").getFile)
-  val frameFile = new File(classLoader.getResource("data/Frame.json").getFile)
+  val regressionFile = new File(classLoader.getResource("transformers/mleap.transformer.json").getFile)
+  val frameFile = new File(classLoader.getResource("data/frame.json").getFile)
 
-  val linearRegression = linearRegressionFile.parseTo[Transformer].get
+  val regression = regressionFile.parseTo[Transformer].get
   val frame = frameFile.parseTo[LocalLeapFrame].get
 
   val ranges = for {
-    size <- Gen.range("size")(10000, 100000, 20000)
+    size <- Gen.range("size")(1000, 10000, 1000)
   } yield 0 until size
 
   measure method "transform" in {
     using(ranges) in {
       size =>
         size.foreach {
-          _ => linearRegression.transform(frame)
+          _ => regression.transform(frame)
         }
     }
   }
