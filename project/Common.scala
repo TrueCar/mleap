@@ -9,17 +9,21 @@ object Common {
     scalaVersion := "2.11.7",
     crossScalaVersions := Seq("2.10.6", "2.11.7"),
     organization := "com.truecar.mleap",
-    scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
-
-    publishTo := (sys.props.get("repository.publish") match {
-      case Some(repo) => Some("Custom Repository" at repo)
-      case None => None
-    })
+    scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
   )
 
-  settings = sys.props.get("repository.credentials") match {
-    case Some(path) =>
-      settings :+ (credentials += Credentials(file(path)))
-    case None => settings
-  }
+  val sonatypeSettings: Seq[Def.Setting[_]] = Seq(
+    publishMavenStyle := true,
+    publishTo := {
+      val nexus = "https://oss.sonatype.org/"
+      if (isSnapshot.value)
+        Some("snapshots" at nexus + "content/repositories/snapshots")
+      else
+        Some("releases" at nexus + "service/local/staging/deploy/maven2")
+    },
+    publishArtifact in Test := false,
+    pomIncludeRepository := { _ => false },
+    licenses := Seq("Apache 2.0 License" -> url("http://www.apache.org/licenses/LICENSE-2.0.html")),
+    homepage := Some(url("https://github.com/TrueCar/mleap"))
+  )
 }
