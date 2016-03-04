@@ -1,5 +1,5 @@
-Apache Spark
-Copyright 2014 The Apache Software Foundation.
+MLeap
+Copyright 2016 TrueCar, inc.
 
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
@@ -15,8 +15,9 @@ Library (MLeap) is licensed under Apache License 2.0, as per accompanying LICENS
 
 ## Credit
 
-Library has been written by Hollin Wilkins (hollinrwilkins@gmail.com),
-Mikhail Semeniuk (seme0021@gmail.com) and
-Ram Sriharsha (rsriharsha@hortonworks.com).
+Library has been written by Hollin Wilkins (hollinrwilkins@gmail.com)
+Mikhail Semeniuk (seme0021@gmail.com)
+Ram Sriharsha (rsriharsha@hortonworks.com)
+
 It was started at TrueCar for their machine learning platform to deploy
 ML models to high throughput API servers.
