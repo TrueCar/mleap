@@ -10,6 +10,44 @@ MLeap makes deploying your Spark ML pipelines with 3 core functions:
 2. Reuse: Export your ML pipeline to easy-to-read JSON files so you can reuse pipelines.
 3. Recycle: Export your training pipelines to easy-to-read JSON files so you can easily modify your training pipelines.
 
+## Setup
+
+### For Runtime Only
+
+#### SBT
+
+```
+libraryDependencies += "com.truecar.mleap" %% "mleap-runtime" % "0.1-SNAPSHOT"
+```
+
+#### Maven
+
+```
+<dependency>
+    <groupId>com.truecar.mleap</groupId>
+    <artifactId>mleap-runtime_2.10</artifactId>
+    <version>0.1-SNAPSHOT</version>
+</dependency>
+```
+
+### For Spark Export and Learning
+
+#### SBT
+
+```
+libraryDependencies += "com.truecar.mleap" %% "mleap-spark" % "0.1-SNAPSHOT"
+```
+
+#### Maven
+
+```
+<dependency>
+    <groupId>com.truecar.mleap</groupId>
+    <artifactId>mleap-spark_2.10</artifactId>
+    <version>0.1-SNAPSHOT</version>
+</dependency>
+```
+
 ## Modules
 
 MLeap is broken into 5 modules:
