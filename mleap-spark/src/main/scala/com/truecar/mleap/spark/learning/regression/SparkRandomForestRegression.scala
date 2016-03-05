@@ -9,7 +9,7 @@ import org.apache.spark.ml.regression.RandomForestRegressor
   * Created by hwilkins on 1/26/16.
   */
 object SparkRandomForestRegression extends EstimatorToSpark[RandomForestRegressionEstimator] {
-  override def toSpark(e: RandomForestRegressionEstimator): Estimator[_] = {
+  override def toSpark(e: RandomForestRegressionEstimator): RandomForestRegressor = {
     new RandomForestRegressor()
         .setCacheNodeIds(e.cacheNodeIds)
         .setCheckpointInterval(e.checkpointInterval)

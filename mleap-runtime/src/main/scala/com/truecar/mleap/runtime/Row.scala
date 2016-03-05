@@ -6,15 +6,15 @@ import com.truecar.mleap.core.linalg.Vector
   * Created by hwilkins on 11/2/15.
   */
 case class Row(data: Array[Any]) {
-  private[mleap] def apply(index: Int): Any = get(index)
-  private[mleap] def get(index: Int): Any = data(index)
+  def apply(index: Int): Any = get(index)
 
-  def toArray: Array[Any] = data.toArray
-
+  def get(index: Int): Any = data(index)
   def getDouble(index: Int): Double = data(index).asInstanceOf[Double]
   def getString(index: Int): String = data(index).asInstanceOf[String]
   def getVector(index: Int): Vector = data(index).asInstanceOf[Vector]
   def getStringArray(index: Int): Array[String] = data(index).asInstanceOf[Array[String]]
+
+  def toArray: Array[Any] = data.toArray
 
   def withValue(f: (Row) => Any): Row = withValue(f(this))
   def withValue(value: Any): Row = {

@@ -12,8 +12,11 @@ import org.apache.spark.sql.DataFrame
 case class MleapEstimatorWrapper[E <: Estimator](estimator: E)
                                                 (implicit estimatorToSpark: EstimatorToSpark[E]) {
   def sparkEstimate(dataset: DataFrame): ml.Transformer = {
-    val sparkEstimator: ml.Estimator[_] = estimatorToSpark.toSpark(estimator)
-    sparkEstimator.fit(dataset).asInstanceOf[ml.Transformer]
+    val sparkEstimator: ml.PipelineStage = estimatorToSpark.toSpark(estimator)
+    sparkEstimator match {
+      case estimator: ml.Estimator[_] => estimator.fit(dataset).asInstanceOf[ml.Transformer]
+      case transformer: ml.Transformer => transformer
+    }
   }
 
   def estimate(dataset: DataFrame)

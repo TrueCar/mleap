@@ -9,7 +9,7 @@ import org.apache.spark.ml.feature.StandardScaler
   * Created by hollinwilkins on 12/4/15.
   */
 object SparkStandardScaler extends EstimatorToSpark[StandardScalerEstimator] {
-  override def toSpark(e: StandardScalerEstimator): Estimator[_] = {
+  override def toSpark(e: StandardScalerEstimator): StandardScaler = {
     new StandardScaler()
       .setInputCol(e.inputCol)
       .setOutputCol(e.outputCol)

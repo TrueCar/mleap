@@ -24,7 +24,6 @@ trait EstimatorJsonSupport {
   implicit val estimatorEstimatorFormat = estimatorFormat
 
   implicit val linearRegressionEstimatorFormat = linearRegression
-  implicit val oneHotEncoderEstimatorFormat = oneHotEncoder
   implicit val pipelineEstimatorFormat = pipeline
   implicit val randomForestRegressionEstimatorFormat = randomForestRegression
   implicit val selectorEstimatorFormat = selector
@@ -52,7 +51,6 @@ object EstimatorFormat {
   }
 
   val linearRegression = addFormat(classOf[LinearRegressionEstimator], jsonFormat12(LinearRegressionEstimator.apply))
-  val oneHotEncoder = addFormat(classOf[OneHotEncoderEstimator], jsonFormat4(OneHotEncoderEstimator.apply))
   val pipeline = addFormat(classOf[PipelineEstimator], jsonFormat2(PipelineEstimator.apply))
   val randomForestRegression = addFormat(classOf[RandomForestRegressionEstimator], jsonFormat16(RandomForestRegressionEstimator.apply))
   val selector = addFormat(classOf[SelectorEstimator], jsonFormat2(SelectorEstimator.apply))

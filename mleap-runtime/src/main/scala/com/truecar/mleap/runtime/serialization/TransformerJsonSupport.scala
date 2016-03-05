@@ -23,7 +23,6 @@ trait TransformerJsonSupport {
 
   implicit val linearRegressionModelFormat = linearRegression
   implicit val pipelineModelFormat = pipeline
-  implicit val oneHotEncoderModelFormat = oneHotEncoder
   implicit val randomForestRegressionModelFormat = randomForestRegression
   implicit val selectorModelFormat = selector
   implicit val standardScalerModelFormat = standardScaler
@@ -49,11 +48,10 @@ object TransformerFormat extends BaseRuntimeJsonSupport with CoreJsonSupport {
 
   val linearRegression = addFormat(classOf[LinearRegressionModel], jsonFormat3(LinearRegressionModel.apply))
   val pipeline = addFormat(classOf[PipelineModel], jsonFormat1(PipelineModel))
-  val oneHotEncoder = TransformerFormat.addFormat(classOf[OneHotEncoderModel], jsonFormat3(OneHotEncoderModel))
   val randomForestRegression = addFormat(classOf[RandomForestRegressionModel], jsonFormat3(RandomForestRegressionModel))
   val selector = addFormat(classOf[SelectorModel], jsonFormat1(SelectorModel))
   val standardScaler = addFormat(classOf[StandardScalerModel], jsonFormat3(StandardScalerModel))
   val stringIndexer = addFormat(classOf[StringIndexerModel], jsonFormat3(StringIndexerModel))
   val tokenizer = addFormat(classOf[TokenizerModel], jsonFormat3(TokenizerModel))
-  val vectorAssembler = addFormat(classOf[VectorAssemblerModel], jsonFormat[StructType, String, VectorAssemblerModel](VectorAssemblerModel.apply, "inputSchema", "outputCol"))
+  val vectorAssembler = addFormat(classOf[VectorAssemblerModel], jsonFormat[Array[String], String, VectorAssemblerModel](VectorAssemblerModel.apply, "inputCols", "outputCol"))
 }

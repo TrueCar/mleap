@@ -9,22 +9,24 @@ import scala.util.{Failure, Try}
   * Created by hwilkins on 11/15/15.
   */
 trait TransformBuilder[T] extends Serializable {
+  def withInput(t: T, name: String): Try[(T, Int)]
   def withInput(t: T, name: String, dataType: DataType): Try[(T, Int)]
-  def endWithInput(t: T, name: String, dataType: DataType): Try[T] = withInput(t, name, dataType).map(_._1)
 
   def withOutput(t: T, name: String, dataType: DataType)
                 (o: (Row) => Any): Try[T]
+
   def withSelect(t: T, fieldNames: Seq[String]): Try[T]
   def withDrop(t: T, name: String): Try[T]
 }
 
 object TransformBuilder {
   implicit class Ops[T: TransformBuilder](t: T) {
+    def withInput(name: String): Try[(T, Int)] = {
+      implicitly[TransformBuilder[T]].withInput(t, name)
+    }
+
     def withInput(name: String, dataType: DataType): Try[(T, Int)] = {
       implicitly[TransformBuilder[T]].withInput(t, name, dataType)
-    }
-    def endWithInput(name: String, dataType: DataType): Try[T] = {
-      implicitly[TransformBuilder[T]].endWithInput(t, name, dataType)
     }
 
     def withOutput(name: String, dataType: DataType)

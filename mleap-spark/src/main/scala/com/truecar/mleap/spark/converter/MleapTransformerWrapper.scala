@@ -8,7 +8,7 @@ import org.apache.spark.sql.DataFrame
   */
 case class MleapTransformerWrapper[T <: Transformer](transformer: T) {
   def sparkTransform(dataset: DataFrame): DataFrame = {
-    val frame = DataFrameToMleap(dataset).toMleap(transformer.schema().input)
+    val frame = DataFrameToMleap(dataset).toMleap
     LeapFrameToSpark.SparkLeapFrameToSpark.toSpark(transformer.transform(frame).get)(dataset.sqlContext)
   }
 }

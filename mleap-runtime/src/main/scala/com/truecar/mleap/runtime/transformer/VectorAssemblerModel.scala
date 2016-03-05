@@ -11,15 +11,15 @@ import scala.util.Try
 /**
   * Created by hwilkins on 10/23/15.
   */
-case class VectorAssemblerModel(inputSchema: StructType,
+case class VectorAssemblerModel(inputCols: Array[String],
                                 outputCol: String) extends Transformer {
   private val assembler: VectorAssembler = VectorAssembler.default
 
   override def build[TB: TransformBuilder](builder: TB): Try[TB] = {
-    inputSchema.fields.foldLeft(Try((builder, Seq[Int]()))) {
-      (result, field) => result.flatMap {
+    inputCols.foldLeft(Try((builder, Seq[Int]()))) {
+      (result, col) => result.flatMap {
         case (b, indices) =>
-          b.withInput(field.name, field.dataType)
+          b.withInput(col)
             .map {
               case (b3, index) => (b3, indices :+ index)
             }
@@ -31,7 +31,7 @@ case class VectorAssemblerModel(inputSchema: StructType,
   }
 
   override def transformAttributeSchema(schema: AttributeSchema): AttributeSchema = {
-    val attrs: Array[BaseAttribute] = inputSchema.fields.toArray.map(f => schema(f.name)).flatMap {
+    val attrs: Array[BaseAttribute] = inputCols.toArray.map(col => schema(col)).flatMap {
       case AttributeGroup(groupAttrs) => groupAttrs: Array[BaseAttribute]
       case attr: BaseAttribute => Array(attr): Array[BaseAttribute]
       case _ =>

@@ -14,7 +14,6 @@ trait EstimatorToSparkSupport {
   implicit val estimatorEstimatorToSpark = estimatorToSpark
 
   implicit val standardScalerEstimator = standardScaler
-  implicit val oneHotEncoderEstimator = oneHotEncoder
   implicit val stringIndexerEstimator = stringIndexer
   implicit val vectorAssemblerEstimator = vectorAssembler
   implicit val linearRegressionEstimator = linearRegression
@@ -37,7 +36,6 @@ object SparkEstimator {
   }
 
   val standardScaler = addEstimatorToSpark(classOf[StandardScalerEstimator], SparkStandardScaler)
-  val oneHotEncoder = addEstimatorToSpark(classOf[OneHotEncoderEstimator], SparkOneHotEncoder)
   val stringIndexer = addEstimatorToSpark(classOf[StringIndexerEstimator], SparkStringIndexer)
   val vectorAssembler = addEstimatorToSpark(classOf[VectorAssemblerEstimator], SparkVectorAssembler)
   val linearRegression = addEstimatorToSpark(classOf[LinearRegressionEstimator], SparkLinearRegression)

@@ -12,6 +12,10 @@ case class LeapFrameBuilder[T: LeapFrame](frame: T) extends Serializable
 object LeapFrameBuilder {
   implicit def LeapFrameBuilderTransformBuilder[T: LeapFrame]: TransformBuilder[LeapFrameBuilder[T]] = {
     new TransformBuilder[LeapFrameBuilder[T]] {
+      override def withInput(t: LeapFrameBuilder[T], name: String): Try[(LeapFrameBuilder[T], Int)] = {
+        LeapFrame.schema(t.frame).tryIndexOf(name).map((t, _))
+      }
+
       override def withInput(t: LeapFrameBuilder[T], name: String, dataType: DataType): Try[(LeapFrameBuilder[T], Int)] = {
         val schema = LeapFrame.schema(t.frame)
         schema.getField(name) match {

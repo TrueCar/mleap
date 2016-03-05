@@ -2,8 +2,7 @@ package org.apache.spark.ml.mleap.runtime
 
 import com.truecar.mleap.core.util.Atom
 import com.truecar.mleap.runtime.transformer
-import org.apache.spark.ml.feature.{StringIndexerModel, StandardScalerModel}
-import org.apache.spark.ml.mleap.{TransformerModel, OneHotEncoderModel, VectorAssemblerModel}
+import org.apache.spark.ml.feature.{VectorAssembler, StringIndexerModel, StandardScalerModel}
 import org.apache.spark.ml.regression.{LinearRegressionModel, RandomForestRegressionModel}
 import org.apache.spark.ml.{PipelineModel, Transformer}
 
@@ -47,9 +46,7 @@ trait TransformerToMleapSupport {
   implicit val standardScalerTransformerToMleap = standardScaler
   implicit val stringIndexerTransformerToMleap = stringIndexer
   implicit val vectorAssemblerTransformerToMleap = vectorAssembler
-  implicit val oneHotEncoderTransformerToMleap = oneHotEncoder
   implicit val pipelineTransformerToMleap = pipeline
-  implicit val transformerModelTransformerToMleap = transformerModel
   implicit val randomForestRegressionTransformerToMleap = randomForestRegression
 }
 object TransformerToMleapSupport extends TransformerToMleapSupport
@@ -71,9 +68,7 @@ object MleapTransformer {
   val linearRegression = addTransformerToMleap(classOf[LinearRegressionModel], LinearRegressionModelToMleap)
   val standardScaler = addTransformerToMleap(classOf[StandardScalerModel], StandardScalerModelToMleap)
   val stringIndexer = addTransformerToMleap(classOf[StringIndexerModel], StringIndexerModelToMleap)
-  val vectorAssembler = addTransformerToMleap(classOf[VectorAssemblerModel], VectorAssemblerModelToMleap)
-  val oneHotEncoder = addTransformerToMleap(classOf[OneHotEncoderModel], OneHotEncoderModelToMleap)
+  val vectorAssembler = addTransformerToMleap(classOf[VectorAssembler], VectorAssemblerModelToMleap)
   val pipeline = addTransformerToMleap(classOf[PipelineModel], PipelineModelToMleap(transformerToMleap))
-  val transformerModel = addTransformerToMleap(classOf[TransformerModel], TransformerModelToMleap)
   val randomForestRegression = addTransformerToMleap(classOf[RandomForestRegressionModel], RandomForestRegressionModelToMleap)
 }

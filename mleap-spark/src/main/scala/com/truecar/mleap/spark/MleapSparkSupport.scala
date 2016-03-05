@@ -10,7 +10,7 @@ import com.truecar.mleap.spark.converter._
 import org.apache.spark.ml.mleap.runtime.{DecisionTreeRegressionModelToMleap, TransformerToMleap, TransformerToMleapSupport}
 import org.apache.spark.ml.regression.DecisionTreeRegressionModel
 import org.apache.spark.ml.tree._
-import org.apache.spark.ml.{Estimator, Transformer}
+import org.apache.spark.ml.{PipelineStage, Transformer}
 import org.apache.spark.mllib.linalg._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, SQLContext}
@@ -22,7 +22,7 @@ trait MleapSparkSupport extends TransformerToMleapSupport with EstimatorToSparkS
   import scala.language.implicitConversions
 
   implicit def estimatorToSpark[E <: estimator.Estimator](e: E)
-                                                         (implicit estimatorToSpark: EstimatorToSpark[E]): Estimator[_] = {
+                                                         (implicit estimatorToSpark: EstimatorToSpark[E]): PipelineStage = {
     estimatorToSpark.toSpark(e)
   }
   implicit def transformerToMleap[T <: Transformer](transformer: T)

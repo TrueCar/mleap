@@ -6,7 +6,7 @@ import org.apache.spark.ml.Estimator
 import org.apache.spark.ml.regression.LinearRegression
 
 object SparkLinearRegression extends EstimatorToSpark[LinearRegressionEstimator] {
-  override def toSpark(e: LinearRegressionEstimator): Estimator[_] = {
+  override def toSpark(e: LinearRegressionEstimator): LinearRegression = {
     new LinearRegression()
       .setElasticNetParam(e.elasticNetParam)
       .setFitIntercept(e.fitIntercept)
