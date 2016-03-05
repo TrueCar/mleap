@@ -12,6 +12,7 @@ import org.scalameter.api._
 import com.truecar.mleap.core.serialization.JsonSerializationSupport._
 import com.truecar.mleap.runtime.LocalLeapFrame
 import com.truecar.mleap.runtime.serialization.RuntimeJsonSupport._
+import scala.collection.JavaConverters._
 import com.truecar.mleap.spark.MleapSparkSupport._
 import org.scalameter.picklers.Implicits._
 import org.apache.log4j.Logger
@@ -47,7 +48,7 @@ object SparkTransformerBenchmark extends Bench.ForkedTime {
   val sc = new SparkContext(sparkConf)
   val sqlContext = new SQLContext(sc)
 
-  val rdd = sc.parallelize(frame.dataset.data.map(a => Row(a.data: _*)))
+  val rdd = frame.dataset.data.map(a => Row(a.data: _*)).toList.asJava
   val schema = frame.schema.toSpark
   val sparkFrame = sqlContext.createDataFrame(rdd, schema)
 
