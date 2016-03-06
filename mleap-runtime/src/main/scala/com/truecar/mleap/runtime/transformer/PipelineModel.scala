@@ -8,12 +8,12 @@ import scala.util.Try
 /**
  * Created by hwilkins on 11/8/15.
  */
-case class PipelineModel(stages: Seq[Transformer]) extends Transformer {
+case class PipelineModel(transformers: Seq[Transformer]) extends Transformer {
   override def build[TB: TransformBuilder](builder: TB): Try[TB] = {
-    stages.foldLeft(Try(builder))((b, stage) => b.flatMap(stage.build(_)))
+    transformers.foldLeft(Try(builder))((b, stage) => b.flatMap(stage.build(_)))
   }
 
   override def transformAttributeSchema(schema: AttributeSchema): AttributeSchema = {
-    stages.foldLeft(schema)((m, transformer) => transformer.transformAttributeSchema(m))
+    transformers.foldLeft(schema)((m, transformer) => transformer.transformAttributeSchema(m))
   }
 }

@@ -24,15 +24,13 @@ object Dependencies {
     "io.spray" %% "spray-json" % "1.3.2"))
 
   lazy val mleapRuntimeDependencies = mleapCoreDependencies
-  lazy val mleapLearningDependencies = mleapRuntimeDependencies
+
+  lazy val mleapSerializationDependencies = mleapRuntimeDependencies
 
   lazy val mleapSparkDependencies = mleapCoreDependencies
     .union(sparkDependencies)
     .union(Seq("com.typesafe" % "config" % "1.2.1"))
 
-  lazy val mleapRuntimeBenchmarkDependencies = mleapRuntimeDependencies
-    .union(benchmarkDependencies)
-
-  lazy val mleapSparkBenchmarkDependencies = mleapSparkDependencies
+  lazy val mleapBenchmarkDependencies = mleapSparkDependencies
     .union(benchmarkDependencies)
 }
