@@ -1,6 +1,11 @@
-package com.truecar.mleap.runtime.transformer
+package com.truecar.mleap.serialization.serializer.bundle.runtime
 
-import com.truecar.mleap.serialization.{Bundle, BundleSerializer, MleapSerializer}
+import java.io.{InputStreamReader, BufferedReader}
+
+import com.truecar.mleap.bundle.{BundleSerializer, Bundle}
+import com.truecar.mleap.runtime.transformer.{PipelineModel, Transformer}
+import com.truecar.mleap.serialization.MleapSerializer
+
 import scala.collection.mutable
 
 /**
@@ -17,7 +22,7 @@ case class PipelineModelSerializer(mleap: MleapSerializer) extends BundleSeriali
       case (stage, index) =>
         val key = stage.getClass.getCanonicalName
 
-        metaWriter.write(key)
+        metaWriter.write(key.getBytes)
         metaWriter.write('\n')
 
         mleap.getSerializer(key) match {
@@ -38,8 +43,8 @@ case class PipelineModelSerializer(mleap: MleapSerializer) extends BundleSeriali
   }
 
   override def deserialize(bundle: Bundle): PipelineModel = {
-    val metaReader = bundle.contentReader("meta")
-    val contentReader = bundle.contentReader("content")
+    val metaReader = new BufferedReader(new InputStreamReader(bundle.contentReader("meta")))
+    val contentInputStream = bundle.contentReader("content")
 
     var hasLine = true
     var index = 0
@@ -52,7 +57,7 @@ case class PipelineModelSerializer(mleap: MleapSerializer) extends BundleSeriali
 
         val transformer = mleap.getSerializer(key) match {
           case Some(serializer) =>
-            serializer.deserializeAny(contentReader).asInstanceOf[Transformer]
+            serializer.deserializeAny(contentInputStream).asInstanceOf[Transformer]
           case None =>
             mleap.getBundleSerializer(key) match {
               case Some(serializer) =>
@@ -69,6 +74,9 @@ case class PipelineModelSerializer(mleap: MleapSerializer) extends BundleSeriali
         hasLine = false
       }
     }
+
+    metaReader.close()
+    contentInputStream.close()
 
     PipelineModel(transformers)
   }

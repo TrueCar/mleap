@@ -1,15 +1,17 @@
 package com.truecar.mleap.serialization
 
-import java.io.{BufferedWriter, BufferedReader}
+import java.io._
+
+import com.truecar.mleap.bundle.{BundleSerializer, Bundle, StreamSerializer}
 
 /**
   * Created by hwilkins on 3/5/16.
   */
 class MleapSerializer {
-  var serializers: Map[String, Serializer[_]] = Map()
+  var serializers: Map[String, StreamSerializer[_]] = Map()
   var bundleSerializers: Map[String, BundleSerializer[_]] = Map()
 
-  def addSerializer[T](serializer: Serializer[T]) = {
+  def addSerializer[T](serializer: StreamSerializer[T]) = {
     serializers += (serializer.key -> serializer)
   }
 
@@ -17,19 +19,24 @@ class MleapSerializer {
     bundleSerializers += (serializer.key -> serializer)
   }
 
-  def getSerializer(key: String): Option[Serializer[_]] = serializers.get(key)
+  def getSerializer(key: String): Option[StreamSerializer[_]] = serializers.get(key)
   def getBundleSerializer(key: String): Option[BundleSerializer[_]] = bundleSerializers.get(key)
 
-  def serializeToStream(obj: Any, writer: BufferedWriter): Unit = {
+  def serializeToStream(obj: Any, out: OutputStream): Unit = {
     val key = obj.getClass.getCanonicalName
-    writer.write(key)
-    writer.write('\n')
-    serializers(key).serializeAny(obj, writer)
+    val bytes = key.getBytes
+    val dataOut = new DataOutputStream(out)
+    dataOut.writeInt(key.length)
+    dataOut.write(bytes)
+    serializers(key).serializeAny(obj, out)
   }
 
-  def deserializeFromStream(reader: BufferedReader): Any = {
-    val key = reader.readLine()
-    serializers(key).deserializeAny(reader)
+  def deserializeFromStream(in: InputStream): Any = {
+    val dataIn = new DataInputStream(in)
+    val size = dataIn.readInt()
+    val bytes = new Array[Byte](size)
+    val key = new String(bytes)
+    serializers(key).deserializeAny(in)
   }
 
   def serializeToBundle(obj: Any, bundle: Bundle): Unit = {
@@ -49,13 +56,13 @@ class MleapSerializer {
     }
 
     val metaWriter = bundle.contentWriter("meta")
-    metaWriter.write(key)
+    metaWriter.write(key.getBytes)
     metaWriter.write('\n')
     metaWriter.close()
   }
 
   def deserializeFromBundle(bundle: Bundle): Any = {
-    val metaReader = bundle.contentReader("meta")
+    val metaReader = new BufferedReader(new InputStreamReader(bundle.contentReader("meta")))
     val key = metaReader.readLine()
     metaReader.close()
 

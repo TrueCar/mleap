@@ -1,4 +1,4 @@
-package com.truecar.mleap.serialization
+package com.truecar.mleap.bundle
 
 /**
   * Created by hwilkins on 3/4/16.
