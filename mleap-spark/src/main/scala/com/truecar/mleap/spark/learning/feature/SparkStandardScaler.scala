@@ -1,6 +1,6 @@
 package com.truecar.mleap.spark.learning.feature
 
-import com.truecar.mleap.learning.estimator.StandardScalerEstimator
+import com.truecar.mleap.runtime.estimator.StandardScalerEstimator
 import com.truecar.mleap.spark.learning.EstimatorToSpark
 import org.apache.spark.ml.Estimator
 import org.apache.spark.ml.feature.StandardScaler

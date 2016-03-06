@@ -1,4 +1,4 @@
-package com.truecar.mleap.learning.estimator
+package com.truecar.mleap.runtime.estimator
 
 /**
   * Created by hwilkins on 12/3/15.

@@ -1,6 +1,6 @@
 package com.truecar.mleap.spark.learning.regression
 
-import com.truecar.mleap.learning.estimator.LinearRegressionEstimator
+import com.truecar.mleap.runtime.estimator.LinearRegressionEstimator
 import com.truecar.mleap.spark.learning.EstimatorToSpark
 import org.apache.spark.ml.Estimator
 import org.apache.spark.ml.regression.LinearRegression

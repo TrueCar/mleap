@@ -1,6 +1,6 @@
 package com.truecar.mleap.spark.learning.feature
 
-import com.truecar.mleap.learning.estimator.StringIndexerEstimator
+import com.truecar.mleap.runtime.estimator.StringIndexerEstimator
 import com.truecar.mleap.spark.learning.EstimatorToSpark
 import org.apache.spark.ml.feature.StringIndexer
 

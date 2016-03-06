@@ -1,6 +1,6 @@
 package com.truecar.mleap.spark.learning
 
-import com.truecar.mleap.learning.estimator.Estimator
+import com.truecar.mleap.runtime.estimator.Estimator
 import org.apache.spark.ml
 
 /**

@@ -1,9 +1,9 @@
 package com.truecar.mleap.spark
 
 import com.truecar.mleap.core.linalg
-import com.truecar.mleap.learning.estimator
+import com.truecar.mleap.runtime.estimator
 import com.truecar.mleap.runtime.transformer.{Transformer => MleapTransformer}
-import com.truecar.mleap.learning.estimator.{Estimator => MleapEstimator}
+import com.truecar.mleap.runtime.estimator.{Estimator => MleapEstimator}
 import com.truecar.mleap.runtime.{Row => MleapRow, types}
 import com.truecar.mleap.spark.learning.{MleapEstimatorWrapper, EstimatorToSpark, EstimatorToSparkSupport}
 import com.truecar.mleap.spark.converter._
@@ -21,8 +21,8 @@ import org.apache.spark.sql.{DataFrame, SQLContext}
 trait MleapSparkSupport extends TransformerToMleapSupport with EstimatorToSparkSupport {
   import scala.language.implicitConversions
 
-  implicit def estimatorToSpark[E <: estimator.Estimator](e: E)
-                                                         (implicit estimatorToSpark: EstimatorToSpark[E]): PipelineStage = {
+  implicit def estimatorToSpark[E <: com.truecar.mleap.runtime.estimator.Estimator](e: E)
+                                                                                   (implicit estimatorToSpark: EstimatorToSpark[E]): PipelineStage = {
     estimatorToSpark.toSpark(e)
   }
   implicit def transformerToMleap[T <: Transformer](transformer: T)

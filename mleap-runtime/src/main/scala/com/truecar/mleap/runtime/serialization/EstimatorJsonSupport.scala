@@ -1,8 +1,8 @@
-package com.truecar.mleap.learning.serialization
+package com.truecar.mleap.runtime.serialization
 
 import com.truecar.mleap.core.serialization.{AtomFormat, BasicTypedFormat, MleapJsonProtocol, MultiFormat}
 import com.truecar.mleap.core.util.Atom
-import com.truecar.mleap.learning.estimator._
+import com.truecar.mleap.runtime.estimator._
 import spray.json.{JsValue, RootJsonFormat}
 
 /**
