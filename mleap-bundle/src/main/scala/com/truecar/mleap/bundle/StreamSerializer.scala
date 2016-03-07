@@ -6,8 +6,7 @@ import java.io.{InputStream, OutputStream}
   * Created by hwilkins on 3/4/16.
   */
 trait StreamSerializer[Obj] {
-  val klazz: Class[Obj]
-  lazy val key: String = klazz.getCanonicalName
+  val key: String
 
   def serializeAny(obj: Any, out: OutputStream): Unit = serialize(obj.asInstanceOf[Obj], out)
   def deserializeAny(in: InputStream): Any = deserialize(in)

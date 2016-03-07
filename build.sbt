@@ -7,7 +7,8 @@ lazy val `root` = project.in(file("."))
   .settings(publishArtifact in (Compile, packageBin) := false,
     publishArtifact in (Compile, packageDoc) := false,
     publishArtifact in (Compile, packageSrc) := false)
-  .aggregate(`mleap-bundle`, `mleap-core`, `mleap-runtime`, `mleap-serialization`, `mleap-spark`)
+  .aggregate(`mleap-bundle`, `mleap-core`, `mleap-runtime`,
+    `mleap-serialization`, `mleap-serialization-core`, `mleap-spark`)
 
 lazy val `mleap-core` = project.in(file("mleap-core"))
   .settings(Common.settings)
@@ -25,11 +26,18 @@ lazy val `mleap-bundle` = project.in(file("mleap-bundle"))
   .settings(Common.sonatypeSettings)
   .settings(libraryDependencies ++= Dependencies.mleapBundleDependencies)
 
+lazy val `mleap-serialization-core` = project.in(file("mleap-serialization-core"))
+  .settings(Common.settings)
+  .settings(Common.sonatypeSettings)
+  .settings(Common.protobufSettings)
+  .settings(libraryDependencies ++= Dependencies.mleapSerializationCoreDependencies)
+  .dependsOn(`mleap-bundle`)
+
 lazy val `mleap-serialization` = project.in(file("mleap-serialization"))
   .settings(Common.settings)
   .settings(Common.sonatypeSettings)
   .settings(libraryDependencies ++= Dependencies.mleapSerializationDependencies)
-  .dependsOn(`mleap-bundle`, `mleap-runtime`)
+  .dependsOn(`mleap-bundle`, `mleap-serialization-core`, `mleap-runtime`)
 
 lazy val `mleap-spark` = project.in(file("mleap-spark"))
   .settings(Common.settings)

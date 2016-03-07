@@ -1,0 +1,9 @@
+package ml.runtime.feature;
+
+import "core/feature/StandardScaler.proto";
+
+message StandardScalerModel {
+    required string inputCol = 1;
+    required string outputCol = 2;
+    required ml.core.feature.StandardScaler model = 3;
+}

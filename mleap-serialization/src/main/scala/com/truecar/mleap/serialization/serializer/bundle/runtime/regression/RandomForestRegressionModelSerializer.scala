@@ -3,7 +3,7 @@ package com.truecar.mleap.serialization.serializer.bundle.runtime.regression
 import com.truecar.mleap.bundle.{StreamSerializer, Bundle, BundleSerializer}
 import com.truecar.mleap.core.regression.RandomForestRegression
 import com.truecar.mleap.runtime.transformer.RandomForestRegressionModel
-import com.truecar.mleap.serialization.runtime.RandomForestRegressionModelMetaData
+import ml.runtime.regression.RandomForestRegressionModelMetaData.RandomForestRegressionModelMetaData
 
 /**
   * Created by hwilkins on 3/6/16.
@@ -11,7 +11,7 @@ import com.truecar.mleap.serialization.runtime.RandomForestRegressionModelMetaDa
 case class RandomForestRegressionModelSerializer(randomForestRegressionModelMetaDataSerializer: StreamSerializer[RandomForestRegressionModelMetaData],
                                                  randomForestRegressionSerializer: BundleSerializer[RandomForestRegression])
   extends BundleSerializer[RandomForestRegressionModel] {
-  override val klazz: Class[RandomForestRegressionModel] = classOf[RandomForestRegressionModel]
+  override val key: String = "ml.runtime.regression.RandomForestRegressionModel"
 
   override def serialize(obj: RandomForestRegressionModel, bundle: Bundle): Unit = {
     val meta = bundle.contentWriter("meta")

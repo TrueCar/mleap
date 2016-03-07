@@ -2,19 +2,20 @@ package com.truecar.mleap.serialization.serializer.bundle.core.regression
 
 import com.truecar.mleap.bundle.{StreamSerializer, Bundle, BundleSerializer}
 import com.truecar.mleap.core.regression.{RandomForestRegression, DecisionTreeRegression}
-import com.truecar.mleap.serialization.core.regression.RandomForestMetaData
+import ml.core.regression.RandomForestRegressionMetaData.RandomForestRegressionMetaData
 
 /**
   * Created by hwilkins on 3/6/16.
   */
-case class RandomForestRegressionSerializer(randomForestMetaDataSerialize: StreamSerializer[RandomForestMetaData],
+case class RandomForestRegressionSerializer(randomForestMetaDataSerialize: StreamSerializer[RandomForestRegressionMetaData],
                                             decisionTreeRegressionSerialize: BundleSerializer[DecisionTreeRegression])
   extends BundleSerializer[RandomForestRegression] {
-  override val klazz: Class[RandomForestRegression] = classOf[RandomForestRegression]
+  override val key: String = "ml.core.regression.RandomForestRegression"
 
   override def serialize(obj: RandomForestRegression, bundle: Bundle): Unit = {
     val meta = bundle.contentWriter("meta")
-    randomForestMetaDataSerialize.serialize(RandomForestMetaData(obj.treeWeights), meta)
+    randomForestMetaDataSerialize.serialize(RandomForestRegressionMetaData(obj.treeWeights.size,
+      obj.treeWeights), meta)
     meta.close()
 
     obj.trees.zipWithIndex.foreach {

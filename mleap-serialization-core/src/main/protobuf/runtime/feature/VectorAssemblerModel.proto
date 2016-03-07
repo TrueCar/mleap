@@ -1,0 +1,6 @@
+package ml.runtime.feature;
+
+message VectorAssemblerModel {
+    repeated string inputCols = 1;
+    required string outputCol = 2;
+}

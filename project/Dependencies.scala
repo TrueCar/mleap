@@ -26,8 +26,8 @@ object Dependencies {
   lazy val mleapRuntimeDependencies = mleapCoreDependencies
 
   lazy val mleapBundleDependencies = Seq()
+  lazy val mleapSerializationCoreDependencies = Seq("io.spray" %% "spray-json" % "1.3.2")
   lazy val mleapSerializationDependencies = mleapRuntimeDependencies
-      .union(Seq("io.spray" %% "spray-json" % "1.3.2"))
 
   lazy val mleapSparkDependencies = mleapCoreDependencies
     .union(sparkDependencies)

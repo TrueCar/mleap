@@ -1,0 +1,9 @@
+package ml.core.tree;
+
+message NodeMetaData {
+    enum NodeFormat {
+        LINEAR = 1;
+    }
+
+    required NodeFormat format = 1;
+}

@@ -1,0 +1,5 @@
+package ml.core.feature;
+
+message HashingTermFrequency {
+    required int32 numFeatures = 1;
+}

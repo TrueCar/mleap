@@ -12,7 +12,7 @@ import scala.collection.mutable
   * Created by hwilkins on 3/5/16.
   */
 case class PipelineModelSerializer(mleap: MleapSerializer) extends BundleSerializer[PipelineModel] {
-  override val klazz: Class[PipelineModel] = classOf[PipelineModel]
+  override val key: String = "ml.runtime.PipelineModel"
 
   override def serialize(obj: PipelineModel, bundle: Bundle): Unit = {
     val metaWriter = bundle.contentWriter("meta")
@@ -20,7 +20,7 @@ case class PipelineModelSerializer(mleap: MleapSerializer) extends BundleSeriali
 
     obj.transformers.zipWithIndex.foreach {
       case (stage, index) =>
-        val key = stage.getClass.getCanonicalName
+        val key = mleap.getMlName(stage.getClass.getCanonicalName)
 
         metaWriter.write(key.getBytes)
         metaWriter.write('\n')
@@ -53,7 +53,7 @@ case class PipelineModelSerializer(mleap: MleapSerializer) extends BundleSeriali
       val line = metaReader.readLine()
 
       if(line != null) {
-        val key = line.trim()
+        val key = mleap.getCanonicalName(line.trim())
 
         val transformer = mleap.getSerializer(key) match {
           case Some(serializer) =>

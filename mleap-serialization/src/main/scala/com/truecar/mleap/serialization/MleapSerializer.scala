@@ -4,26 +4,39 @@ import java.io._
 
 import com.truecar.mleap.bundle.{BundleSerializer, Bundle, StreamSerializer}
 
+import scala.reflect.ClassTag
+
 /**
   * Created by hwilkins on 3/5/16.
   */
 class MleapSerializer {
   var serializers: Map[String, StreamSerializer[_]] = Map()
   var bundleSerializers: Map[String, BundleSerializer[_]] = Map()
+  var mlNameLookup: Map[String, String] = Map()
+  var canonicalNameLookup: Map[String, String] = Map()
 
-  def addSerializer[T](serializer: StreamSerializer[T]) = {
+  def addSerializer[T: ClassTag](serializer: StreamSerializer[T]) = {
     serializers += (serializer.key -> serializer)
+    val name = implicitly[ClassTag[T]].runtimeClass.getCanonicalName
+    mlNameLookup += (name -> serializer.key)
+    canonicalNameLookup += (serializer.key -> name)
   }
 
-  def addBundleSerializer[T](serializer: BundleSerializer[T]) = {
+  def addBundleSerializer[T: ClassTag](serializer: BundleSerializer[T]) = {
     bundleSerializers += (serializer.key -> serializer)
+    val name = implicitly[ClassTag[T]].runtimeClass.getCanonicalName
+    mlNameLookup += (name -> serializer.key)
+    canonicalNameLookup += (serializer.key -> name)
   }
 
   def getSerializer(key: String): Option[StreamSerializer[_]] = serializers.get(key)
   def getBundleSerializer(key: String): Option[BundleSerializer[_]] = bundleSerializers.get(key)
 
+  def getMlName(key: String): String = mlNameLookup(key)
+  def getCanonicalName(key: String): String = canonicalNameLookup(key)
+
   def serializeToStream(obj: Any, out: OutputStream): Unit = {
-    val key = obj.getClass.getCanonicalName
+    val key = mlNameLookup(obj.getClass.getCanonicalName)
     val bytes = key.getBytes
     val dataOut = new DataOutputStream(out)
     dataOut.writeInt(key.length)
@@ -40,7 +53,7 @@ class MleapSerializer {
   }
 
   def serializeToBundle(obj: Any, bundle: Bundle): Unit = {
-    val key = obj.getClass.getCanonicalName
+    val key = mlNameLookup(obj.getClass.getCanonicalName)
     serializers.get(key) match {
       case Some(serializer) =>
         val contentWriter = bundle.contentWriter("content")

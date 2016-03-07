@@ -1,0 +1,9 @@
+package ml.core.linalg;
+
+import "core/linalg/DenseVector.proto";
+import "core/linalg/SparseVector.proto";
+
+message Vector {
+    optional DenseVector dense = 1;
+    optional SparseVector sparse = 2;
+}
