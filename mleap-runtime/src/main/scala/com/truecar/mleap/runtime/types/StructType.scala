@@ -26,7 +26,18 @@ case class StructType(fields: Seq[StructField],
   def getIndexOf(name: String): Option[Int] = nameToIndex.get(name)
   def contains(name: String): Boolean = nameToIndex.contains(name)
 
-  def withField(field: StructField): StructType = StructType(fields :+ field)
+  /**
+    * Returns a new {@code StructType} with {@code field} added.
+    * @param field The field to add.
+    * @return StructType with field added.
+    */
+  def withField(field: StructField): StructType = {
+    val key = field.name
+
+    StructType(fields :+ field,
+               nameToIndex + (key -> fields.length),
+               nameToField + (key -> field))
+  }
 
   def select(fieldNames: String *): Try[StructType] = {
     tryIndicesOf(fieldNames: _*).map(selectIndices(_: _*))
