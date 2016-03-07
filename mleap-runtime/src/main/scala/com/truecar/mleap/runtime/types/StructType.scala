@@ -56,8 +56,17 @@ case class StructType(fields: Seq[StructField],
     tryIndexOf(name).map(dropIndex)
   }
 
+  /**
+    * Returns a new {@code StructType} with the field at the desired index dropped.
+    * @param index The index of the field to drop.
+    * @return StructType with field dropped.
+    */
   def dropIndex(index: Int): StructType = {
-    StructType(fields.zipWithIndex.filter(_._2 != index).map(_._1))
+    val key = fields(index).name
+
+    StructType(fields.drop(index),
+               nameToIndex - key,
+               nameToField - key)
   }
 
   def tryIndexOf(name: String): Try[Int] = {
