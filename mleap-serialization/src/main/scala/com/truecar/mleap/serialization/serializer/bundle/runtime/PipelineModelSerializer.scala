@@ -2,9 +2,9 @@ package com.truecar.mleap.serialization.serializer.bundle.runtime
 
 import java.io.{InputStreamReader, BufferedReader}
 
-import com.truecar.mleap.bundle.{BundleSerializer, Bundle}
+import com.truecar.mleap.bundle.{BundleReader, BundleWriter, BundleSerializer}
 import com.truecar.mleap.runtime.transformer.{PipelineModel, Transformer}
-import com.truecar.mleap.serialization.MleapSerializer
+import com.truecar.mleap.bundle.core.MleapSerializer
 
 import scala.collection.mutable
 
@@ -14,69 +14,74 @@ import scala.collection.mutable
 case class PipelineModelSerializer(mleap: MleapSerializer) extends BundleSerializer[PipelineModel] {
   override val key: String = "ml.runtime.PipelineModel"
 
-  override def serialize(obj: PipelineModel, bundle: Bundle): Unit = {
+  override def serialize(obj: PipelineModel, bundle: BundleWriter): Unit = {
     val metaWriter = bundle.contentWriter("meta")
-    val contentWriter = bundle.contentWriter("content")
 
     obj.transformers.zipWithIndex.foreach {
       case (stage, index) =>
-        val key = mleap.getMlName(stage.getClass.getCanonicalName)
+        val mlKey = mleap.getMlName(stage.getClass.getCanonicalName)
 
-        metaWriter.write(key.getBytes)
+        metaWriter.write(mlKey.getBytes)
         metaWriter.write('\n')
+    }
 
-        mleap.getSerializer(key) match {
+    bundle.close(metaWriter)
+
+    obj.transformers.zipWithIndex.foreach {
+      case (stage, index) =>
+        val mlKey = mleap.getMlName(stage.getClass.getCanonicalName)
+
+        mleap.getSerializer(mlKey) match {
           case Some(serializer) =>
+            val contentWriter = bundle.contentWriter(s"stage_$index")
             serializer.serializeAny(stage, contentWriter)
+            bundle.close(contentWriter)
           case None =>
-            mleap.getBundleSerializer(key) match {
+            mleap.getBundleSerializer(mlKey) match {
               case Some(serializer) =>
-                val subBundle = bundle.createBundle(index.toString)
+                val subBundle = bundle.createBundle(s"stage_$index")
                 serializer.serializeAny(stage, subBundle)
-              case None => throw new Error("Could not serialize: " + key)
+              case None => throw new Error("Could not serialize: " + mlKey)
             }
         }
     }
-
-    metaWriter.close()
-    contentWriter.close()
   }
 
-  override def deserialize(bundle: Bundle): PipelineModel = {
+  override def deserialize(bundle: BundleReader): PipelineModel = {
     val metaReader = new BufferedReader(new InputStreamReader(bundle.contentReader("meta")))
-    val contentInputStream = bundle.contentReader("content")
-
     var hasLine = true
-    var index = 0
-    var transformers = mutable.ArrayBuffer.empty[Transformer]
+    var keys = mutable.ArrayBuffer.empty[String]
+
     while(hasLine) {
       val line = metaReader.readLine()
 
       if(line != null) {
-        val key = mleap.getCanonicalName(line.trim())
-
-        val transformer = mleap.getSerializer(key) match {
-          case Some(serializer) =>
-            serializer.deserializeAny(contentInputStream).asInstanceOf[Transformer]
-          case None =>
-            mleap.getBundleSerializer(key) match {
-              case Some(serializer) =>
-                serializer.deserializeAny(bundle.getBundle(index.toString)).asInstanceOf[Transformer]
-              case None =>
-                throw new Error("Could not deserialize: " + key)
-            }
-        }
-
-        transformers += transformer
-
-        index += 1
+        val mlKey = line.trim()
+        keys += mlKey
       } else {
         hasLine = false
       }
     }
 
-    metaReader.close()
-    contentInputStream.close()
+    bundle.close(metaReader)
+
+    val transformers = keys.toSeq.zipWithIndex.map {
+      case (mlKey, index) =>
+        mleap.getSerializer(mlKey) match {
+          case Some(serializer) =>
+            val contentInputStream = bundle.contentReader(s"stage_$index")
+            val transformer = serializer.deserializeAny(contentInputStream).asInstanceOf[Transformer]
+            bundle.close(contentInputStream)
+            transformer
+          case None =>
+            mleap.getBundleSerializer(mlKey) match {
+              case Some(serializer) =>
+                serializer.deserializeAny(bundle.getBundle(s"stage_$index")).asInstanceOf[Transformer]
+              case None =>
+                throw new Error("Could not deserialize: " + mlKey)
+            }
+        }
+    }
 
     PipelineModel(transformers)
   }

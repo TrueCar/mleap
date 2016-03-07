@@ -1,6 +1,6 @@
 package com.truecar.mleap.serialization.serializer.bundle.core.regression
 
-import com.truecar.mleap.bundle.{Bundle, BundleSerializer}
+import com.truecar.mleap.bundle.{BundleReader, BundleWriter, BundleSerializer}
 import com.truecar.mleap.core.regression.DecisionTreeRegression
 import com.truecar.mleap.core.tree.Node
 
@@ -10,11 +10,11 @@ import com.truecar.mleap.core.tree.Node
 case class DecisionTreeRegressionSerializer(nodeSerializer: BundleSerializer[Node]) extends BundleSerializer[DecisionTreeRegression] {
   override val key: String = "ml.core.regression.DecisionTreeRegression"
 
-  override def serialize(obj: DecisionTreeRegression, bundle: Bundle): Unit = {
+  override def serialize(obj: DecisionTreeRegression, bundle: BundleWriter): Unit = {
     nodeSerializer.serialize(obj.rootNode, bundle.createBundle("rootNode"))
   }
 
-  override def deserialize(bundle: Bundle): DecisionTreeRegression = {
+  override def deserialize(bundle: BundleReader): DecisionTreeRegression = {
     val rootNode = nodeSerializer.deserialize(bundle.getBundle("rootNode"))
     DecisionTreeRegression(rootNode)
   }

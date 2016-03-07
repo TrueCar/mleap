@@ -1,6 +1,6 @@
 package com.truecar.mleap.serialization.serializer.bundle.core.regression
 
-import com.truecar.mleap.bundle.{StreamSerializer, Bundle, BundleSerializer}
+import com.truecar.mleap.bundle._
 import com.truecar.mleap.core.regression.{RandomForestRegression, DecisionTreeRegression}
 import ml.core.regression.RandomForestRegressionMetaData.RandomForestRegressionMetaData
 
@@ -12,11 +12,11 @@ case class RandomForestRegressionSerializer(randomForestMetaDataSerialize: Strea
   extends BundleSerializer[RandomForestRegression] {
   override val key: String = "ml.core.regression.RandomForestRegression"
 
-  override def serialize(obj: RandomForestRegression, bundle: Bundle): Unit = {
+  override def serialize(obj: RandomForestRegression, bundle: BundleWriter): Unit = {
     val meta = bundle.contentWriter("meta")
     randomForestMetaDataSerialize.serialize(RandomForestRegressionMetaData(obj.treeWeights.size,
       obj.treeWeights), meta)
-    meta.close()
+    bundle.close(meta)
 
     obj.trees.zipWithIndex.foreach {
       case (tree, index) =>
@@ -25,10 +25,10 @@ case class RandomForestRegressionSerializer(randomForestMetaDataSerialize: Strea
     }
   }
 
-  override def deserialize(bundle: Bundle): RandomForestRegression = {
+  override def deserialize(bundle: BundleReader): RandomForestRegression = {
     val meta = bundle.contentReader("meta")
     val metaData = randomForestMetaDataSerialize.deserialize(meta)
-    meta.close()
+    bundle.close(meta)
 
     val trees = metaData.treeWeights.indices.map {
       index =>

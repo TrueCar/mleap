@@ -2,7 +2,7 @@ package com.truecar.mleap.serialization.serializer.bundle.core.tree.node
 
 import java.io.{InputStream, OutputStream}
 
-import com.truecar.mleap.bundle.{StreamSerializer, Bundle, BundleSerializer}
+import com.truecar.mleap.bundle._
 import com.truecar.mleap.core.tree.{LeafNode, InternalNode, Node}
 import ml.core.tree.NodeData.NodeData
 import ml.core.tree.NodeMetaData.NodeMetaData
@@ -16,26 +16,26 @@ case class LinearNodeSerializer(nodeMetaDataSerializer: StreamSerializer[NodeMet
                                 nodeDataSerializer: StreamSerializer[NodeData]) extends BundleSerializer[Node] {
   override val key: String = "ml.core.tree.Node"
 
-  override def serialize(obj: Node, bundle: Bundle): Unit = {
+  override def serialize(obj: Node, bundle: BundleWriter): Unit = {
     val meta = bundle.contentWriter("meta")
     nodeMetaDataSerializer.serialize(NodeMetaData(NodeFormat.LINEAR), meta)
-    meta.close()
+    bundle.close(meta)
 
     val nodes = bundle.contentWriter("nodes")
     serialize(obj, nodes)
-    nodes.close()
+    bundle.close(nodes)
   }
 
-  override def deserialize(bundle: Bundle): Node = {
+  override def deserialize(bundle: BundleReader): Node = {
     val meta = bundle.contentReader("meta")
     val metaData = nodeMetaDataSerializer.deserialize(meta)
-    meta.close()
+    bundle.close(meta)
 
     metaData match {
       case NodeMetaData(NodeFormat.LINEAR) =>
         val nodes = bundle.contentReader("nodes")
         val node = deserialize(nodes)
-        nodes.close()
+        bundle.close(nodes)
         node
       case _ => throw new Error("Can only deserialize nodes stored with NodeFormat.Linear")
     }
@@ -44,17 +44,17 @@ case class LinearNodeSerializer(nodeMetaDataSerializer: StreamSerializer[NodeMet
   private def serialize(node: Node, out: OutputStream): Unit = {
     node match {
       case node: InternalNode =>
-        nodeDataSerializer.serialize(NodeUtils.nodeDataForNode(node), out)
+        nodeDataSerializer.serializeItem(NodeUtils.nodeDataForNode(node), out)
 
         serialize(node.leftChild, out)
         serialize(node.rightChild, out)
       case node: LeafNode =>
-        nodeDataSerializer.serialize(NodeUtils.nodeDataForNode(node), out)
+        nodeDataSerializer.serializeItem(NodeUtils.nodeDataForNode(node), out)
     }
   }
 
   private def deserialize(in: InputStream): Node = {
-    val nodeData = nodeDataSerializer.deserialize(in)
+    val nodeData = nodeDataSerializer.deserializeItem(in)
 
     nodeData.internal match {
       case Some(data) =>

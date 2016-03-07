@@ -1,4 +1,4 @@
-package com.truecar.mleap.serialization.core.json
+package com.truecar.mleap.bundle.core.json
 
 import ml.core.feature.HashingTermFrequency.HashingTermFrequency
 import ml.core.feature.StandardScaler.StandardScaler

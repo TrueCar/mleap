@@ -1,6 +1,6 @@
 package com.truecar.mleap.serialization.serializer.bundle.runtime.regression
 
-import com.truecar.mleap.bundle.{StreamSerializer, Bundle, BundleSerializer}
+import com.truecar.mleap.bundle._
 import com.truecar.mleap.core.regression.RandomForestRegression
 import com.truecar.mleap.runtime.transformer.RandomForestRegressionModel
 import ml.runtime.regression.RandomForestRegressionModelMetaData.RandomForestRegressionModelMetaData
@@ -13,19 +13,19 @@ case class RandomForestRegressionModelSerializer(randomForestRegressionModelMeta
   extends BundleSerializer[RandomForestRegressionModel] {
   override val key: String = "ml.runtime.regression.RandomForestRegressionModel"
 
-  override def serialize(obj: RandomForestRegressionModel, bundle: Bundle): Unit = {
+  override def serialize(obj: RandomForestRegressionModel, bundle: BundleWriter): Unit = {
     val meta = bundle.contentWriter("meta")
     val metaData = RandomForestRegressionModelMetaData(obj.featuresCol, obj.predictionCol)
     randomForestRegressionModelMetaDataSerializer.serialize(metaData, meta)
-    meta.close()
+    bundle.close(meta)
 
     randomForestRegressionSerializer.serialize(obj.model, bundle.createBundle("model"))
   }
 
-  override def deserialize(bundle: Bundle): RandomForestRegressionModel = {
+  override def deserialize(bundle: BundleReader): RandomForestRegressionModel = {
     val meta = bundle.contentReader("meta")
     val metaData = randomForestRegressionModelMetaDataSerializer.deserialize(meta)
-    meta.close()
+    bundle.close(meta)
 
     val model = randomForestRegressionSerializer.deserialize(bundle.getBundle("model"))
 

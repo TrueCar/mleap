@@ -1,8 +1,8 @@
-package com.truecar.mleap.serialization
+package com.truecar.mleap.bundle.core
 
 import java.io._
 
-import com.truecar.mleap.bundle.{BundleSerializer, Bundle, StreamSerializer}
+import com.truecar.mleap.bundle._
 
 import scala.reflect.ClassTag
 
@@ -52,43 +52,44 @@ class MleapSerializer {
     serializers(key).deserializeAny(in)
   }
 
-  def serializeToBundle(obj: Any, bundle: Bundle): Unit = {
+  def serializeToBundle(obj: Any, bundle: BundleWriter): Unit = {
     val key = mlNameLookup(obj.getClass.getCanonicalName)
+
+    val metaWriter = bundle.contentWriter("meta.mleap")
+    metaWriter.write(key.getBytes)
+    metaWriter.write('\n')
+    bundle.close(metaWriter)
+
     serializers.get(key) match {
       case Some(serializer) =>
         val contentWriter = bundle.contentWriter("content")
         serializer.serializeAny(obj, contentWriter)
-        contentWriter.close()
+        bundle.close(contentWriter)
       case None =>
         bundleSerializers.get(key) match {
           case Some(serializer) =>
-            serializer.serializeAny(obj, bundle.createBundle("content"))
+            serializer.serializeAny(obj, bundle)
           case None =>
             throw new Error("Could not serialize to bundle: " + key)
         }
     }
-
-    val metaWriter = bundle.contentWriter("meta")
-    metaWriter.write(key.getBytes)
-    metaWriter.write('\n')
-    metaWriter.close()
   }
 
-  def deserializeFromBundle(bundle: Bundle): Any = {
-    val metaReader = new BufferedReader(new InputStreamReader(bundle.contentReader("meta")))
+  def deserializeFromBundle(bundle: BundleReader): Any = {
+    val metaReader = new BufferedReader(new InputStreamReader(bundle.contentReader("meta.mleap")))
     val key = metaReader.readLine()
-    metaReader.close()
+    bundle.close(metaReader)
 
     serializers.get(key) match {
       case Some(serializer) =>
         val contentReader = bundle.contentReader("content")
         val obj = serializer.deserializeAny(contentReader)
-        contentReader.close()
+        bundle.close(contentReader)
         obj
       case None =>
         bundleSerializers.get(key) match {
           case Some(serializer) =>
-            serializer.deserializeAny(bundle.getBundle("content"))
+            serializer.deserializeAny(bundle)
           case None =>
             throw new Error("Could not deserialize: " + key)
         }
