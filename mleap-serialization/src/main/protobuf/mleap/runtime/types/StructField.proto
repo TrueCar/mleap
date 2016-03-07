@@ -1,0 +1,8 @@
+package mleap.runtime.types;
+
+import "mleap/runtime/types/DataType.proto";
+
+message StructField {
+    required string name = 1;
+    required DataType dataType = 2;
+}

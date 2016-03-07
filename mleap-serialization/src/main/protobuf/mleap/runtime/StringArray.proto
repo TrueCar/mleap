@@ -1,0 +1,5 @@
+package mleap.runtime;
+
+message StringArray {
+    repeated string strings = 1;
+}

@@ -32,25 +32,25 @@ import scala.reflect.ClassTag
 /**
   * Created by hwilkins on 3/6/16.
   */
-trait JsonSupport {
+trait MlJsonSupport {
   // core.linalg
-  implicit val mleapSparseVectorFormat = jsonFormat3(SparseVector.apply)
-  implicit val mleapDenseVectorFormat = jsonFormat1(DenseVector.apply)
-  implicit val mleapVectorFormat = jsonFormat2(Vector.apply)
+  implicit val mlSparseVectorFormat = jsonFormat3(SparseVector.apply)
+  implicit val mlDenseVectorFormat = jsonFormat1(DenseVector.apply)
+  implicit val mlVectorFormat = jsonFormat2(Vector.apply)
 
   // core.feature
-  implicit val mleapStringIndexerFormat = jsonFormat1(StringIndexer.apply)
-  implicit val mleapHashingTermFrequencyFormat = jsonFormat1(HashingTermFrequency.apply)
-  implicit val mleapStandardScalerFormat = jsonFormat2(StandardScaler.apply)
-  implicit val mleapTokenizerFormat = jsonFormat1(Tokenizer.apply)
+  implicit val mlStringIndexerFormat = jsonFormat1(StringIndexer.apply)
+  implicit val mlHashingTermFrequencyFormat = jsonFormat1(HashingTermFrequency.apply)
+  implicit val mlStandardScalerFormat = jsonFormat2(StandardScaler.apply)
+  implicit val mlTokenizerFormat = jsonFormat1(Tokenizer.apply)
 
   // core.regression
-  implicit val mleapLinearRegressionFormat = jsonFormat2(LinearRegression.apply)
-  implicit val mleapRandomForestRegressionMetaDataFormat: RootJsonFormat[RandomForestRegressionMetaData] =
+  implicit val mlLinearRegressionFormat = jsonFormat2(LinearRegression.apply)
+  implicit val mlRandomForestRegressionMetaDataFormat: RootJsonFormat[RandomForestRegressionMetaData] =
     jsonFormat2(RandomForestRegressionMetaData.apply)
 
   // core.tree
-  implicit val mleapNodeFormatFormat = new JsonFormat[NodeFormat] {
+  implicit val mlNodeFormatFormat = new JsonFormat[NodeFormat] {
     override def write(obj: NodeFormat): JsValue = obj match {
       case NodeFormat.LINEAR => JsString("linear")
     }
@@ -60,10 +60,10 @@ trait JsonSupport {
       case _ => throw new Error("Could not parse node format")
     }
   }
-  implicit val mleapNodeMetaDataFormat: RootJsonFormat[NodeMetaData] = jsonFormat1(NodeMetaData.apply)
-  implicit val mleapCategoricalSplitFormat = jsonFormat3(CategoricalSplit.apply)
-  implicit val mleapContinuousSplitFormat = jsonFormat2(ContinuousSplit.apply)
-  implicit val mleapSplitFormat = new RootJsonFormat[Split] {
+  implicit val mlNodeMetaDataFormat: RootJsonFormat[NodeMetaData] = jsonFormat1(NodeMetaData.apply)
+  implicit val mlCategoricalSplitFormat = jsonFormat3(CategoricalSplit.apply)
+  implicit val mlContinuousSplitFormat = jsonFormat2(ContinuousSplit.apply)
+  implicit val mlSplitFormat = new RootJsonFormat[Split] {
     override def write(obj: Split): JsValue = {
       obj.continuous match {
         case Some(split) =>
@@ -94,9 +94,9 @@ trait JsonSupport {
     }
   }
 
-  implicit val mleapInternalNodeDataFormat = jsonFormat4(InternalNodeData.apply)
-  implicit val mleapLeafNodeDataFormat = jsonFormat2(LeafNodeData.apply)
-  implicit val mleapNodeDataFormat: RootJsonFormat[NodeData] = new RootJsonFormat[NodeData] {
+  implicit val mlInternalNodeDataFormat = jsonFormat4(InternalNodeData.apply)
+  implicit val mlLeafNodeDataFormat = jsonFormat2(LeafNodeData.apply)
+  implicit val mlNodeDataFormat: RootJsonFormat[NodeData] = new RootJsonFormat[NodeData] {
     override def write(obj: NodeData): JsValue = {
       obj.internal match {
         case Some(node) =>
@@ -129,19 +129,19 @@ trait JsonSupport {
   }
 
   // runtime.feature
-  implicit val mleapStringIndexerModelFormat: RootJsonFormat[StringIndexerModel] = jsonFormat3(StringIndexerModel.apply)
-  implicit val mleapHashingTermFrequencyModelFormat: RootJsonFormat[HashingTermFrequencyModel] = jsonFormat3(HashingTermFrequencyModel.apply)
-  implicit val mleapStandardScalerModelFormat: RootJsonFormat[StandardScalerModel] = jsonFormat3(StandardScalerModel.apply)
-  implicit val mleapVectorAssemblerModelFormat: RootJsonFormat[VectorAssemblerModel] = jsonFormat2(VectorAssemblerModel.apply)
-  implicit val mleapTokenizerModelFormat: RootJsonFormat[TokenizerModel] = jsonFormat3(TokenizerModel.apply)
+  implicit val mlStringIndexerModelFormat: RootJsonFormat[StringIndexerModel] = jsonFormat3(StringIndexerModel.apply)
+  implicit val mlHashingTermFrequencyModelFormat: RootJsonFormat[HashingTermFrequencyModel] = jsonFormat3(HashingTermFrequencyModel.apply)
+  implicit val mlStandardScalerModelFormat: RootJsonFormat[StandardScalerModel] = jsonFormat3(StandardScalerModel.apply)
+  implicit val mlVectorAssemblerModelFormat: RootJsonFormat[VectorAssemblerModel] = jsonFormat2(VectorAssemblerModel.apply)
+  implicit val mlTokenizerModelFormat: RootJsonFormat[TokenizerModel] = jsonFormat3(TokenizerModel.apply)
 
   // runtime.regression
-  implicit val mleapLinearRegressionModelFormat: RootJsonFormat[LinearRegressionModel] = jsonFormat3(LinearRegressionModel.apply)
-  implicit val mleapRandomForestRegressionModelMetaDataFormat: RootJsonFormat[RandomForestRegressionModelMetaData] = jsonFormat2(RandomForestRegressionModelMetaData.apply)
+  implicit val mlLinearRegressionModelFormat: RootJsonFormat[LinearRegressionModel] = jsonFormat3(LinearRegressionModel.apply)
+  implicit val mlRandomForestRegressionModelMetaDataFormat: RootJsonFormat[RandomForestRegressionModelMetaData] = jsonFormat2(RandomForestRegressionModelMetaData.apply)
 
   implicit class ImplicitJsonStreamSerializer[T: ClassTag](jsonFormat: RootJsonFormat[T]) extends JsonStreamSerializer[T] {
     override val key: String = implicitly[ClassTag[T]].runtimeClass.getCanonicalName
     override implicit val format: RootJsonFormat[T] = jsonFormat
   }
 }
-object JsonSupport extends JsonSupport
+object MlJsonSupport extends MlJsonSupport

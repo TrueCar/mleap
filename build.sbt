@@ -30,6 +30,7 @@ lazy val `mleap-bundle` = project.in(file("mleap-bundle"))
 lazy val `mleap-serialization` = project.in(file("mleap-serialization"))
   .settings(Common.settings)
   .settings(Common.sonatypeSettings)
+  .settings(Common.protobufSettings)
   .settings(libraryDependencies ++= Dependencies.mleapSerializationDependencies)
   .dependsOn(`mleap-bundle`, `mleap-runtime`)
 
