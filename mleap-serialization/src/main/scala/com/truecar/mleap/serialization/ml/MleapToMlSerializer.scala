@@ -1,4 +1,4 @@
-package com.truecar.mleap.serialization
+package com.truecar.mleap.serialization.ml
 
 import java.io.{InputStream, OutputStream}
 

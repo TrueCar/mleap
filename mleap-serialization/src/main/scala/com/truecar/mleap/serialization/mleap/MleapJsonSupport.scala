@@ -47,26 +47,26 @@ trait MleapJsonSupport {
     ConvertJsonFormat(format)
   }
 
-  implicit val protoMleapDenseVectorFormat = jsonFormat1(DenseVector.apply)
-  implicit val mleapDenseVectorFormat = convertFormat[linalg.DenseVector, DenseVector](protoMleapDenseVectorFormat)
-  implicit val protoMleapSparseVectorFormat = jsonFormat3(SparseVector.apply)
-  implicit val mleapSparseVectorFormat = convertFormat[linalg.SparseVector, SparseVector](protoMleapSparseVectorFormat)
-  implicit val protoMleapVectorFormat = new RootJsonFormat[Vector] {
+  private implicit val protoMleapSparseVectorFormat = jsonFormat3(SparseVector.apply)
+  implicit val protoMleapVectorFormat = new JsonFormat[Vector] {
     override def write(obj: Vector): JsValue = {
       if(obj.data.isDense) {
-        obj.data.dense.get.toJson
+        obj.data.dense.get.values.toJson
       } else {
         obj.data.sparse.get.toJson
       }
     }
-    override def read(json: JsValue): Vector = {
-      val fields = json.asJsObject.fields
-
-      if(fields.contains("size")) {
-        Vector(Vector.Data.Sparse(json.convertTo[SparseVector]))
-      } else {
-        Vector(Vector.Data.Dense(json.convertTo[DenseVector]))
-      }
+    override def read(json: JsValue): Vector = json match {
+      case JsArray(jsValues) =>
+        val values = jsValues.map {
+          case JsNumber(value) => value.toDouble
+          case _ => throw new Error("Could not read dense vector")
+        }
+        Vector(Vector.Data.Dense(DenseVector(values)))
+      case json: JsObject =>
+        val sparse = json.convertTo[SparseVector]
+        Vector(Vector.Data.Sparse(SparseVector(sparse.size, sparse.indices, sparse.values)))
+      case _ => throw new Error("Could not read vector")
     }
   }
   implicit val mleapVectorFormat = convertFormat[linalg.Vector, Vector](protoMleapVectorFormat)
@@ -122,7 +122,19 @@ trait MleapJsonSupport {
     }
   }
   implicit val mleapFieldDataFormat = convertFormat[Any, FieldData](protoMleapFieldDataFormat)(mleapFieldDataToProtoMleap, protoMleapFieldDataToMleap)
-  implicit val protoMleapRowFormat = jsonFormat1(Row.apply)
+  implicit val protoMleapRowFormat = new JsonFormat[Row] {
+    override def write(obj: Row): JsValue = {
+      val values = obj.data.map(protoMleapFieldDataFormat.write)
+      JsArray(values: _*)
+    }
+
+    override def read(json: JsValue): Row = json match {
+      case JsArray(jsValues) =>
+        val values = jsValues.map(protoMleapFieldDataFormat.read)
+        Row(values)
+      case _ => throw new Error("Could not read row")
+    }
+  }
   implicit val mleapRowFormat = convertFormat[runtime.Row, Row](protoMleapRowFormat)
   implicit val protoMleapLeapFrameFormat = jsonFormat2(LeapFrame.apply)
   implicit val mleapLeapFrameFormat = convertFormat[LocalLeapFrame, LeapFrame](protoMleapLeapFrameFormat)

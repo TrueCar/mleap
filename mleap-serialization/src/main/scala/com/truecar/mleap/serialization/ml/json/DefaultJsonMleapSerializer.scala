@@ -1,13 +1,13 @@
-package com.truecar.mleap.serialization.json
+package com.truecar.mleap.serialization.ml.json
 
 import com.truecar.mleap.runtime.transformer._
 import com.truecar.mleap.bundle.core.MleapSerializer
-import com.truecar.mleap.serialization.serializer.bundle.core.regression.{RandomForestRegressionSerializer, DecisionTreeRegressionSerializer}
-import com.truecar.mleap.serialization.serializer.bundle.core.tree.node.LinearNodeSerializer
-import com.truecar.mleap.serialization.serializer.bundle.runtime.PipelineModelSerializer
-import com.truecar.mleap.serialization.serializer.bundle.runtime.regression.RandomForestRegressionModelSerializer
-import com.truecar.mleap.serialization.MleapToMlSerializer
-import com.truecar.mleap.serialization.Converters._
+import com.truecar.mleap.serialization.ml.bundle.core.regression.{RandomForestRegressionSerializer, DecisionTreeRegressionSerializer}
+import com.truecar.mleap.serialization.ml.bundle.core.tree.node.LinearNodeSerializer
+import com.truecar.mleap.serialization.ml.bundle.runtime.PipelineModelSerializer
+import com.truecar.mleap.serialization.ml.bundle.runtime.regression.RandomForestRegressionModelSerializer
+import com.truecar.mleap.serialization.ml.MleapToMlSerializer
+import com.truecar.mleap.serialization.ml.Converters._
 import com.truecar.mleap.bundle.core.json.MlJsonSupport._
 import ml.runtime.{feature, regression}
 

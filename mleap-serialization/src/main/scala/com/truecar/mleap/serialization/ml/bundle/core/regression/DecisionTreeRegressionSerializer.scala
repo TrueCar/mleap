@@ -1,4 +1,4 @@
-package com.truecar.mleap.serialization.serializer.bundle.core.regression
+package com.truecar.mleap.serialization.ml.bundle.core.regression
 
 import com.truecar.mleap.bundle.{BundleReader, BundleWriter, BundleSerializer}
 import com.truecar.mleap.core.regression.DecisionTreeRegression

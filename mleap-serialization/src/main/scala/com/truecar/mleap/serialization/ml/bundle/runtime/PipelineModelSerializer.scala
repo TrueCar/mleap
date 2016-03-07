@@ -1,4 +1,4 @@
-package com.truecar.mleap.serialization.serializer.bundle.runtime
+package com.truecar.mleap.serialization.ml.bundle.runtime
 
 import java.io.{InputStreamReader, BufferedReader}
 

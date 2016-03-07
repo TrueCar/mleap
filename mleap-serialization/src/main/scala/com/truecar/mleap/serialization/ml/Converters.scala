@@ -1,4 +1,4 @@
-package com.truecar.mleap.serialization
+package com.truecar.mleap.serialization.ml
 
 import com.truecar.mleap.core.{regression, feature, tree, linalg}
 import com.truecar.mleap.runtime.transformer
