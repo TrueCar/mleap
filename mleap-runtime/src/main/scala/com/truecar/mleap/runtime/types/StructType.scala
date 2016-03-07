@@ -32,8 +32,17 @@ case class StructType(fields: Seq[StructField],
     tryIndicesOf(fieldNames: _*).map(selectIndices(_: _*))
   }
 
+  /**
+    * Returns a new {@code StructType} containing the fields at the desired indices.
+    * @param indices The indices of the fields to select.
+    * @return StructType with the selected fields.
+    */
   def selectIndices(indices: Int *): StructType = {
-    StructType(indices.map(fields))
+    val selection = indices.map(fields)
+
+    StructType(selection,
+               nameToIndex.filter(p => indices.contains(p._2)),
+               nameToField.filter(p => selection.contains(p._2)))
   }
 
   def indicesOf(fieldNames: String *): Seq[Int] = fieldNames.map(nameToIndex)
