@@ -9,11 +9,16 @@ object StructType {
   val empty = StructType(Seq())
 
   def withFields(fields: StructField *): StructType = StructType(fields.toSeq)
+
+  def apply(fields:Seq[StructField]) = StructType(fields,
+                                                  fields.map(_.name).zipWithIndex.toMap,
+                                                  fields.map(_.name).zip(fields).toMap )
 }
 
-case class StructType(fields: Seq[StructField]) extends Serializable {
-  val nameToIndex: Map[String, Int] = fields.map(_.name).zipWithIndex.toMap
-  val nameToField: Map[String, StructField] = fields.map(_.name).zip(fields).toMap
+case class StructType(fields: Seq[StructField],
+                      private val nameToIndex: Map[String, Int],
+                      private val nameToField: Map[String, StructField])
+                                                                  extends Serializable {
 
   def apply(name: String): StructField = nameToField(name)
   def getField(name: String): Option[StructField] = nameToField.get(name)
