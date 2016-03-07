@@ -1,0 +1,7 @@
+package ml.core.tree;
+
+message CategoricalSplit {
+    required int32 featureIndex = 1;
+    repeated double categories = 2;
+    required bool isLeft = 3;
+}

@@ -10,8 +10,8 @@ import org.apache.spark.ml.Transformer
 import org.scalameter.Bench
 import org.scalameter.api._
 import com.truecar.mleap.core.serialization.JsonSerializationSupport._
-import com.truecar.mleap.runtime.LocalLeapFrame
-import com.truecar.mleap.runtime.serialization.RuntimeJsonSupport._
+import com.truecar.mleap.serialization.runtime.LocalLeapFrame
+import com.truecar.mleap.serialization.runtime.serialization.RuntimeJsonSupport._
 import scala.collection.JavaConverters._
 import com.truecar.mleap.spark.MleapSparkSupport._
 import org.scalameter.picklers.Implicits._

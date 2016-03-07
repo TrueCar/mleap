@@ -8,7 +8,7 @@ import org.apache.spark.ml
   */
 case class MultiEstimatorToSpark(map: Map[String, EstimatorToSpark[Estimator]]) extends EstimatorToSpark[Estimator] {
   override def toSpark(e: Estimator): ml.PipelineStage = {
-    map(e.typeName).toSpark(e)
+    map(e.getClass.getCanonicalName).toSpark(e)
   }
 
   def withEstimatorToSpark(name: String, es: EstimatorToSpark[Estimator]): MultiEstimatorToSpark = {

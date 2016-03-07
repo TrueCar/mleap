@@ -1,0 +1,7 @@
+package mleap.runtime;
+
+import "mleap/runtime/FieldData.proto";
+
+message Row {
+    repeated FieldData data = 1;
+}

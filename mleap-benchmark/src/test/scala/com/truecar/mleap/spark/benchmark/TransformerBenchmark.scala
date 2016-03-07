@@ -3,9 +3,9 @@ package com.truecar.mleap.spark.benchmark
 import java.io.File
 
 import com.truecar.mleap.core.serialization.JsonSerializationSupport._
-import com.truecar.mleap.runtime.LocalLeapFrame
-import com.truecar.mleap.runtime.serialization.RuntimeJsonSupport._
-import com.truecar.mleap.runtime.transformer.Transformer
+import com.truecar.mleap.serialization.runtime.LocalLeapFrame
+import com.truecar.mleap.serialization.runtime.serialization.RuntimeJsonSupport._
+import com.truecar.mleap.serialization.runtime.transformer.Transformer
 import org.scalameter.api._
 import org.scalameter.picklers.Implicits._
 

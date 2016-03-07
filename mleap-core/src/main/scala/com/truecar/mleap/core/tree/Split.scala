@@ -1,7 +1,6 @@
 package com.truecar.mleap.core.tree
 
 import com.truecar.mleap.core.linalg.Vector
-import com.truecar.mleap.core.serialization.TypeName
 
 /**
  * Created by hwilkins on 11/8/15.
@@ -11,7 +10,7 @@ object Split {
   val continuousSplitName = "ContinuousSplit"
 }
 
-sealed trait Split extends TypeName with Serializable {
+sealed trait Split extends Serializable {
   def featureIndex: Int
 
   def shouldGoLeft(features: Vector): Boolean
@@ -21,8 +20,6 @@ sealed trait Split extends TypeName with Serializable {
 final case class CategoricalSplit(featureIndex: Int,
                                   categories: Array[Double],
                                   isLeft: Boolean) extends Split {
-  override def typeName: String = Split.categoricalSplitName
-
   override def shouldGoLeft(features: Vector): Boolean = {
     if(isLeft) {
       categories.contains(features(featureIndex))
@@ -42,8 +39,6 @@ final case class CategoricalSplit(featureIndex: Int,
 
 final case class ContinuousSplit(featureIndex: Int,
                                  threshold: Double) extends Split {
-  override def typeName: String = Split.continuousSplitName
-
   override def shouldGoLeft(features: Vector): Boolean = features(featureIndex) <= threshold
 
   override def shouldGoLeft(binnedFeature: Int, splits: Array[Split]): Boolean = {

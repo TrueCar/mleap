@@ -7,7 +7,8 @@ lazy val `root` = project.in(file("."))
   .settings(publishArtifact in (Compile, packageBin) := false,
     publishArtifact in (Compile, packageDoc) := false,
     publishArtifact in (Compile, packageSrc) := false)
-  .aggregate(`mleap-core`, `mleap-runtime`, `mleap-spark`)
+  .aggregate(`mleap-bundle`, `mleap-core`, `mleap-runtime`,
+    `mleap-serialization`, `mleap-spark`)
 
 lazy val `mleap-core` = project.in(file("mleap-core"))
   .settings(Common.settings)
@@ -20,6 +21,19 @@ lazy val `mleap-runtime` = project.in(file("mleap-runtime"))
   .settings(libraryDependencies ++= Dependencies.mleapRuntimeDependencies)
   .dependsOn(`mleap-core`)
 
+lazy val `mleap-bundle` = project.in(file("mleap-bundle"))
+  .settings(Common.settings)
+  .settings(Common.sonatypeSettings)
+  .settings(Common.protobufSettings)
+  .settings(libraryDependencies ++= Dependencies.mleapBundleDependencies)
+
+lazy val `mleap-serialization` = project.in(file("mleap-serialization"))
+  .settings(Common.settings)
+  .settings(Common.sonatypeSettings)
+  .settings(Common.protobufSettings)
+  .settings(libraryDependencies ++= Dependencies.mleapSerializationDependencies)
+  .dependsOn(`mleap-bundle`, `mleap-runtime`)
+
 lazy val `mleap-spark` = project.in(file("mleap-spark"))
   .settings(Common.settings)
   .settings(Common.sonatypeSettings)
@@ -28,7 +42,7 @@ lazy val `mleap-spark` = project.in(file("mleap-spark"))
 
 lazy val `mleap-benchmark` = project.in(file("mleap-benchmark"))
   .settings(Common.settings)
-  .settings(libraryDependencies ++= Dependencies.mleapSparkBenchmarkDependencies)
+  .settings(libraryDependencies ++= Dependencies.mleapBenchmarkDependencies)
   .settings(testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"))
   .settings(logBuffered := false)
   .settings(parallelExecution in Test := false)

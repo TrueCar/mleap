@@ -1,0 +1,11 @@
+package mleap.core.linalg;
+
+import "mleap/core/linalg/DenseVector.proto";
+import "mleap/core/linalg/SparseVector.proto";
+
+message Vector {
+    oneof data {
+        DenseVector dense = 1;
+        SparseVector sparse = 2;
+    }
+}

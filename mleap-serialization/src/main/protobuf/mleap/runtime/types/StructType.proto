@@ -1,0 +1,7 @@
+package mleap.runtime.types;
+
+import "mleap/runtime/types/StructField.proto";
+
+message StructType {
+    repeated StructField fields = 1;
+}

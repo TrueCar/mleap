@@ -1,6 +1,7 @@
 import sbt._
 import Keys._
 import com.typesafe.sbt.pgp.PgpKeys._
+import com.trueaccord.scalapb.ScalaPbPlugin
 
 object Common {
   val appVersion = "0.1-SNAPSHOT"
@@ -27,4 +28,6 @@ object Common {
     licenses in publishSigned := Seq("Apache 2.0 License" -> url("http://www.apache.org/licenses/LICENSE-2.0.html")),
     homepage in publishSigned := Some(url("https://github.com/TrueCar/mleap"))
   )
+
+  val protobufSettings = ScalaPbPlugin.protobufSettings
 }

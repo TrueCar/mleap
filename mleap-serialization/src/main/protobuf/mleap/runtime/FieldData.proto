@@ -1,0 +1,13 @@
+package mleap.runtime;
+
+import "mleap/core/linalg/Vector.proto";
+import "mleap/runtime/StringArray.proto";
+
+message FieldData {
+    oneof data {
+        double doubleValue = 1;
+        string stringValue = 2;
+        StringArray stringArrayValue = 3;
+        mleap.core.linalg.Vector vectorValue = 4;
+    }
+}

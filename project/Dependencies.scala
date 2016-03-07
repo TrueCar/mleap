@@ -20,19 +20,17 @@ object Dependencies {
     "org.apache.spark" %% "spark-catalyst" % sparkVersion).map(_ % "provided")
 
   lazy val mleapCoreDependencies = baseDependencies.union(Seq("org.scalanlp" %% "breeze" % "0.11.2",
-    "org.scalanlp" %% "breeze-natives" % "0.11.2",
-    "io.spray" %% "spray-json" % "1.3.2"))
+    "org.scalanlp" %% "breeze-natives" % "0.11.2"))
 
   lazy val mleapRuntimeDependencies = mleapCoreDependencies
-  lazy val mleapLearningDependencies = mleapRuntimeDependencies
+
+  lazy val mleapBundleDependencies = Seq("io.spray" %% "spray-json" % "1.3.2")
+  lazy val mleapSerializationDependencies = mleapRuntimeDependencies
 
   lazy val mleapSparkDependencies = mleapCoreDependencies
     .union(sparkDependencies)
     .union(Seq("com.typesafe" % "config" % "1.2.1"))
 
-  lazy val mleapRuntimeBenchmarkDependencies = mleapRuntimeDependencies
-    .union(benchmarkDependencies)
-
-  lazy val mleapSparkBenchmarkDependencies = mleapSparkDependencies
+  lazy val mleapBenchmarkDependencies = mleapSparkDependencies
     .union(benchmarkDependencies)
 }

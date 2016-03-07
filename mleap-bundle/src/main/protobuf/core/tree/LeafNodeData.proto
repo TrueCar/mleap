@@ -1,0 +1,6 @@
+package ml.core.tree;
+
+message LeafNodeData {
+    required double prediction = 1;
+    required double impurity = 2;
+}

@@ -1,0 +1,9 @@
+package mleap.runtime;
+
+import "mleap/runtime/types/StructType.proto";
+import "mleap/runtime/Row.proto";
+
+message LeapFrame {
+    required mleap.runtime.types.StructType schema = 1;
+    repeated Row rows = 2;
+}

@@ -1,0 +1,8 @@
+package mleap.runtime.types;
+
+enum DataType {
+    DOUBLE = 1;
+    STRING = 2;
+    STRING_ARRAY = 3;
+    VECTOR = 4;
+}
