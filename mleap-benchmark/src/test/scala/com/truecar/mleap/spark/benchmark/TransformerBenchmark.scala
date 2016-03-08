@@ -1,11 +1,12 @@
 package com.truecar.mleap.spark.benchmark
 
-import java.io.File
+import java.io.{FileInputStream, File}
 
-import com.truecar.mleap.core.serialization.JsonSerializationSupport._
-import com.truecar.mleap.serialization.runtime.LocalLeapFrame
-import com.truecar.mleap.serialization.runtime.serialization.RuntimeJsonSupport._
-import com.truecar.mleap.serialization.runtime.transformer.Transformer
+import com.truecar.mleap.bundle.zip.ZipBundleReader
+import com.truecar.mleap.runtime.LocalLeapFrame
+import com.truecar.mleap.runtime.transformer.Transformer
+import com.truecar.mleap.serialization.ml.json.DefaultJsonMlSerializer
+import com.truecar.mleap.serialization.mleap.json.DefaultJsonMleapSerializer
 import org.scalameter.api._
 import org.scalameter.picklers.Implicits._
 
@@ -20,12 +21,19 @@ object TransformerBenchmark extends Bench.ForkedTime {
       new Measurer.Default)
   }
 
+  val mleapSerializer = DefaultJsonMleapSerializer.createSerializer()
+  val mlSerializer = DefaultJsonMlSerializer.createSerializer()
   val classLoader = getClass.getClassLoader
-  val regressionFile = new File(classLoader.getResource("transformers/mleap.transformer.json").getFile)
-  val frameFile = new File(classLoader.getResource("data/frame.json").getFile)
+  val regressionFile = new File("/tmp/transformer.mleap")
+  val frameFile = new File("/tmp/frame.json")
 
-  val regression = regressionFile.parseTo[Transformer].get
-  val frame = frameFile.parseTo[LocalLeapFrame].get
+  val bundleReader = ZipBundleReader(regressionFile)
+  val regression = mlSerializer.deserializeWithClass(bundleReader).asInstanceOf[Transformer]
+  bundleReader.in.close()
+
+  val frameInputStream = new FileInputStream(frameFile)
+  val frame = mleapSerializer.deserialize[LocalLeapFrame](frameInputStream)
+  frameInputStream.close()
 
   val ranges = for {
     size <- Gen.range("size")(1000, 10000, 1000)

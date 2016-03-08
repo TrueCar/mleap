@@ -138,10 +138,5 @@ trait MlJsonSupport {
   // runtime.regression
   implicit val mlLinearRegressionModelFormat: RootJsonFormat[LinearRegressionModel] = jsonFormat3(LinearRegressionModel.apply)
   implicit val mlRandomForestRegressionModelMetaDataFormat: RootJsonFormat[RandomForestRegressionModelMetaData] = jsonFormat2(RandomForestRegressionModelMetaData.apply)
-
-  implicit class ImplicitJsonStreamSerializer[T: ClassTag](jsonFormat: RootJsonFormat[T]) extends JsonStreamSerializer[T] {
-    override val key: String = implicitly[ClassTag[T]].runtimeClass.getCanonicalName
-    override implicit val format: RootJsonFormat[T] = jsonFormat
-  }
 }
 object MlJsonSupport extends MlJsonSupport

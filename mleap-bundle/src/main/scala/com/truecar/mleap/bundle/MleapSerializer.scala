@@ -1,8 +1,6 @@
-package com.truecar.mleap.bundle.core
+package com.truecar.mleap.bundle
 
 import java.io._
-
-import com.truecar.mleap.bundle._
 
 import scala.reflect.ClassTag
 
@@ -35,7 +33,7 @@ class MleapSerializer {
   def getMlName(key: String): String = mlNameLookup(key)
   def getCanonicalName(key: String): String = canonicalNameLookup(key)
 
-  def serializeToStream(obj: Any, out: OutputStream): Unit = {
+  def serializeWithClass(obj: Any, out: OutputStream): Unit = {
     val key = mlNameLookup(obj.getClass.getCanonicalName)
     val bytes = key.getBytes
     val dataOut = new DataOutputStream(out)
@@ -44,7 +42,12 @@ class MleapSerializer {
     serializers(key).serializeAny(obj, out)
   }
 
-  def deserializeFromStream(in: InputStream): Any = {
+  def serialize(obj: Any, out: OutputStream): Unit = {
+    val key = mlNameLookup(obj.getClass.getCanonicalName)
+    serializers(key).serializeAny(obj, out)
+  }
+
+  def deserializeWithClass(in: InputStream): Any = {
     val dataIn = new DataInputStream(in)
     val size = dataIn.readInt()
     val bytes = new Array[Byte](size)
@@ -52,7 +55,12 @@ class MleapSerializer {
     serializers(key).deserializeAny(in)
   }
 
-  def serializeToBundle(obj: Any, bundle: BundleWriter): Unit = {
+  def deserialize[T: ClassTag](in: InputStream): T = {
+    val key = mlNameLookup(implicitly[ClassTag[T]].runtimeClass.getCanonicalName)
+    serializers(key).deserializeAny(in).asInstanceOf[T]
+  }
+
+  def serializeWithClass(obj: Any, bundle: BundleWriter): Unit = {
     val key = mlNameLookup(obj.getClass.getCanonicalName)
 
     val metaWriter = bundle.contentWriter("meta.mleap")
@@ -75,7 +83,7 @@ class MleapSerializer {
     }
   }
 
-  def deserializeFromBundle(bundle: BundleReader): Any = {
+  def deserializeWithClass(bundle: BundleReader): Any = {
     val metaReader = new BufferedReader(new InputStreamReader(bundle.contentReader("meta.mleap")))
     val key = metaReader.readLine()
     bundle.close(metaReader)

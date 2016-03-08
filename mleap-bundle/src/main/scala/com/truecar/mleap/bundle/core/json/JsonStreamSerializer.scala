@@ -5,9 +5,20 @@ import java.io._
 import com.truecar.mleap.bundle.StreamSerializer
 import spray.json._
 
+import scala.reflect.ClassTag
+
 /**
   * Created by hwilkins on 3/5/16.
   */
+object JsonStreamSerializer {
+  import scala.language.implicitConversions
+
+  implicit class ImplicitJsonStreamSerializer[T: ClassTag](jsonFormat: RootJsonFormat[T]) extends JsonStreamSerializer[T] {
+    override val key: String = implicitly[ClassTag[T]].runtimeClass.getCanonicalName
+    override implicit val format: RootJsonFormat[T] = jsonFormat
+  }
+}
+
 trait JsonStreamSerializer[Obj] extends StreamSerializer[Obj] {
   implicit val format: RootJsonFormat[Obj]
 
@@ -20,7 +31,7 @@ trait JsonStreamSerializer[Obj] extends StreamSerializer[Obj] {
   }
 
   override def serialize(obj: Obj, out: OutputStream): Unit = {
-    val json = format.write(obj).compactPrint.getBytes
+    val json = format.write(obj).prettyPrint.getBytes
     out.write(json)
   }
 
@@ -34,9 +45,20 @@ trait JsonStreamSerializer[Obj] extends StreamSerializer[Obj] {
   }
 
   override def deserialize(in: InputStream): Obj = {
-    new BufferedReader(new InputStreamReader(in))
-      .readLine()
-      .parseJson
-      .convertTo[Obj]
+    val reader = new BufferedReader(new InputStreamReader(in))
+    val sb = new StringBuilder()
+
+    var hasLine = true
+    while(hasLine) {
+      val line = reader.readLine()
+
+      if(line != null) {
+        sb.append(line)
+      } else {
+        hasLine = false
+      }
+    }
+
+    sb.toString.parseJson.convertTo[Obj]
   }
 }
