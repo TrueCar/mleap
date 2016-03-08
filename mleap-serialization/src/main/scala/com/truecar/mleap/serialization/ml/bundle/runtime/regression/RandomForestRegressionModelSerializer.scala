@@ -1,6 +1,6 @@
 package com.truecar.mleap.serialization.ml.bundle.runtime.regression
 
-import com.truecar.mleap.bundle._
+import ml.bundle._
 import com.truecar.mleap.core.regression.RandomForestRegression
 import com.truecar.mleap.runtime.transformer.RandomForestRegressionModel
 import ml.runtime.regression.RandomForestRegressionModelMetaData.RandomForestRegressionModelMetaData

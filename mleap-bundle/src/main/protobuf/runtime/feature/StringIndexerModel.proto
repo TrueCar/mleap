@@ -1,9 +1,0 @@
-package ml.runtime.feature;
-
-import "core/feature/StringIndexer.proto";
-
-message StringIndexerModel {
-    required string inputCol = 1;
-    required string outputCol = 2;
-    required ml.core.feature.StringIndexer model = 3;
-}

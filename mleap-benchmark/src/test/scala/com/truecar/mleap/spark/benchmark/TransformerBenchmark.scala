@@ -2,11 +2,11 @@ package com.truecar.mleap.spark.benchmark
 
 import java.io.{FileInputStream, File}
 
-import com.truecar.mleap.bundle.zip.ZipBundleReader
+import ml.bundle.zip.ZipBundleReader
 import com.truecar.mleap.runtime.LocalLeapFrame
 import com.truecar.mleap.runtime.transformer.Transformer
-import com.truecar.mleap.serialization.ml.json.DefaultJsonMlSerializer
-import com.truecar.mleap.serialization.mleap.json.DefaultJsonMleapSerializer
+import com.truecar.mleap.serialization.ml.json.MlSimpleJsonSerializer
+import com.truecar.mleap.serialization.mleap.json.MleapSimpleJsonSerializer
 import org.scalameter.api._
 import org.scalameter.picklers.Implicits._
 
@@ -21,8 +21,8 @@ object TransformerBenchmark extends Bench.ForkedTime {
       new Measurer.Default)
   }
 
-  val mleapSerializer = DefaultJsonMleapSerializer.createSerializer()
-  val mlSerializer = DefaultJsonMlSerializer.createSerializer()
+  val mleapSerializer = MleapSimpleJsonSerializer
+  val mlSerializer = MlSimpleJsonSerializer
   val classLoader = getClass.getClassLoader
   val regressionFile = new File("/tmp/transformer.mleap")
   val frameFile = new File("/tmp/frame.json")

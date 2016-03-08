@@ -1,0 +1,9 @@
+package ml.core.tree;
+
+import "ml/core/tree/CategoricalSplit.proto";
+import "ml/core/tree/ContinuousSplit.proto";
+
+message Split {
+    optional CategoricalSplit categorical = 1;
+    optional ContinuousSplit continuous = 2;
+}

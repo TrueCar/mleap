@@ -2,7 +2,7 @@ package com.truecar.mleap.serialization.ml.bundle.core.tree.node
 
 import java.io.{InputStream, OutputStream}
 
-import com.truecar.mleap.bundle._
+import ml.bundle._
 import com.truecar.mleap.core.tree.{LeafNode, InternalNode, Node}
 import ml.core.tree.NodeData.NodeData
 import ml.core.tree.NodeMetaData.NodeMetaData

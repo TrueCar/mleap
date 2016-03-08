@@ -1,8 +1,0 @@
-package ml.core.regression;
-
-import "core/linalg/Vector.proto";
-
-message LinearRegression {
-    required ml.core.linalg.Vector coefficients = 1;
-    required double intercept = 2;
-}

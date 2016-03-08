@@ -1,8 +1,0 @@
-package ml.core.feature;
-
-import "core/linalg/Vector.proto";
-
-message StandardScaler {
-    optional ml.core.linalg.Vector std = 1;
-    optional ml.core.linalg.Vector mean = 2;
-}

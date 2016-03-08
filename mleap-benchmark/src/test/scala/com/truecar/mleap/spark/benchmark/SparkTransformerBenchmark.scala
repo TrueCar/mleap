@@ -4,7 +4,7 @@ import java.io.{FileInputStream, File}
 
 import com.esotericsoftware.kryo.io.Input
 import com.truecar.mleap.runtime.LocalLeapFrame
-import com.truecar.mleap.serialization.mleap.json.DefaultJsonMleapSerializer
+import com.truecar.mleap.serialization.mleap.json.MleapSimpleJsonSerializer
 import com.truecar.mleap.spark.benchmark.util.SparkSerializer
 import org.apache.spark.sql.{Row, SQLContext}
 import org.apache.spark.{SparkContext, SparkConf}
@@ -28,7 +28,7 @@ object SparkTransformerBenchmark extends Bench.ForkedTime {
       new Measurer.Default)
   }
 
-  val mleapSerializer = DefaultJsonMleapSerializer.createSerializer()
+  val mleapSerializer = MleapSimpleJsonSerializer
   val classLoader = getClass.getClassLoader
   val regressionFile = new File("/tmp/spark.transformer.kryo")
   val frameFile = new File("/tmp/frame.json")

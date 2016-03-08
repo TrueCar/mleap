@@ -2,7 +2,7 @@ package com.truecar.mleap.serialization
 
 import java.io.{InputStream, OutputStream}
 
-import com.truecar.mleap.bundle.StreamSerializer
+import _root_.ml.bundle.StreamSerializer
 
 /**
   * Created by hwilkins on 3/6/16.
