@@ -1,11 +1,11 @@
 package com.truecar.mleap.runtime.types
 
-import org.scalatest.FunSuite
+import org.scalatest.{GivenWhenThen, FunSpec, FunSuite}
 
 /**
   * Created by pahsan on 3/8/16.
   */
-class StructTypeSpec extends FunSuite{
+class StructTypeSpec extends FunSuite with GivenWhenThen{
   val fields = Seq(StructField("first", DataType.fromName("string")),
                    StructField("second", DataType.fromName("string")),
                    StructField("third", DataType.fromName("string")),
