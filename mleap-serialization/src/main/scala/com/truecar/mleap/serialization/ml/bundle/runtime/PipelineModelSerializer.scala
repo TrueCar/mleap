@@ -2,9 +2,8 @@ package com.truecar.mleap.serialization.ml.bundle.runtime
 
 import java.io.{InputStreamReader, BufferedReader}
 
-import com.truecar.mleap.bundle.{BundleReader, BundleWriter, BundleSerializer}
+import com.truecar.mleap.bundle.{MleapSerializer, BundleReader, BundleWriter, BundleSerializer}
 import com.truecar.mleap.runtime.transformer.{PipelineModel, Transformer}
-import com.truecar.mleap.bundle.core.MleapSerializer
 
 import scala.collection.mutable
 

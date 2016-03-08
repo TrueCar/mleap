@@ -3,20 +3,19 @@ package com.truecar.mleap.spark.benchmark
 import java.io.{FileInputStream, File}
 
 import com.esotericsoftware.kryo.io.Input
+import com.truecar.mleap.runtime.LocalLeapFrame
+import com.truecar.mleap.serialization.mleap.json.DefaultJsonMleapSerializer
 import com.truecar.mleap.spark.benchmark.util.SparkSerializer
 import org.apache.spark.sql.{Row, SQLContext}
 import org.apache.spark.{SparkContext, SparkConf}
 import org.apache.spark.ml.Transformer
 import org.scalameter.Bench
-import org.scalameter.api._
-import com.truecar.mleap.core.serialization.JsonSerializationSupport._
-import com.truecar.mleap.serialization.runtime.LocalLeapFrame
-import com.truecar.mleap.serialization.runtime.serialization.RuntimeJsonSupport._
 import scala.collection.JavaConverters._
-import com.truecar.mleap.spark.MleapSparkSupport._
+import org.scalameter.api._
 import org.scalameter.picklers.Implicits._
 import org.apache.log4j.Logger
 import org.apache.log4j.Level
+import com.truecar.mleap.spark.MleapSparkSupport._
 
 /**
   * Created by hwilkins on 3/3/16.
@@ -29,15 +28,18 @@ object SparkTransformerBenchmark extends Bench.ForkedTime {
       new Measurer.Default)
   }
 
+  val mleapSerializer = DefaultJsonMleapSerializer.createSerializer()
   val classLoader = getClass.getClassLoader
-  val regressionFile = new File(classLoader.getResource("transformers/spark.transformer.kryo").getFile)
-  val frameFile = new File(classLoader.getResource("data/frame.json").getFile)
+  val regressionFile = new File("/tmp/spark.transformer.kryo")
+  val frameFile = new File("/tmp/frame.json")
 
   val inputStream = new FileInputStream(regressionFile)
   val input = new Input(inputStream)
 
   val regression: Transformer = SparkSerializer().read(input)
-  val frame = frameFile.parseTo[LocalLeapFrame].get
+  val frameInputStream = new FileInputStream(frameFile)
+  val frame = mleapSerializer.deserialize[LocalLeapFrame](frameInputStream)
+  frameInputStream.close()
 
   Logger.getLogger("org").setLevel(Level.OFF)
   Logger.getLogger("akka").setLevel(Level.OFF)
