@@ -10,7 +10,7 @@ object StructType {
 
   def withFields(fields: StructField *): StructType = StructType(fields.toSeq)
 
-  def apply(fields:Seq[StructField]) = StructType(fields,
+  def apply(fields:Seq[StructField]): StructType = StructType(fields,
                                                   fields.map(_.name).zipWithIndex.toMap,
                                                   fields.map(_.name).zip(fields).toMap )
 }
