@@ -3,7 +3,8 @@ package com.truecar.mleap.runtime.types
 import scala.util.{Failure, Success, Try}
 
 /**
-  * Created by hwilkins on 10/23/15.
+  * Structured container (schema) for fields.
+  * Operations include select, withField, and dropField.
   */
 object StructType {
   val empty = StructType(Seq())
@@ -15,7 +16,13 @@ object StructType {
                                                   fields.map(_.name).zip(fields).toMap )
 }
 
-case class StructType(fields: Seq[StructField],
+/**
+  *
+  * @param fields
+  * @param nameToIndex
+  * @param nameToField
+  */
+case class StructType private (fields: Seq[StructField],
                       private val nameToIndex: Map[String, Int],
                       private val nameToField: Map[String, StructField])
                                                                   extends Serializable {
