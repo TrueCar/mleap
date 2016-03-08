@@ -27,7 +27,7 @@ class StructTypeSpec extends FunSuite{
     assert(testStruct.getIndexOf("first").get == testStruct.indexOf("first"))
   }
 
-  test("Dropping a field from a StructType should remove the index nameToIndex"){
-
+  test("Dropping a field from a StructType should remove the field"){
+    assert(testStruct.dropField("first").get.getField("first").isEmpty)
   }
 }
