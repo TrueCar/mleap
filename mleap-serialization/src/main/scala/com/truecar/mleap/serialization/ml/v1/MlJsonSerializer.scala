@@ -50,4 +50,11 @@ trait MlJsonSerializer extends Serializer {
 
   addSerializer(pipelineModelSerializer)
 }
-object MlJsonSerializer extends MlJsonSerializer
+object MlJsonSerializer extends MlJsonSerializer {
+  val supportedVersions = Set("0.1-SNAPSHOT")
+
+  override val namespace: String = "ml.bundle"
+  override val version: String = "0.1-SNAPSHOT"
+
+  override def isCompatibleVersion(otherVersion: String): Boolean = supportedVersions.contains(otherVersion)
+}

@@ -10,4 +10,7 @@ import MleapJsonSupport._
 trait MleapJsonSerializer extends Serializer {
   addSerializer(mleapLeapFrameFormat)
 }
-object MleapJsonSerializer extends MleapJsonSerializer
+object MleapJsonSerializer extends MleapJsonSerializer {
+  override val namespace: String = "com.truecar.mleap"
+  override val version: String = "0.1-SNAPSHOT"
+}
