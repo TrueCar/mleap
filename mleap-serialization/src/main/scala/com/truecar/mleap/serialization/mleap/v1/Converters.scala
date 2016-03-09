@@ -1,12 +1,12 @@
-package com.truecar.mleap.serialization.mleap
+package com.truecar.mleap.serialization.mleap.v1
 
 import com.truecar.mleap.core.linalg
 import com.truecar.mleap.runtime
+import com.truecar.mleap.runtime.types.{DoubleType, StringArrayType, StringType, VectorType}
 import com.truecar.mleap.runtime.{LocalDataset, LocalLeapFrame, types}
-import com.truecar.mleap.runtime.types.{VectorType, StringArrayType, StringType, DoubleType}
-import mleap.core.linalg.Vector.Vector
 import mleap.core.linalg.DenseVector.DenseVector
 import mleap.core.linalg.SparseVector.SparseVector
+import mleap.core.linalg.Vector.Vector
 import mleap.runtime.FieldData.FieldData
 import mleap.runtime.LeapFrame.LeapFrame
 import mleap.runtime.Row.Row
@@ -82,7 +82,7 @@ trait Converters {
     types.StructType(schema.fields.map(protoMleapStructFieldToMleap))
   }
 
-  def mleapFieldDataToProtoMleap(data: Any): FieldData = data match {
+  implicit def mleapFieldDataToProtoMleap(data: Any): FieldData = data match {
     case data: Double => FieldData(FieldData.Data.DoubleValue(data))
     case data: String => FieldData(FieldData.Data.StringValue(data))
     case data: Array[String] => FieldData(FieldData.Data.StringArrayValue(StringArray(data)))
@@ -90,7 +90,7 @@ trait Converters {
     case _ => throw new Error("Could not convert field data to proto MLeap")
   }
 
-  def protoMleapFieldDataToMleap(fieldData: FieldData): Any = {
+  implicit def protoMleapFieldDataToMleap(fieldData: FieldData): Any = {
     val data = fieldData.data
 
     if(data.isDoubleValue) { data.doubleValue.get }

@@ -1,7 +1,0 @@
-package ml.core.linalg;
-
-message SparseVector {
-    required int32 size = 1;
-    repeated int32 indices = 2;
-    repeated double values = 3;
-}

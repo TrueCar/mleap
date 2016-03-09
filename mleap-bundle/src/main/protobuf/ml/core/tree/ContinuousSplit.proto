@@ -1,6 +1,0 @@
-package ml.core.tree;
-
-message ContinuousSplit {
-    required int32 featureIndex = 1;
-    required double threshold = 2;
-}

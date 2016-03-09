@@ -1,8 +1,13 @@
-package com.truecar.mleap.serialization.mleap
+package com.truecar.mleap.serialization.mleap.v1
 
 import com.truecar.mleap.core.linalg
 import com.truecar.mleap.runtime
 import com.truecar.mleap.runtime.{LocalLeapFrame, types}
+import com.truecar.mleap.serialization.mleap.v1.Converters._
+import ml.bundle.support.ConversionJsonFormat._
+import mleap.core.linalg.DenseVector.DenseVector
+import mleap.core.linalg.SparseVector.SparseVector
+import mleap.core.linalg.Vector.Vector
 import mleap.runtime.FieldData.FieldData
 import mleap.runtime.LeapFrame.LeapFrame
 import mleap.runtime.Row.Row
@@ -11,42 +16,13 @@ import mleap.runtime.types.DataType.DataType
 import mleap.runtime.types.StructField.StructField
 import mleap.runtime.types.StructType.StructType
 import spray.json.DefaultJsonProtocol._
-import mleap.core.linalg.DenseVector.DenseVector
-import mleap.core.linalg.SparseVector.SparseVector
-import mleap.core.linalg.Vector.Vector
 import spray.json._
-import Converters._
+
 
 /**
   * Created by hwilkins on 3/7/16.
   */
-case class ConvertRootJsonFormat[Mleap, ProtoMleap](format: RootJsonFormat[ProtoMleap])
-                                                   (implicit toProtoMleap: (Mleap) => ProtoMleap,
-                                                    fromProtoMleap: (ProtoMleap) => Mleap) extends RootJsonFormat[Mleap] {
-  override def write(obj: Mleap): JsValue = format.write(obj)
-  override def read(json: JsValue): Mleap = format.read(json)
-}
-
-case class ConvertJsonFormat[Mleap, ProtoMleap](format: JsonFormat[ProtoMleap])
-                                               (implicit toProtoMleap: (Mleap) => ProtoMleap,
-                                                fromProtoMleap: (ProtoMleap) => Mleap) extends JsonFormat[Mleap] {
-  override def write(obj: Mleap): JsValue = format.write(obj)
-  override def read(json: JsValue): Mleap = format.read(json)
-}
-
 trait MleapJsonSupport {
-  def convertFormat[Mleap, ProtoMleap](format: RootJsonFormat[ProtoMleap])
-                                      (implicit toProtoMleap: (Mleap) => ProtoMleap,
-                                       fromProtoMleap: (ProtoMleap) => Mleap): ConvertRootJsonFormat[Mleap, ProtoMleap] = {
-    ConvertRootJsonFormat(format)
-  }
-
-  def convertFormat[Mleap, ProtoMleap](format: JsonFormat[ProtoMleap])
-                                      (implicit toProtoMleap: (Mleap) => ProtoMleap,
-                                       fromProtoMleap: (ProtoMleap) => Mleap): ConvertJsonFormat[Mleap, ProtoMleap] = {
-    ConvertJsonFormat(format)
-  }
-
   private implicit val protoMleapSparseVectorFormat = jsonFormat3(SparseVector.apply)
   implicit val protoMleapVectorFormat = new JsonFormat[Vector] {
     override def write(obj: Vector): JsValue = {
@@ -69,7 +45,7 @@ trait MleapJsonSupport {
       case _ => throw new Error("Could not read vector")
     }
   }
-  implicit val mleapVectorFormat = convertFormat[linalg.Vector, Vector](protoMleapVectorFormat)
+  implicit val mleapVectorFormat: JsonFormat[linalg.Vector] = protoMleapVectorFormat
 
   implicit val protoMleapDataTypeFormat = new JsonFormat[DataType] {
     override def write(obj: DataType): JsValue = obj match {
@@ -87,11 +63,11 @@ trait MleapJsonSupport {
       case _ => throw new Error("Could not read data type")
     }
   }
-  implicit val mleapDataTypeFormat = convertFormat[types.DataType, DataType](protoMleapDataTypeFormat)
+  implicit val mleapDataTypeFormat: JsonFormat[types.DataType] = protoMleapDataTypeFormat
   implicit val protoMleapStructFieldFormat = jsonFormat2(StructField.apply)
-  implicit val mleapStructFieldFormat = convertFormat[types.StructField, StructField](protoMleapStructFieldFormat)
+  implicit val mleapStructFieldFormat: RootJsonFormat[types.StructField] = protoMleapStructFieldFormat
   implicit val protoMleapStructTypeFormat = jsonFormat1(StructType.apply)
-  implicit val mleapStructTypeFormat = convertFormat[types.StructType, StructType](protoMleapStructTypeFormat)
+  implicit val mleapStructTypeFormat: RootJsonFormat[types.StructType] = protoMleapStructTypeFormat
 
   implicit val protoMleapFieldDataFormat = new JsonFormat[FieldData] {
     override def write(obj: FieldData): JsValue = {
@@ -121,7 +97,7 @@ trait MleapJsonSupport {
       case _ => throw new Error("Could not deserialize field data")
     }
   }
-  implicit val mleapFieldDataFormat = convertFormat[Any, FieldData](protoMleapFieldDataFormat)(mleapFieldDataToProtoMleap, protoMleapFieldDataToMleap)
+  implicit val mleapFieldDataFormat: JsonFormat[Any] = protoMleapFieldDataFormat
   implicit val protoMleapRowFormat = new JsonFormat[Row] {
     override def write(obj: Row): JsValue = {
       val values = obj.data.map(protoMleapFieldDataFormat.write)
@@ -135,8 +111,8 @@ trait MleapJsonSupport {
       case _ => throw new Error("Could not read row")
     }
   }
-  implicit val mleapRowFormat = convertFormat[runtime.Row, Row](protoMleapRowFormat)
+  implicit val mleapRowFormat: JsonFormat[runtime.Row] = protoMleapRowFormat
   implicit val protoMleapLeapFrameFormat = jsonFormat2(LeapFrame.apply)
-  implicit val mleapLeapFrameFormat = convertFormat[LocalLeapFrame, LeapFrame](protoMleapLeapFrameFormat)
+  implicit val mleapLeapFrameFormat: RootJsonFormat[LocalLeapFrame] = protoMleapLeapFrameFormat
 }
 object MleapJsonSupport extends MleapJsonSupport

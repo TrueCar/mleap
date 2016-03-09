@@ -1,24 +1,32 @@
-package com.truecar.mleap.serialization.ml
+package com.truecar.mleap.serialization.ml.v1
 
-import com.truecar.mleap.core.{regression, feature, tree, linalg}
+import com.truecar.mleap.core._
 import com.truecar.mleap.runtime.transformer
-import ml.core.feature.HashingTermFrequency.HashingTermFrequency
-import ml.core.feature.StandardScaler.StandardScaler
-import ml.core.feature.StringIndexer.StringIndexer
-import ml.core.feature.Tokenizer.Tokenizer
-import ml.core.linalg.DenseVector.DenseVector
-import ml.core.linalg.SparseVector.SparseVector
-import ml.core.linalg.Vector.Vector
-import ml.core.regression.LinearRegression.LinearRegression
-import ml.core.tree.CategoricalSplit.CategoricalSplit
-import ml.core.tree.ContinuousSplit.ContinuousSplit
-import ml.core.tree.Split.Split
-import ml.runtime.feature.HashingTermFrequencyModel.HashingTermFrequencyModel
-import ml.runtime.feature.StandardScalerModel.StandardScalerModel
-import ml.runtime.feature.StringIndexerModel.StringIndexerModel
-import ml.runtime.feature.TokenizerModel.TokenizerModel
-import ml.runtime.feature.VectorAssemblerModel.VectorAssemblerModel
-import ml.runtime.regression.LinearRegressionModel.LinearRegressionModel
+import com.truecar.mleap.runtime.transformer.Transformer
+import ml.bundle.support.v1.core.regression.{DecisionTreeRegression, RandomForestRegression}
+import ml.bundle.support.v1.runtime.PipelineModel
+import ml.bundle.support.v1.runtime.regression.RandomForestRegressionModel
+import ml.bundle.support.v1.core.tree.node.Node
+import ml.bundle.v1.core.feature.HashingTermFrequency.HashingTermFrequency
+import ml.bundle.v1.core.feature.StandardScaler.StandardScaler
+import ml.bundle.v1.core.feature.StringIndexer.StringIndexer
+import ml.bundle.v1.core.feature.Tokenizer.Tokenizer
+import ml.bundle.v1.core.linalg.DenseVector.DenseVector
+import ml.bundle.v1.core.linalg.SparseVector.SparseVector
+import ml.bundle.v1.core.linalg.Vector.Vector
+import ml.bundle.v1.core.regression.LinearRegression.LinearRegression
+import ml.bundle.v1.core.tree.CategoricalSplit.CategoricalSplit
+import ml.bundle.v1.core.tree.ContinuousSplit.ContinuousSplit
+import ml.bundle.v1.core.tree.Split.Split
+import ml.bundle.v1.core.tree.node.InternalNodeData.InternalNodeData
+import ml.bundle.v1.core.tree.node.LeafNodeData.LeafNodeData
+import ml.bundle.v1.core.tree.node.NodeData.NodeData
+import ml.bundle.v1.runtime.feature.HashingTermFrequencyModel.HashingTermFrequencyModel
+import ml.bundle.v1.runtime.feature.StandardScalerModel.StandardScalerModel
+import ml.bundle.v1.runtime.feature.StringIndexerModel.StringIndexerModel
+import ml.bundle.v1.runtime.feature.TokenizerModel.TokenizerModel
+import ml.bundle.v1.runtime.feature.VectorAssemblerModel.VectorAssemblerModel
+import ml.bundle.v1.runtime.regression.LinearRegressionModel.LinearRegressionModel
 
 /**
   * Created by hwilkins on 3/6/16.
@@ -65,17 +73,16 @@ trait Converters {
   }
 
   implicit def mleapSplitToMl(split: tree.Split): Split = split match {
-    case split: tree.CategoricalSplit => Split(categorical = Some(split))
-    case split: tree.ContinuousSplit => Split(continuous = Some(split))
+    case split: tree.CategoricalSplit => Split(Split.Data.Categorical(split))
+    case split: tree.ContinuousSplit => Split(Split.Data.Continuous(split))
   }
 
-  implicit def mlSplitToMleap(split: Split): tree.Split = split.categorical match {
-    case Some(data) => data
-    case None =>
-      split.continuous match {
-        case Some(data) => data
-        case None => throw new Error("Could not convert split")
-      }
+  implicit def mlSplitToMleap(split: Split): tree.Split = {
+    if(split.data.isCategorical) {
+      split.data.categorical.get
+    } else {
+      split.data.continuous.get
+    }
   }
 
   implicit def mleapStringIndexerToMl(model: feature.StringIndexer): StringIndexer = {
@@ -193,6 +200,85 @@ trait Converters {
     transformer.LinearRegressionModel(featuresCol = model.featuresCol,
       predictionCol = model.predictionCol,
       model = model.model)
+  }
+
+  implicit object MleapNode extends Node[tree.Node] {
+    override def nodeData(t: tree.Node): NodeData = t match {
+      case node: tree.InternalNode =>
+        NodeData(NodeData.Data.Internal(InternalNodeData(node.prediction, node.gain, node.impurity, node.split)))
+      case node: tree.LeafNode =>
+        NodeData(NodeData.Data.Leaf(LeafNodeData(node.prediction, node.impurity)))
+    }
+
+    override def isLeaf(t: tree.Node): Boolean = t match {
+      case node: tree.InternalNode => false
+      case node: tree.LeafNode => true
+    }
+
+    override def isInternal(t: tree.Node): Boolean = t match {
+      case node: tree.InternalNode => true
+      case node: tree.LeafNode => false
+    }
+
+    override def leftNode(t: tree.Node): tree.Node = t match {
+      case node: tree.InternalNode => node.leftChild
+      case _ => throw new Error("Not an internal node")
+    }
+    override def rightNode(t: tree.Node): tree.Node = t match {
+      case node: tree.InternalNode => node.rightChild
+      case _ => throw new Error("Not an internal node")
+    }
+
+    override def leafFromNodeData(nodeData: LeafNodeData): tree.LeafNode = {
+      tree.LeafNode(nodeData.prediction, nodeData.impurity)
+    }
+
+    override def internalFromNodeData(nodeData: InternalNodeData,
+                                      left: tree.Node,
+                                      right: tree.Node): tree.InternalNode = {
+      tree.InternalNode(nodeData.prediction,
+        nodeData.impurity,
+        nodeData.gain,
+        left,
+        right,
+        nodeData.split)
+    }
+  }
+
+  implicit def mleapDecisionTreeRegressionToMl(model: regression.DecisionTreeRegression): DecisionTreeRegression[tree.Node] = {
+    DecisionTreeRegression(model.rootNode)
+  }
+
+  implicit def mlDecisionTreeRegressionToMleap(model: DecisionTreeRegression[tree.Node]): regression.DecisionTreeRegression = {
+    regression.DecisionTreeRegression(model.rootNode)
+  }
+
+  implicit def mleapRandomForestRegressionToMl(model: regression.RandomForestRegression): RandomForestRegression[tree.Node] = {
+    RandomForestRegression(model.numTrees, model.treeWeights, model.trees.map(mleapDecisionTreeRegressionToMl))
+  }
+
+  implicit def mlRandomForestRegressionToMleap(model: RandomForestRegression[tree.Node]): regression.RandomForestRegression = {
+    regression.RandomForestRegression(model.trees.map(mlDecisionTreeRegressionToMleap), model.treeWeights)
+  }
+
+  implicit def mleapRandomForestRegressionModelToMl(model: transformer.RandomForestRegressionModel): RandomForestRegressionModel[tree.Node] = {
+    RandomForestRegressionModel(featuresCol = model.featuresCol,
+      predictionCol = model.predictionCol,
+      model = model.model)
+  }
+
+  implicit def mlRandomForestRegressionModelToMleap(model: RandomForestRegressionModel[tree.Node]): transformer.RandomForestRegressionModel = {
+    transformer.RandomForestRegressionModel(featuresCol = model.featuresCol,
+      predictionCol = model.predictionCol,
+      model = model.model)
+  }
+
+  implicit def mleapPipelineModelToMl(model: transformer.PipelineModel): PipelineModel = {
+    PipelineModel(model.transformers)
+  }
+
+  implicit def mlPipelineModelToMleap(model: PipelineModel): transformer.PipelineModel = {
+    transformer.PipelineModel(model.models.map(_.asInstanceOf[Transformer]))
   }
 }
 object Converters extends Converters
