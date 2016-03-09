@@ -33,10 +33,6 @@ class InternalNodeSpec extends FunSpec {
 }
 
 class LeafNodeSpec extends FunSpec {
-  describe("#typeName") {
-    it("is LeafNode") { assert(LeafNode(.45, 5.6).typeName == "LeafNode") }
-  }
-
   describe("#predictImpl") {
     it("returns itself") {
       val node = LeafNode(.45, 5.6)

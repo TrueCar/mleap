@@ -7,11 +7,6 @@ import org.scalatest.FunSpec
   * Created by hwilkins on 1/20/16.
   */
 class CategoricalSplitSpec extends FunSpec {
-  describe("#typeName") {
-    val split = CategoricalSplit(2, Array(1.0, 2.0), isLeft = true)
-    it("is CategoricalSplit") { assert(split.typeName == "CategoricalSplit") }
-  }
-
   describe("#shouldGoLeft") {
     describe("with features") {
       describe("when isLeft is true") {
@@ -84,11 +79,6 @@ class CategoricalSplitSpec extends FunSpec {
 }
 
 class ContinuousSplitSpec extends FunSpec {
-  describe("#typeName") {
-    val split = ContinuousSplit(0, 0.43)
-    it("is ContinuousSplit") { assert(split.typeName == "ContinuousSplit") }
-  }
-
   describe("#shouldGoLeft") {
     describe("with features") {
       describe("when below threshold") {
