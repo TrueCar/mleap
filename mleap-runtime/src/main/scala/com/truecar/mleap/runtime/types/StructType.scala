@@ -22,6 +22,7 @@ object StructType {
   * @param nameToIndex
   * @param nameToField
   */
+// todo: add access modifiers to tryIndicesOf, selectIndices, dropIndex.
 case class StructType private (fields: Seq[StructField],
                       private val nameToIndex: Map[String, Int],
                       private val nameToField: Map[String, StructField])

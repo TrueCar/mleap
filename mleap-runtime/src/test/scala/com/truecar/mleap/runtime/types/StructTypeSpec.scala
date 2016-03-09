@@ -27,11 +27,11 @@ class StructTypeSpec extends FunSuite with GivenWhenThen with TryValues{
     assert(testStruct.getIndexOf("first").get == testStruct.indexOf("first"))
   }
 
-  test("The contains operation should return true whenever a field exists"){
+  test("contains should return true whenever a field exists"){
     assert(fields.map(f => testStruct.contains(f.name)).forall(identity))
   }
 
-  test("The contains operation should return false when a field doesn't exist"){
+  test("contains should return false when a field doesn't exist"){
     val fieldsPrime = fields:+StructField("sixth", DataType.fromName("string"))
 
     assert(!fieldsPrime.map(f => testStruct.contains(f.name)).forall(identity))
@@ -48,7 +48,7 @@ class StructTypeSpec extends FunSuite with GivenWhenThen with TryValues{
   }
 
   test("select should return a StructType with selected fields"){
-    Given("an array of valid String names")
+    Given("an array of valid String field names")
     val selection = Array("first", "second", "third")
 
     When("a selection is made")
@@ -59,5 +59,67 @@ class StructTypeSpec extends FunSuite with GivenWhenThen with TryValues{
 
     And("the StructType should contain the selected fields")
     assert(selection.map(f => selectedFields.success.value.contains(f)).forall(identity))
+  }
+
+  test("indicesOf should return the correct indices for valid fields"){
+    Given("an array of valid String field names")
+    val selection = Array("first", "fifth", "second")
+
+    When("indicesOf is invoked")
+    val indices = testStruct.indicesOf(selection:_*)
+
+    Then("the returned Seq should contain the correct indices")
+    assert(Seq(0, 4, 1).map(i => indices.contains(i)).forall(identity))
+
+    And("they should be in order")
+    assert(Seq(0, 4, 1) == indices)
+  }
+
+  test("tryIndicesOf should return the correct indices for valid fields"){
+    Given("an array of valid String field names")
+    val selection = Array("fifth", "second", "fourth")
+
+    When("tryIndicesOf is invoked")
+    val indices = testStruct.tryIndicesOf(selection:_*)
+
+    Then("the returned object should be a successful Seq[Int]")
+    assert(indices.isSuccess)
+
+    And("the Seq should contain the correct indices")
+    val sequence = indices.success.value
+    assert(Seq(4, 1, 3).map(i => sequence.contains(i)).forall(identity))
+
+    And("they should be in order")
+    assert(Seq(4, 1, 3) == sequence)
+  }
+
+  test("tryIndicesOf should return a failure for invalid fields"){
+    Given("an array of invalid field names")
+    val names = Array("sixth", "seventh")
+
+    When("tryIndicesOf is invoked")
+    val failed = testStruct.tryIndicesOf(names:_*)
+
+    Then("the returned object should be a failure")
+    assert(failed.isFailure)
+  }
+
+  test("tryIndexOf should return the correct index for a valid field"){
+    Given("a valid String field name")
+    val name = "fifth"
+
+    When("tryIndexOf is invoked")
+    val successfulIndex = testStruct.tryIndexOf(name)
+
+    Then("the returned object should be a successful Int")
+    assert(successfulIndex.isSuccess)
+
+    And("the Seq should contain the correct indices")
+    val index = successfulIndex.success.value
+    assert(index == 4)
+  }
+
+  test("tryIndexOf should return a failure for an invalid field"){
+    assert(testStruct.tryIndexOf("sixth").isFailure)
   }
 }
