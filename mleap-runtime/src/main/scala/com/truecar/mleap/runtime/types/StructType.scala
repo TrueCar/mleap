@@ -88,7 +88,7 @@ case class StructType private (fields: Seq[StructField],
     * @return StructType with field dropped.
     */
   def dropIndex(index: Int): StructType = {
-    StructType(fields.drop(index + 1))
+    StructType(fields.take(index) ++ fields.drop(index + 1))
   }
 
   def tryIndexOf(name: String): Try[Int] = {

@@ -6,7 +6,7 @@ import com.truecar.mleap.core.linalg.Vector
   * Created by hwilkins on 11/2/15.
   */
 object Row {
-  def apply(values: Any *): Row = SeqRow(values)
+  def apply(values: Any *): Row = ArrayRow(values.toArray)
 }
 
 trait Row {
@@ -33,6 +33,17 @@ trait Row {
   def mkString: String = toArray.mkString
   def mkString(sep: String): String = toArray.mkString(sep)
   def mkString(start: String, sep: String, end: String): String = toArray.mkString(start, sep, end)
+}
+
+case class ArrayRow(values: Array[Any]) extends Row {
+  override def get(index: Int): Any = values(index)
+
+  override def toSeq: Seq[Any] = values.toSeq
+  override def toArray: Array[Any] = values
+
+  override def withValue(value: Any): Row = ArrayRow(values :+ value)
+  override def selectIndices(indices: Int*): Row = ArrayRow(indices.toArray.map(values))
+  override def dropIndex(index: Int): Row = ArrayRow(values.take(index) ++ values.drop(index + 1))
 }
 
 object SeqRow {

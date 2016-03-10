@@ -2,7 +2,7 @@ package com.truecar.mleap.spark.benchmark
 
 import java.io.{FileInputStream, File}
 
-import ml.bundle.zip.ZipBundleReader
+import ml.bundle.fs.DirectoryBundle
 import com.truecar.mleap.runtime.LocalLeapFrame
 import com.truecar.mleap.runtime.transformer.Transformer
 import com.truecar.mleap.serialization.ml.v1.MlJsonSerializer
@@ -24,12 +24,11 @@ object TransformerBenchmark extends Bench.ForkedTime {
   val mleapSerializer = MleapJsonSerializer
   val mlSerializer = MlJsonSerializer
   val classLoader = getClass.getClassLoader
-  val regressionFile = new File("/tmp/transformer.mleap")
+  val regressionFile = new File("/tmp/transformer.ml")
   val frameFile = new File("/tmp/frame.json")
 
-  val bundleReader = ZipBundleReader(regressionFile)
+  val bundleReader = DirectoryBundle(regressionFile)
   val regression = mlSerializer.deserializeWithClass(bundleReader).asInstanceOf[Transformer]
-  bundleReader.in.close()
 
   val frameInputStream = new FileInputStream(frameFile)
   val frame = mleapSerializer.deserialize[LocalLeapFrame](frameInputStream)
