@@ -17,7 +17,7 @@ trait LeapFrameUtil {
     }
 
     val schema = StructType(fields)
-    val localDataset = LocalDataset(Array(Row(rowData.toArray)))
+    val localDataset = LocalDataset(Array(Row(rowData: _*)))
     LocalLeapFrame(schema, localDataset)
   }
 }

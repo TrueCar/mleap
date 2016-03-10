@@ -59,7 +59,7 @@ case class DataFrameToMleap(dataset: DataFrame) {
         // TODO: make a Spark UDT for MleapVector and just
         // cast like we do for numeric types
         val mleapValues = mleapIndices.map(row.get)
-        val mleapRow = MleapRow(mleapValues)
+        val mleapRow = MleapRow(mleapValues: _*)
         val sparkValues: IndexedSeq[Any] = sparkIndices.map(row.get)
 
         (mleapRow, sparkValues)
