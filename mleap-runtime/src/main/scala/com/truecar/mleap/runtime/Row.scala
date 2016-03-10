@@ -18,7 +18,7 @@ trait Row {
   def getVector(index: Int): Vector = get(index).asInstanceOf[Vector]
   def getStringArray(index: Int): Array[String] = get(index).asInstanceOf[Array[String]]
 
-  def toArray: Array[Any] // = data.toArray
+  def toArray: Array[Any]
   def toSeq: Seq[Any]
 
   def withValue(f: (Row) => Any): Row = withValue(f(this))
