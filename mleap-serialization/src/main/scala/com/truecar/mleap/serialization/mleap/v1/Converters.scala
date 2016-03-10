@@ -107,7 +107,7 @@ trait Converters {
 
   implicit def protoMleapRowToMleap(row: Row): runtime.Row = {
     val values = row.data.map(protoMleapFieldDataToMleap)
-    runtime.Row(values.toArray)
+    runtime.Row(values: _*)
   }
 
   implicit def mleapLeapFrameToProtoMleap(frame: LocalLeapFrame): LeapFrame = {
