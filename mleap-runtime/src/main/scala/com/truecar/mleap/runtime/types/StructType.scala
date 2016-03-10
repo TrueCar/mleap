@@ -42,8 +42,8 @@ case class StructType private (fields: Seq[StructField],
   def withField(field: StructField): StructType = {
     val key = field.name
 
-    StructType(field +: fields,
-      nameToIndex.map(kv => (kv._1, kv._2 + 1)) + (key -> 0),
+    StructType(fields :+ field,
+      nameToIndex + (key -> fields.length),
       nameToField + (key -> field))
   }
 

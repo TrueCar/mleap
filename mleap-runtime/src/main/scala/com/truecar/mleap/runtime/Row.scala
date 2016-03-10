@@ -35,15 +35,21 @@ trait Row {
   def mkString(start: String, sep: String, end: String): String = toArray.mkString(start, sep, end)
 }
 
-case class SeqRow(values: Seq[Any]) extends Row {
-  override def toArray: Array[Any] = values.toArray
-  override def toSeq: Seq[Any] = values
+object SeqRow {
+  def apply(values: Seq[Any]): SeqRow = new SeqRow(values.reverse)
+}
 
-  override def get(index: Int): Any = values(index)
+class SeqRow private(values: Seq[Any]) extends Row {
+  override def toArray: Array[Any] = values.reverse.toArray
+  override def toSeq: Seq[Any] = values.reverse
 
-  override def selectIndices(indices: Int *): SeqRow = SeqRow(indices.map(values))
+  override def get(index: Int): Any = values(realIndex(index))
 
-  override def withValue(value: Any): Row = SeqRow(value +: values)
+  override def selectIndices(indices: Int *): SeqRow = new SeqRow(indices.map(index => values(realIndex(index))))
 
-  override def dropIndex(index: Int): Row = SeqRow(values.indices.filter(_ != index).map(values))
+  override def withValue(value: Any): Row = new SeqRow(value +: values)
+
+  override def dropIndex(index: Int): Row = new SeqRow(values.drop(realIndex(index) + 1))
+
+  private def realIndex(index: Int): Int = values.length - index - 1
 }
