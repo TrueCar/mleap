@@ -43,11 +43,11 @@ class SeqRow private(values: Seq[Any]) extends Row {
   override def toArray: Array[Any] = values.toArray
   override def toSeq: Seq[Any] = values
 
-  override def get(index: Int): Any = values(values.length - (index + 1))
+  override def get(index: Int): Any = values(index)
 
   override def selectIndices(indices: Int *): SeqRow = SeqRow(indices.map(values))
 
-  override def withValue(value: Any): Row = SeqRow(value +: values)
+  override def withValue(value: Any): Row = new SeqRow(value +: values)
 
-  override def dropIndex(index: Int): Row = SeqRow(values.indices.filter(_ != index).map(values))
+  override def dropIndex(index: Int): Row = new SeqRow(values.indices.filter(_ != index).map(values))
 }
