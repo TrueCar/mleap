@@ -15,39 +15,46 @@ class StructTypeSpec extends FunSuite with GivenWhenThen with TryValues{
 
   val testStruct = StructType(fields)
 
-  test("getField should return the desired field wrapped in an Option"){
+  test("getField should return the desired field wrapped in an Option") {
     assert(testStruct.getField("first").get.name == "first")
   }
 
-  test("indexOf should return the integer index of the desired field"){
+  test("indexOf should return the integer index of the desired field") {
     assert(testStruct.indexOf("first") == 0)
   }
 
-  test("getIndexOf should return the same thing as indexOf, wrapped in an Option"){
+  test("getIndexOf should return the same thing as indexOf, wrapped in an Option") {
     assert(testStruct.getIndexOf("first").get == testStruct.indexOf("first"))
   }
 
-  test("contains should return true whenever a field exists"){
+  test("contains should return true whenever a field exists") {
     assert(fields.map(f => testStruct.contains(f.name)).forall(identity))
   }
 
-  test("contains should return false when a field doesn't exist"){
+  test("contains should return false when a field doesn't exist") {
     val fieldsPrime = fields:+StructField("sixth", DataType.fromName("string"))
 
     assert(!fieldsPrime.map(f => testStruct.contains(f.name)).forall(identity))
   }
 
-  test("withField should return a StructType with the field added"){
+  test("withField should return a StructType with the field added") {
     val field = StructField("sixth", DataType.fromName("string"))
 
     assert(testStruct.withField(field).contains(field.name))
   }
+  
+  test("withField prepends the field to the list of fields") {
+    val field = StructField("another", DataType.fromName("string"))
+    val fields = testStruct.withField(field).fields
 
-  test("Dropping a field from a StructType should remove the field"){
+    assert(fields.head == field)
+  }
+
+  test("Dropping a field from a StructType should remove the field") {
     assert(testStruct.dropField("first").get.getField("first").isEmpty)
   }
 
-  test("select should return a StructType with selected fields"){
+  test("select should return a StructType with selected fields") {
     Given("an array of valid String field names")
     val selection = Array("first", "second", "third")
 
@@ -61,7 +68,7 @@ class StructTypeSpec extends FunSuite with GivenWhenThen with TryValues{
     assert(selection.map(f => selectedFields.success.value.contains(f)).forall(identity))
   }
 
-  test("indicesOf should return the correct indices for valid fields"){
+  test("indicesOf should return the correct indices for valid fields") {
     Given("an array of valid String field names")
     val selection = Array("first", "fifth", "second")
 
@@ -75,7 +82,7 @@ class StructTypeSpec extends FunSuite with GivenWhenThen with TryValues{
     assert(Seq(0, 4, 1) == indices)
   }
 
-  test("tryIndicesOf should return the correct indices for valid fields"){
+  test("tryIndicesOf should return the correct indices for valid fields") {
     Given("an array of valid String field names")
     val selection = Array("fifth", "second", "fourth")
 
@@ -93,7 +100,7 @@ class StructTypeSpec extends FunSuite with GivenWhenThen with TryValues{
     assert(Seq(4, 1, 3) == sequence)
   }
 
-  test("tryIndicesOf should return a failure for invalid fields"){
+  test("tryIndicesOf should return a failure for invalid fields") {
     Given("an array of invalid field names")
     val names = Array("sixth", "seventh")
 
@@ -104,7 +111,7 @@ class StructTypeSpec extends FunSuite with GivenWhenThen with TryValues{
     assert(failed.isFailure)
   }
 
-  test("tryIndexOf should return the correct index for a valid field"){
+  test("tryIndexOf should return the correct index for a valid field") {
     Given("a valid String field name")
     val name = "fifth"
 
@@ -119,7 +126,7 @@ class StructTypeSpec extends FunSuite with GivenWhenThen with TryValues{
     assert(index == 4)
   }
 
-  test("tryIndexOf should return a failure for an invalid field"){
+  test("tryIndexOf should return a failure for an invalid field") {
     assert(testStruct.tryIndexOf("sixth").isFailure)
   }
 }
