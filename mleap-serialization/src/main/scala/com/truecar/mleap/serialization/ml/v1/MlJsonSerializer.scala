@@ -44,9 +44,10 @@ trait MlJsonSerializer extends Serializer {
   addSerializer(tokenizerModelSerializer)
   addSerializer(vectorAssemblerModelSerializer)
 
-  // pipelinie
+  // pipeline
 
-  val pipelineModelSerializer: BundleSerializer[PipelineModel] = conversionSerializer[PipelineModel, runtime.PipelineModel](PipelineModelSerializer(this))
+  val pipelineModelSerializer: BundleSerializer[PipelineModel] = conversionSerializer[PipelineModel, runtime.PipelineModel](PipelineModelSerializer(this,
+    mlPipelineModelMetaDataFormat))
 
   addSerializer(pipelineModelSerializer)
 }
