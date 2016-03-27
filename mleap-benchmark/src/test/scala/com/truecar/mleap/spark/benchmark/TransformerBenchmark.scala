@@ -6,9 +6,10 @@ import ml.bundle.fs.DirectoryBundle
 import com.truecar.mleap.runtime.LocalLeapFrame
 import com.truecar.mleap.runtime.transformer.Transformer
 import com.truecar.mleap.serialization.ml.v1.MlJsonSerializer
-import com.truecar.mleap.serialization.mleap.v1.MleapJsonSerializer
 import org.scalameter.api._
 import org.scalameter.picklers.Implicits._
+import spray.json._
+import com.truecar.mleap.serialization.mleap.v1.MleapJsonSupport._
 
 /**
   * Created by hwilkins on 2/23/16.
@@ -21,7 +22,6 @@ object TransformerBenchmark extends Bench.ForkedTime {
       new Measurer.Default)
   }
 
-  val mleapSerializer = MleapJsonSerializer
   val mlSerializer = MlJsonSerializer
   val classLoader = getClass.getClassLoader
   val regressionFile = new File("/tmp/transformer.ml")
@@ -30,9 +30,8 @@ object TransformerBenchmark extends Bench.ForkedTime {
   val bundleReader = DirectoryBundle(regressionFile)
   val regression = mlSerializer.deserializeWithClass(bundleReader).asInstanceOf[Transformer]
 
-  val frameInputStream = new FileInputStream(frameFile)
-  val frame = mleapSerializer.deserialize[LocalLeapFrame](frameInputStream)
-  frameInputStream.close()
+  val lines = scala.io.Source.fromFile(frameFile).mkString
+  val frame = lines.parseJson.convertTo[LocalLeapFrame]
 
   val ranges = for {
     size <- Gen.range("size")(1000, 10000, 1000)
