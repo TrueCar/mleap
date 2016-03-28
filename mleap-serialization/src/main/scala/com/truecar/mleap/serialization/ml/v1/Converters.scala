@@ -10,7 +10,6 @@ import ml.bundle.support.v1.core.tree.node.Node
 import ml.bundle.v1.core.feature.HashingTermFrequency.HashingTermFrequency
 import ml.bundle.v1.core.feature.StandardScaler.StandardScaler
 import ml.bundle.v1.core.feature.StringIndexer.StringIndexer
-import ml.bundle.v1.core.feature.Tokenizer.Tokenizer
 import ml.bundle.v1.core.linalg.DenseVector.DenseVector
 import ml.bundle.v1.core.linalg.SparseVector.SparseVector
 import ml.bundle.v1.core.linalg.Vector.Vector
@@ -54,12 +53,14 @@ trait Converters {
 
   implicit def mleapCategoricalSplitToMl(split: tree.CategoricalSplit): CategoricalSplit = {
     CategoricalSplit(split.featureIndex,
+      split.numCategories,
       split.categories,
       split.isLeft)
   }
 
   implicit def mlCategoricalSplitToMleap(split: CategoricalSplit): tree.CategoricalSplit = {
     tree.CategoricalSplit(split.featureIndex,
+      split.numCategories,
       split.categories.toArray,
       split.isLeft)
   }
@@ -161,24 +162,14 @@ trait Converters {
       outputCol = model.outputCol)
   }
 
-  implicit def mleapTokenizerToMl(model: feature.Tokenizer): Tokenizer = {
-    Tokenizer(model.regex)
-  }
-
-  implicit def mlTokenizerToMleap(model: Tokenizer): feature.Tokenizer = {
-    feature.Tokenizer(model.regex)
-  }
-
   implicit def mleapTokenizerModelToMl(model: transformer.TokenizerModel): TokenizerModel = {
     TokenizerModel(inputCol = model.inputCol,
-      outputCol = model.outputCol,
-      model = model.tokenizer)
+      outputCol = model.outputCol)
   }
 
   implicit def mlTokenizerModelToMleap(model: TokenizerModel): transformer.TokenizerModel = {
     transformer.TokenizerModel(inputCol = model.inputCol,
-      outputCol = model.outputCol,
-      tokenizer = model.model)
+      outputCol = model.outputCol)
   }
 
   implicit def mleapLinearRegressionToMl(model: regression.LinearRegression): LinearRegression = {
@@ -246,19 +237,19 @@ trait Converters {
   }
 
   implicit def mleapDecisionTreeRegressionToMl(model: regression.DecisionTreeRegression): DecisionTreeRegression[tree.Node] = {
-    DecisionTreeRegression(model.rootNode)
+    DecisionTreeRegression(model.rootNode, model.numFeatures)
   }
 
   implicit def mlDecisionTreeRegressionToMleap(model: DecisionTreeRegression[tree.Node]): regression.DecisionTreeRegression = {
-    regression.DecisionTreeRegression(model.rootNode)
+    regression.DecisionTreeRegression(model.rootNode, model.numFeatures)
   }
 
   implicit def mleapRandomForestRegressionToMl(model: regression.RandomForestRegression): RandomForestRegression[tree.Node] = {
-    RandomForestRegression(model.numTrees, model.treeWeights, model.trees.map(mleapDecisionTreeRegressionToMl))
+    RandomForestRegression(model.numFeatures, model.trees.map(mleapDecisionTreeRegressionToMl))
   }
 
   implicit def mlRandomForestRegressionToMleap(model: RandomForestRegression[tree.Node]): regression.RandomForestRegression = {
-    regression.RandomForestRegression(model.trees.map(mlDecisionTreeRegressionToMleap), model.treeWeights)
+    regression.RandomForestRegression(model.trees.map(mlDecisionTreeRegressionToMleap), model.numFeatures)
   }
 
   implicit def mleapRandomForestRegressionModelToMl(model: transformer.RandomForestRegressionModel): RandomForestRegressionModel[tree.Node] = {

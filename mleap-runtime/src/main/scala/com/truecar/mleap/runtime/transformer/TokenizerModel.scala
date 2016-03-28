@@ -12,12 +12,11 @@ import scala.util.Try
   * Created by hwilkins on 12/30/15.
   */
 case class TokenizerModel(inputCol: String,
-                         outputCol: String,
-                         tokenizer: Tokenizer) extends Transformer {
+                         outputCol: String) extends Transformer {
   override def build[TB: TransformBuilder](builder: TB): Try[TB] = {
     builder.withInput(inputCol, StringType).flatMap {
       case (b, inputIndex) =>
-        b.withOutput(outputCol, StringArrayType)(row => tokenizer(row.getString(inputIndex)))
+        b.withOutput(outputCol, StringArrayType)(row => Tokenizer.defaultTokenizer(row.getString(inputIndex)))
     }
   }
 

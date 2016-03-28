@@ -15,7 +15,8 @@ case class SplitToMleap(split: Split) {
         } else {
           (false, split.rightCategories)
         }
-        tree.CategoricalSplit(split.featureIndex, categories, isLeft)
+        val numCategories = split.leftCategories.length + split.rightCategories.length
+        tree.CategoricalSplit(split.featureIndex, numCategories, categories, isLeft)
       case split: ContinuousSplit =>
         tree.ContinuousSplit(split.featureIndex, split.threshold)
     }

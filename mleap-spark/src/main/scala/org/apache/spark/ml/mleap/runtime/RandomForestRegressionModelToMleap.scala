@@ -10,7 +10,7 @@ import org.apache.spark.ml.regression.{DecisionTreeRegressionModel, RandomForest
   */
 object RandomForestRegressionModelToMleap extends TransformerToMleap[RandomForestRegressionModel] {
   override def toMleap(t: RandomForestRegressionModel): transformer.RandomForestRegressionModel = {
-    val model = RandomForestRegression(t.trees.asInstanceOf[Array[DecisionTreeRegressionModel]].map(_.toMleap), t.treeWeights)
+    val model = RandomForestRegression(t.trees.asInstanceOf[Array[DecisionTreeRegressionModel]].map(_.toMleap), t.numFeatures)
 
     transformer.RandomForestRegressionModel(t.getFeaturesCol,
       t.getPredictionCol,

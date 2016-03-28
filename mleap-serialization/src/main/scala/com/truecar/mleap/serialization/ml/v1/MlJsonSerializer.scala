@@ -21,8 +21,8 @@ trait MlJsonSerializer extends Serializer {
   // regression
 
   val bundleNodeSerializer = LinearNodeSerializer(mlNodeMetaDataFormat, mlNodeDataFormat)
-  val decisionTreeRegressionSerializer = DecisionTreeRegressionSerializer(bundleNodeSerializer)
-  val randomForestRegressionSerializer = RandomForestRegressionSerializer(mlRandomForestRegressionMetaDataFormat,
+  val decisionTreeRegressionSerializer = DecisionTreeRegressionSerializer(mlDecisionTreeMetaDataFormat, bundleNodeSerializer)
+  val randomForestRegressionSerializer = RandomForestRegressionSerializer(mlRandomForestMetaDataFormat,
     decisionTreeRegressionSerializer)
   val randomForestRegressionModelSerializer: BundleSerializer[RandomForestRegressionModel] = conversionSerializer[RandomForestRegressionModel, runtime.regression.RandomForestRegressionModel[Node]](RandomForestRegressionModelSerializer(mlRandomForestRegressionModelMetaDataFormat,
     randomForestRegressionSerializer))
