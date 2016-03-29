@@ -6,12 +6,11 @@ import ml.bundle.support.v1.runtime.PipelineModelSerializer
 import ml.bundle.{StreamSerializer, BundleSerializer, Serializer}
 import Converters._
 import ml.bundle.support.ConversionSerializer._
-import ml.bundle.support.JsonStreamSerializer._
+import ml.bundle.support.v1.json.MlJsonSerializerSupport._
 import ml.bundle.support.v1.core.regression.{DecisionTreeRegressionSerializer, RandomForestRegressionSerializer}
 import ml.bundle.support.v1.core.tree.node.LinearNodeSerializer
 import ml.bundle.support.v1.runtime
 import ml.bundle.support.v1.runtime.regression.RandomForestRegressionModelSerializer
-import ml.bundle.support.v1.json.MlJsonSupport._
 import ml.bundle.v1.runtime.{feature, regression}
 
 /**
@@ -20,23 +19,23 @@ import ml.bundle.v1.runtime.{feature, regression}
 trait MlJsonSerializer extends Serializer {
   // regression
 
-  val bundleNodeSerializer = LinearNodeSerializer(mlNodeMetaDataFormat, mlNodeDataFormat)
-  val decisionTreeRegressionSerializer = DecisionTreeRegressionSerializer(mlDecisionTreeMetaDataFormat, bundleNodeSerializer)
-  val randomForestRegressionSerializer = RandomForestRegressionSerializer(mlRandomForestMetaDataFormat,
+  val bundleNodeSerializer = LinearNodeSerializer(mlNodeMetaDataSerializer, mlNodeDataSerializer)
+  val decisionTreeRegressionSerializer = DecisionTreeRegressionSerializer(mlDecisionTreeMetaDataSerializer, bundleNodeSerializer)
+  val randomForestRegressionSerializer = RandomForestRegressionSerializer(mlRandomForestMetaDataSerializer,
     decisionTreeRegressionSerializer)
-  val randomForestRegressionModelSerializer: BundleSerializer[RandomForestRegressionModel] = conversionSerializer[RandomForestRegressionModel, runtime.regression.RandomForestRegressionModel[Node]](RandomForestRegressionModelSerializer(mlRandomForestRegressionModelMetaDataFormat,
+  val randomForestRegressionModelSerializer: BundleSerializer[RandomForestRegressionModel] = conversionSerializer[RandomForestRegressionModel, runtime.regression.RandomForestRegressionModel[Node]](RandomForestRegressionModelSerializer(mlRandomForestRegressionModelMetaDataSerializer,
     randomForestRegressionSerializer))
-  val linearRegressionModelSerializer: StreamSerializer[LinearRegressionModel] = conversionSerializer[LinearRegressionModel, regression.LinearRegressionModel.LinearRegressionModel](mlLinearRegressionModelFormat)
+  val linearRegressionModelSerializer: StreamSerializer[LinearRegressionModel] = conversionSerializer[LinearRegressionModel, regression.LinearRegressionModel.LinearRegressionModel](mlLinearRegressionModelSerializer)
 
   addSerializer(randomForestRegressionModelSerializer)
   addSerializer(linearRegressionModelSerializer)
 
   // feature
-  val hashingTermFrequencyModelSerializer: StreamSerializer[HashingTermFrequencyModel] = conversionSerializer[HashingTermFrequencyModel, feature.HashingTermFrequencyModel.HashingTermFrequencyModel](mlHashingTermFrequencyModelFormat)
-  val standardScalerModelSerializer: StreamSerializer[StandardScalerModel] = conversionSerializer[StandardScalerModel, feature.StandardScalerModel.StandardScalerModel](mlStandardScalerModelFormat)
-  val stringIndexerModelSerializer: StreamSerializer[StringIndexerModel] = conversionSerializer[StringIndexerModel, feature.StringIndexerModel.StringIndexerModel](mlStringIndexerModelFormat)
-  val tokenizerModelSerializer: StreamSerializer[TokenizerModel] = conversionSerializer[TokenizerModel, feature.TokenizerModel.TokenizerModel](mlTokenizerModelFormat)
-  val vectorAssemblerModelSerializer: StreamSerializer[VectorAssemblerModel] = conversionSerializer[VectorAssemblerModel, feature.VectorAssemblerModel.VectorAssemblerModel](mlVectorAssemblerModelFormat)
+  val hashingTermFrequencyModelSerializer: StreamSerializer[HashingTermFrequencyModel] = conversionSerializer[HashingTermFrequencyModel, feature.HashingTermFrequencyModel.HashingTermFrequencyModel](mlHashingTermFrequencyModelSerializer)
+  val standardScalerModelSerializer: StreamSerializer[StandardScalerModel] = conversionSerializer[StandardScalerModel, feature.StandardScalerModel.StandardScalerModel](mlStandardScalerModelSerializer)
+  val stringIndexerModelSerializer: StreamSerializer[StringIndexerModel] = conversionSerializer[StringIndexerModel, feature.StringIndexerModel.StringIndexerModel](mlStringIndexerModelSerializer)
+  val tokenizerModelSerializer: StreamSerializer[TokenizerModel] = conversionSerializer[TokenizerModel, feature.TokenizerModel.TokenizerModel](mlTokenizerModelSerializer)
+  val vectorAssemblerModelSerializer: StreamSerializer[VectorAssemblerModel] = conversionSerializer[VectorAssemblerModel, feature.VectorAssemblerModel.VectorAssemblerModel](mlVectorAssemblerModelSerializer)
 
   addSerializer(hashingTermFrequencyModelSerializer)
   addSerializer(standardScalerModelSerializer)
@@ -47,7 +46,7 @@ trait MlJsonSerializer extends Serializer {
   // pipeline
 
   val pipelineModelSerializer: BundleSerializer[PipelineModel] = conversionSerializer[PipelineModel, runtime.PipelineModel](PipelineModelSerializer(this,
-    mlPipelineModelMetaDataFormat))
+    mlPipelineModelMetaDataSerializer))
 
   addSerializer(pipelineModelSerializer)
 }
