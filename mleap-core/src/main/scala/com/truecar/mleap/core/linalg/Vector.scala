@@ -63,6 +63,7 @@ trait Vector extends Serializable {
 
   def numActives: Int
   def numNonzeros: Int
+  def argmax: Int
 
   def compressed: Vector = {
     val nnz = numNonzeros
@@ -122,6 +123,51 @@ case class SparseVector(size: Int,
     nnz
   }
 
+  override def argmax: Int = {
+    if (size == 0) {
+      -1
+    } else {
+      // Find the max active entry.
+      var maxIdx = indices(0)
+      var maxValue = values(0)
+      var maxJ = 0
+      var j = 1
+      val na = numActives
+      while (j < na) {
+        val v = values(j)
+        if (v > maxValue) {
+          maxValue = v
+          maxIdx = indices(j)
+          maxJ = j
+        }
+        j += 1
+      }
+
+      // If the max active entry is nonpositive and there exists inactive ones, find the first zero.
+      if (maxValue <= 0.0 && na < size) {
+        if (maxValue == 0.0) {
+          // If there exists an inactive entry before maxIdx, find it and return its index.
+          if (maxJ < maxIdx) {
+            var k = 0
+            while (k < maxJ && indices(k) == k) {
+              k += 1
+            }
+            maxIdx = k
+          }
+        } else {
+          // If the max active value is negative, find and return the first inactive index.
+          var k = 0
+          while (k < na && indices(k) == k) {
+            k += 1
+          }
+          maxIdx = k
+        }
+      }
+
+      maxIdx
+    }
+  }
+
   override def foreachActive(f: (Int, Double) => Unit): Unit = {
     var i = 0
     val localValuesSize = values.length
@@ -167,6 +213,24 @@ case class DenseVector(values: Array[Double]) extends Vector {
       }
     }
     nnz
+  }
+
+  override def argmax: Int = {
+    if (size == 0) {
+      -1
+    } else {
+      var maxIdx = 0
+      var maxValue = values(0)
+      var i = 1
+      while (i < size) {
+        if (values(i) > maxValue) {
+          maxIdx = i
+          maxValue = values(i)
+        }
+        i += 1
+      }
+      maxIdx
+    }
   }
 
   override def foreachActive(f: (Int, Double) => Unit): Unit = {

@@ -1,8 +1,9 @@
-package com.truecar.mleap.spark.converter
+package org.apache.spark.ml.mleap.converter
 
+import com.truecar.mleap.core.linalg.Vector
 import com.truecar.mleap.core.tree
 import com.truecar.mleap.spark.MleapSparkSupport._
-import org.apache.spark.ml.tree.{LeafNode, InternalNode, Node}
+import org.apache.spark.ml.tree.{InternalNode, LeafNode, Node}
 
 /**
   * Created by hwilkins on 11/18/15.
@@ -18,7 +19,7 @@ case class NodeToMleap(node: Node) {
           node.rightChild.toMleap,
           node.split.toMleap)
       case node: LeafNode =>
-        tree.LeafNode(node.prediction, node.impurity)
+        tree.LeafNode(node.prediction, node.impurity, Some(Vector.dense(node.impurityStats.stats)))
     }
   }
 }

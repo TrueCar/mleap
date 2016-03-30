@@ -1,4 +1,4 @@
-package com.truecar.mleap.spark.converter
+package org.apache.spark.ml.mleap.converter
 
 import com.truecar.mleap.core.tree
 import org.apache.spark.ml.tree.{ContinuousSplit, CategoricalSplit, Split}

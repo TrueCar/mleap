@@ -3,7 +3,7 @@ package com.truecar.mleap.spark.learning
 import com.truecar.mleap.core.util.Atom
 import com.truecar.mleap.runtime.estimator._
 import com.truecar.mleap.spark.learning.feature._
-import com.truecar.mleap.spark.learning.regression.{SparkRandomForestRegression, SparkLinearRegression}
+import com.truecar.mleap.spark.learning.regression.{SparkLinearRegression, SparkRandomForestClassification, SparkRandomForestRegression}
 
 /**
   * Created by hollinwilkins on 12/4/15.
@@ -17,7 +17,8 @@ trait EstimatorToSparkSupport {
   implicit val stringIndexerEstimator = stringIndexer
   implicit val vectorAssemblerEstimator = vectorAssembler
   implicit val linearRegressionEstimator = linearRegression
-  implicit val randomForestRegressionEstimator = randomForest
+  implicit val randomForestRegressionEstimator = randomForestRegression
+  implicit val randomForestClassificationEstimator = randomForestClassification
   implicit val pipelineEstimator = pipeline
 }
 
@@ -39,6 +40,7 @@ object SparkEstimator {
   val stringIndexer = addEstimatorToSpark(classOf[StringIndexerEstimator], SparkStringIndexer)
   val vectorAssembler = addEstimatorToSpark(classOf[VectorAssemblerEstimator], SparkVectorAssembler)
   val linearRegression = addEstimatorToSpark(classOf[LinearRegressionEstimator], SparkLinearRegression)
-  val randomForest = addEstimatorToSpark(classOf[RandomForestRegressionEstimator], SparkRandomForestRegression)
+  val randomForestRegression = addEstimatorToSpark(classOf[RandomForestRegressionEstimator], SparkRandomForestRegression)
+  val randomForestClassification = addEstimatorToSpark(classOf[RandomForestClassificationEstimator], SparkRandomForestClassification)
   val pipeline = addEstimatorToSpark(classOf[PipelineEstimator], SparkPipelineEstimator(estimatorToSpark))
 }
