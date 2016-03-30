@@ -19,7 +19,7 @@ import ml.bundle.v1.runtime.{feature, regression}
 trait MlJsonSerializer extends Serializer {
   // regression
 
-  val bundleNodeSerializer = LinearNodeSerializer(mlNodeMetaDataSerializer, mlNodeDataSerializer)
+  val bundleNodeSerializer = LinearNodeSerializer(mlNodeMetaDataSerializer, mlNodeDataSerializer, includeImpurityStats = false)
   val decisionTreeRegressionSerializer = DecisionTreeRegressionSerializer(mlDecisionTreeMetaDataSerializer, bundleNodeSerializer)
   val randomForestRegressionSerializer = RandomForestRegressionSerializer(mlRandomForestMetaDataSerializer,
     decisionTreeRegressionSerializer)

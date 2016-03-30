@@ -194,11 +194,14 @@ trait Converters {
   }
 
   implicit object MleapNode extends Node[tree.Node] {
-    override def nodeData(t: tree.Node): NodeData = t match {
+    override def nodeData(t: tree.Node, includeImpurityStats: Boolean): NodeData = t match {
       case node: tree.InternalNode =>
         NodeData(NodeData.Data.Internal(InternalNodeData(node.prediction, node.gain, node.impurity, node.split)))
       case node: tree.LeafNode =>
-        NodeData(NodeData.Data.Leaf(LeafNodeData(node.prediction, node.impurity)))
+        val impurityStats = if(includeImpurityStats) {
+          Some(node.impurityStats.get).map(mleapVectorToMl)
+        } else { None }
+        NodeData(NodeData.Data.Leaf(LeafNodeData(node.prediction, node.impurity, impurityStats)))
     }
 
     override def isLeaf(t: tree.Node): Boolean = t match {
@@ -220,8 +223,11 @@ trait Converters {
       case _ => throw new Error("Not an internal node")
     }
 
-    override def leafFromNodeData(nodeData: LeafNodeData): tree.LeafNode = {
-      tree.LeafNode(nodeData.prediction, nodeData.impurity)
+    override def leafFromNodeData(nodeData: LeafNodeData, includeImpurityStats: Boolean): tree.LeafNode = {
+      val impurityStats = if(includeImpurityStats) {
+        Some(nodeData.impurityStats.get).map(mlVectorToMleap)
+      } else { None }
+      tree.LeafNode(nodeData.prediction, nodeData.impurity, impurityStats)
     }
 
     override def internalFromNodeData(nodeData: InternalNodeData,

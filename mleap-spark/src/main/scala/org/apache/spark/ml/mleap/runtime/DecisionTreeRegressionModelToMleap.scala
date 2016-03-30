@@ -11,6 +11,6 @@ import org.apache.spark.ml.regression.DecisionTreeRegressionModel
   */
 case class DecisionTreeRegressionModelToMleap(tree: DecisionTreeRegressionModel) {
   def toMleap: DecisionTreeRegression = {
-    regression.DecisionTreeRegression(tree.rootNode.toMleap, tree.numFeatures)
+    regression.DecisionTreeRegression(tree.rootNode.toMleap(false), tree.numFeatures)
   }
 }

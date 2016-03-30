@@ -10,7 +10,7 @@ import org.apache.spark.ml.classification.DecisionTreeClassificationModel
   */
 case class DecisionTreeClassificationModelToMleap(tree: DecisionTreeClassificationModel) {
   def toMleap: DecisionTreeClassification = {
-    classifier.DecisionTreeClassification(tree.rootNode.toMleap,
+    classifier.DecisionTreeClassification(tree.rootNode.toMleap(true),
       tree.numFeatures,
       tree.numClasses)
   }
