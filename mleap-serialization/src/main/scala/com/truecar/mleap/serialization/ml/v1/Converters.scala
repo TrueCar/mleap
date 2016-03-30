@@ -3,10 +3,12 @@ package com.truecar.mleap.serialization.ml.v1
 import com.truecar.mleap.core._
 import com.truecar.mleap.runtime.transformer
 import com.truecar.mleap.runtime.transformer.Transformer
+import ml.bundle.support.v1.core.classification.{DecisionTreeClassification, RandomForestClassification}
 import ml.bundle.support.v1.core.regression.{DecisionTreeRegression, RandomForestRegression}
 import ml.bundle.support.v1.runtime.PipelineModel
 import ml.bundle.support.v1.runtime.regression.RandomForestRegressionModel
 import ml.bundle.support.v1.core.tree.node.Node
+import ml.bundle.support.v1.runtime.classification.RandomForestClassificationModel
 import ml.bundle.v1.core.feature.HashingTermFrequency.HashingTermFrequency
 import ml.bundle.v1.core.feature.StandardScaler.StandardScaler
 import ml.bundle.v1.core.feature.StringIndexer.StringIndexer
@@ -266,6 +268,34 @@ trait Converters {
 
   implicit def mlRandomForestRegressionModelToMleap(model: RandomForestRegressionModel[tree.Node]): transformer.RandomForestRegressionModel = {
     transformer.RandomForestRegressionModel(featuresCol = model.featuresCol,
+      predictionCol = model.predictionCol,
+      model = model.model)
+  }
+
+  implicit def mleapDecisionTreeClassificationToMl(model: classifier.DecisionTreeClassification): DecisionTreeClassification[tree.Node] = {
+    DecisionTreeClassification(model.rootNode, model.numFeatures, model.numClasses)
+  }
+
+  implicit def mlDecisionTreeClassificationToMleap(model: DecisionTreeClassification[tree.Node]): classifier.DecisionTreeClassification = {
+    classifier.DecisionTreeClassification(model.rootNode, model.numFeatures, model.numClasses)
+  }
+
+  implicit def mleapRandomForestClassificationToMl(model: classifier.RandomForestClassification): RandomForestClassification[tree.Node] = {
+    RandomForestClassification(model.trees.map(mleapDecisionTreeClassificationToMl), model.numFeatures, model.numClasses)
+  }
+
+  implicit def mlRandomForestClassificationToMleap(model: RandomForestClassification[tree.Node]): classifier.RandomForestClassification = {
+    classifier.RandomForestClassification(model.trees.map(mlDecisionTreeClassificationToMleap), model.numFeatures, model.numClasses)
+  }
+
+  implicit def mleapRandomForestClassificationModelToMl(model: transformer.RandomForestClassificationModel): RandomForestClassificationModel[tree.Node] = {
+    RandomForestClassificationModel(featuresCol = model.featuresCol,
+      predictionCol = model.predictionCol,
+      model = model.model)
+  }
+
+  implicit def mlRandomForestClassificationModelToMleap(model: RandomForestClassificationModel[tree.Node]): transformer.RandomForestClassificationModel = {
+    transformer.RandomForestClassificationModel(featuresCol = model.featuresCol,
       predictionCol = model.predictionCol,
       model = model.model)
   }
