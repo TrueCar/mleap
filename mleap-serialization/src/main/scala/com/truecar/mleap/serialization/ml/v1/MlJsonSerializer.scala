@@ -49,12 +49,14 @@ trait MlJsonSerializer extends Serializer {
   val hashingTermFrequencyModelSerializer: StreamSerializer[HashingTermFrequencyModel] = conversionSerializer[HashingTermFrequencyModel, feature.HashingTermFrequencyModel.HashingTermFrequencyModel](mlHashingTermFrequencyModelSerializer)
   val standardScalerModelSerializer: StreamSerializer[StandardScalerModel] = conversionSerializer[StandardScalerModel, feature.StandardScalerModel.StandardScalerModel](mlStandardScalerModelSerializer)
   val stringIndexerModelSerializer: StreamSerializer[StringIndexerModel] = conversionSerializer[StringIndexerModel, feature.StringIndexerModel.StringIndexerModel](mlStringIndexerModelSerializer)
+  val reverseStringIndexerModelSerializer: StreamSerializer[ReverseStringIndexerModel] = conversionSerializer[ReverseStringIndexerModel, feature.ReverseStringIndexerModel.ReverseStringIndexerModel](mlReverseStringIndexerModelSerializer)
   val tokenizerModelSerializer: StreamSerializer[TokenizerModel] = conversionSerializer[TokenizerModel, feature.TokenizerModel.TokenizerModel](mlTokenizerModelSerializer)
   val vectorAssemblerModelSerializer: StreamSerializer[VectorAssemblerModel] = conversionSerializer[VectorAssemblerModel, feature.VectorAssemblerModel.VectorAssemblerModel](mlVectorAssemblerModelSerializer)
 
   addSerializer(hashingTermFrequencyModelSerializer)
   addSerializer(standardScalerModelSerializer)
   addSerializer(stringIndexerModelSerializer)
+  addSerializer(reverseStringIndexerModelSerializer)
   addSerializer(tokenizerModelSerializer)
   addSerializer(vectorAssemblerModelSerializer)
 

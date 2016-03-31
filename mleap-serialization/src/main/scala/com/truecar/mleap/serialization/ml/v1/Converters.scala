@@ -12,6 +12,7 @@ import ml.bundle.support.v1.runtime.classification.RandomForestClassificationMod
 import ml.bundle.v1.core.feature.HashingTermFrequency.HashingTermFrequency
 import ml.bundle.v1.core.feature.StandardScaler.StandardScaler
 import ml.bundle.v1.core.feature.StringIndexer.StringIndexer
+import ml.bundle.v1.core.feature.ReverseStringIndexer.ReverseStringIndexer
 import ml.bundle.v1.core.linalg.DenseVector.DenseVector
 import ml.bundle.v1.core.linalg.SparseVector.SparseVector
 import ml.bundle.v1.core.linalg.Vector.Vector
@@ -25,6 +26,7 @@ import ml.bundle.v1.core.tree.node.NodeData.NodeData
 import ml.bundle.v1.runtime.feature.HashingTermFrequencyModel.HashingTermFrequencyModel
 import ml.bundle.v1.runtime.feature.StandardScalerModel.StandardScalerModel
 import ml.bundle.v1.runtime.feature.StringIndexerModel.StringIndexerModel
+import ml.bundle.v1.runtime.feature.ReverseStringIndexerModel.ReverseStringIndexerModel
 import ml.bundle.v1.runtime.feature.TokenizerModel.TokenizerModel
 import ml.bundle.v1.runtime.feature.VectorAssemblerModel.VectorAssemblerModel
 import ml.bundle.v1.runtime.regression.LinearRegressionModel.LinearRegressionModel
@@ -104,6 +106,26 @@ trait Converters {
 
   implicit def mlStringIndexerModelToMleap(model: StringIndexerModel): transformer.StringIndexerModel = {
     transformer.StringIndexerModel(inputCol = model.inputCol,
+      outputCol = model.outputCol,
+      indexer = model.model)
+  }
+
+  implicit def mleapReverseStringIndexerToMl(model: feature.ReverseStringIndexer): ReverseStringIndexer = {
+    ReverseStringIndexer(model.strings)
+  }
+
+  implicit def mlReverseStringIndexerToMleap(model: ReverseStringIndexer): feature.ReverseStringIndexer = {
+    feature.ReverseStringIndexer(model.strings)
+  }
+
+  implicit def mleapReverseStringIndexerModelToMl(model: transformer.ReverseStringIndexerModel): ReverseStringIndexerModel = {
+    ReverseStringIndexerModel(inputCol = model.inputCol,
+      outputCol = model.outputCol,
+      model = model.indexer)
+  }
+
+  implicit def mlReverseStringIndexerModelToMleap(model: ReverseStringIndexerModel): transformer.ReverseStringIndexerModel = {
+    transformer.ReverseStringIndexerModel(inputCol = model.inputCol,
       outputCol = model.outputCol,
       indexer = model.model)
   }
