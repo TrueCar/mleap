@@ -1,7 +1,7 @@
 package org.apache.spark.ml.mleap.runtime
 
-import com.truecar.mleap.core.classifier.DecisionTreeClassification
-import com.truecar.mleap.core.classifier
+import com.truecar.mleap.core.classification.DecisionTreeClassification
+import com.truecar.mleap.core.classification
 import com.truecar.mleap.spark.MleapSparkSupport._
 import org.apache.spark.ml.classification.DecisionTreeClassificationModel
 
@@ -10,7 +10,7 @@ import org.apache.spark.ml.classification.DecisionTreeClassificationModel
   */
 case class DecisionTreeClassificationModelToMleap(tree: DecisionTreeClassificationModel) {
   def toMleap: DecisionTreeClassification = {
-    classifier.DecisionTreeClassification(tree.rootNode.toMleap(true),
+    classification.DecisionTreeClassification(tree.rootNode.toMleap(true),
       tree.numFeatures,
       tree.numClasses)
   }

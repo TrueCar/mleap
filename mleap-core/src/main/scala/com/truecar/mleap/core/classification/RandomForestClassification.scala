@@ -1,4 +1,4 @@
-package com.truecar.mleap.core.classifier
+package com.truecar.mleap.core.classification
 
 import com.truecar.mleap.core.linalg.Vector
 

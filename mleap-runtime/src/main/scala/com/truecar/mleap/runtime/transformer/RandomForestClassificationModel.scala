@@ -1,6 +1,6 @@
 package com.truecar.mleap.runtime.transformer
 
-import com.truecar.mleap.core.classifier.RandomForestClassification
+import com.truecar.mleap.core.classification.RandomForestClassification
 import com.truecar.mleap.runtime.attribute.{AttributeSchema, CategoricalAttribute}
 import com.truecar.mleap.runtime.transformer.builder.TransformBuilder
 import com.truecar.mleap.runtime.types.{DoubleType, VectorType}

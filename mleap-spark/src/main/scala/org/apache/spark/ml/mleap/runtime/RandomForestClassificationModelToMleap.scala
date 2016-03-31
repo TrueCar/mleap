@@ -1,6 +1,6 @@
 package org.apache.spark.ml.mleap.runtime
 
-import com.truecar.mleap.core.classifier.RandomForestClassification
+import com.truecar.mleap.core.classification.RandomForestClassification
 import com.truecar.mleap.spark.MleapSparkSupport._
 import com.truecar.mleap.runtime.transformer
 import org.apache.spark.ml.classification.{DecisionTreeClassificationModel, RandomForestClassificationModel}

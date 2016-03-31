@@ -272,20 +272,20 @@ trait Converters {
       model = model.model)
   }
 
-  implicit def mleapDecisionTreeClassificationToMl(model: classifier.DecisionTreeClassification): DecisionTreeClassification[tree.Node] = {
+  implicit def mleapDecisionTreeClassificationToMl(model: classification.DecisionTreeClassification): DecisionTreeClassification[tree.Node] = {
     DecisionTreeClassification(model.rootNode, model.numFeatures, model.numClasses)
   }
 
-  implicit def mlDecisionTreeClassificationToMleap(model: DecisionTreeClassification[tree.Node]): classifier.DecisionTreeClassification = {
-    classifier.DecisionTreeClassification(model.rootNode, model.numFeatures, model.numClasses)
+  implicit def mlDecisionTreeClassificationToMleap(model: DecisionTreeClassification[tree.Node]): classification.DecisionTreeClassification = {
+    classification.DecisionTreeClassification(model.rootNode, model.numFeatures, model.numClasses)
   }
 
-  implicit def mleapRandomForestClassificationToMl(model: classifier.RandomForestClassification): RandomForestClassification[tree.Node] = {
+  implicit def mleapRandomForestClassificationToMl(model: classification.RandomForestClassification): RandomForestClassification[tree.Node] = {
     RandomForestClassification(model.trees.map(mleapDecisionTreeClassificationToMl), model.numFeatures, model.numClasses)
   }
 
-  implicit def mlRandomForestClassificationToMleap(model: RandomForestClassification[tree.Node]): classifier.RandomForestClassification = {
-    classifier.RandomForestClassification(model.trees.map(mlDecisionTreeClassificationToMleap), model.numFeatures, model.numClasses)
+  implicit def mlRandomForestClassificationToMleap(model: RandomForestClassification[tree.Node]): classification.RandomForestClassification = {
+    classification.RandomForestClassification(model.trees.map(mlDecisionTreeClassificationToMleap), model.numFeatures, model.numClasses)
   }
 
   implicit def mleapRandomForestClassificationModelToMl(model: transformer.RandomForestClassificationModel): RandomForestClassificationModel[tree.Node] = {
