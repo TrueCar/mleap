@@ -18,7 +18,8 @@ sealed trait Node extends Serializable {
 }
 
 final case class LeafNode(prediction: Double,
-                          impurity: Double) extends Node {
+                          impurity: Double,
+                          impurityStats: Option[Vector]) extends Node {
   override def predictImpl(features: Vector): LeafNode = this
 }
 

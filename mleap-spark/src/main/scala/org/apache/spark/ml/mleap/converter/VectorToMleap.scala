@@ -1,4 +1,4 @@
-package com.truecar.mleap.spark.converter
+package org.apache.spark.ml.mleap.converter
 
 import com.truecar.mleap.core.linalg
 import org.apache.spark.mllib.linalg.{SparseVector, DenseVector, Vector}

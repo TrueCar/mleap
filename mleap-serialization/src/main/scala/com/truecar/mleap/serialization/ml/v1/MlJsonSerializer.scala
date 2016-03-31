@@ -3,13 +3,15 @@ package com.truecar.mleap.serialization.ml.v1
 import com.truecar.mleap.core.tree.Node
 import com.truecar.mleap.runtime.transformer._
 import ml.bundle.support.v1.runtime.PipelineModelSerializer
-import ml.bundle.{StreamSerializer, BundleSerializer, Serializer}
+import ml.bundle.{BundleSerializer, Serializer, StreamSerializer}
 import Converters._
 import ml.bundle.support.ConversionSerializer._
+import ml.bundle.support.v1.core.classification.{DecisionTreeClassificationSerializer, RandomForestClassificationSerializer}
 import ml.bundle.support.v1.json.MlJsonSerializerSupport._
 import ml.bundle.support.v1.core.regression.{DecisionTreeRegressionSerializer, RandomForestRegressionSerializer}
 import ml.bundle.support.v1.core.tree.node.LinearNodeSerializer
 import ml.bundle.support.v1.runtime
+import ml.bundle.support.v1.runtime.classification.RandomForestClassificationModelSerializer
 import ml.bundle.support.v1.runtime.regression.RandomForestRegressionModelSerializer
 import ml.bundle.v1.runtime.{feature, regression}
 
@@ -19,16 +21,29 @@ import ml.bundle.v1.runtime.{feature, regression}
 trait MlJsonSerializer extends Serializer {
   // regression
 
-  val bundleNodeSerializer = LinearNodeSerializer(mlNodeMetaDataSerializer, mlNodeDataSerializer)
-  val decisionTreeRegressionSerializer = DecisionTreeRegressionSerializer(mlDecisionTreeMetaDataSerializer, bundleNodeSerializer)
+  val regressionBundleNodeSerializer = LinearNodeSerializer(mlNodeMetaDataSerializer, mlNodeDataSerializer, includeImpurityStats = false)
+  val decisionTreeRegressionSerializer = DecisionTreeRegressionSerializer(mlDecisionTreeMetaDataSerializer, regressionBundleNodeSerializer)
   val randomForestRegressionSerializer = RandomForestRegressionSerializer(mlRandomForestMetaDataSerializer,
     decisionTreeRegressionSerializer)
-  val randomForestRegressionModelSerializer: BundleSerializer[RandomForestRegressionModel] = conversionSerializer[RandomForestRegressionModel, runtime.regression.RandomForestRegressionModel[Node]](RandomForestRegressionModelSerializer(mlRandomForestRegressionModelMetaDataSerializer,
+  val randomForestRegressionModelSerializer: BundleSerializer[RandomForestRegressionModel] = conversionSerializer[RandomForestRegressionModel, runtime.regression.RandomForestRegressionModel[Node]](
+    RandomForestRegressionModelSerializer(mlRandomForestRegressionModelMetaDataSerializer,
     randomForestRegressionSerializer))
   val linearRegressionModelSerializer: StreamSerializer[LinearRegressionModel] = conversionSerializer[LinearRegressionModel, regression.LinearRegressionModel.LinearRegressionModel](mlLinearRegressionModelSerializer)
 
   addSerializer(randomForestRegressionModelSerializer)
   addSerializer(linearRegressionModelSerializer)
+
+  // classification
+
+  val classificationBundleNodeSerializer = LinearNodeSerializer(mlNodeMetaDataSerializer, mlNodeDataSerializer, includeImpurityStats = true)
+  val decisionTreeClassificationSerializer = DecisionTreeClassificationSerializer(mlDecisionTreeClassificationMetaDataSerializer, classificationBundleNodeSerializer)
+  val randomForestClassificationSerializer = RandomForestClassificationSerializer(mlRandomForestClassificationMetaDataSerializer,
+    decisionTreeClassificationSerializer)
+  val randomForestClassificationModelSerializer: BundleSerializer[RandomForestClassificationModel] = conversionSerializer[RandomForestClassificationModel, runtime.classification.RandomForestClassificationModel[Node]](
+    RandomForestClassificationModelSerializer(mlRandomForestClassificationModelMetaDataSerializer,
+    randomForestClassificationSerializer))
+
+  addSerializer(randomForestClassificationModelSerializer)
 
   // feature
   val hashingTermFrequencyModelSerializer: StreamSerializer[HashingTermFrequencyModel] = conversionSerializer[HashingTermFrequencyModel, feature.HashingTermFrequencyModel.HashingTermFrequencyModel](mlHashingTermFrequencyModelSerializer)
