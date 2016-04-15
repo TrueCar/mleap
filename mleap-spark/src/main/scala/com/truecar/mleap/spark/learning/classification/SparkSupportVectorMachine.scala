@@ -13,5 +13,6 @@ object SparkSupportVectorMachine extends EstimatorToSpark[SupportVectorMachineEs
       .setNumIterations(e.numIterations)
       .setRegParam(e.regParam)
       .setMiniBatchFraction(e.miniBatchFraction)
+      .setThreshold(e.threshold)
   }
 }

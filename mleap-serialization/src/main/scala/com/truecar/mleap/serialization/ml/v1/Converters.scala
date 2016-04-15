@@ -218,11 +218,11 @@ trait Converters {
   }
 
   implicit def mleapSupportVectorMachineToMl(model: classification.SupportVectorMachine): SupportVectorMachine = {
-    SupportVectorMachine(model.coefficients, model.intercept)
+    SupportVectorMachine(model.coefficients, model.intercept, model.threshold)
   }
 
   implicit def mlSupportVectorMachineToMleap(model: SupportVectorMachine): classification.SupportVectorMachine = {
-    classification.SupportVectorMachine(model.coefficients, model.intercept)
+    classification.SupportVectorMachine(model.coefficients, model.intercept, model.threshold)
   }
 
   implicit def mleapSupportVectorMachineModelToMl(model: transformer.SupportVectorMachineModel): SupportVectorMachineModel = {

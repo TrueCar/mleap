@@ -8,6 +8,7 @@ case class SupportVectorMachineEstimator(name: String = Estimator.createName("su
                                          stepSize: Double = 1.0,
                                          regParam: Double = 0.01,
                                          miniBatchFraction: Double = 1.0,
+                                         threshold: Option[Double] = None,
                                          featuresCol: String,
                                          labelCol: String,
                                          predictionCol: String) extends Estimator

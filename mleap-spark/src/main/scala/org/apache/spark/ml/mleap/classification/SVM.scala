@@ -48,10 +48,20 @@ trait SVMBase extends Params {
 
   /** @group getParam */
   final def getMiniBatchFraction: Double = $(miniBatchFraction)
+
+  /**
+    * Param for number of iterations.
+    * @group param
+    */
+  final val threshold: Param[Option[Double]] = new Param[Option[Double]](this, "threshold", "Threshold")
+
+  /** @group getParam */
+  final def getThreshold: Option[Double] = $(threshold)
 }
 
 class SVMModel(override val uid: String,
-               val model: classification.SVMModel) extends ProbabilisticClassificationModel[Vector, SVMModel] {
+               val model: classification.SVMModel) extends ProbabilisticClassificationModel[Vector, SVMModel]
+  with SVMBase {
   def this(model: classification.SVMModel) = this(Identifiable.randomUID("svmModel"), model)
 
   override protected def predictRaw(features: Vector): Vector = {
@@ -86,16 +96,23 @@ class SVM(override val uid: String)
   def this() = this(Identifiable.randomUID("svm"))
 
   /** @group setParam */
-  def setStepSize(value: Double): this.type = set(stepSize, value)
-
-  /** @group setParam */
   def setNumIterations(value: Int): this.type = set(numIterations, value)
 
   /** @group setParam */
+  def setStepSize(value: Double): this.type = set(stepSize, value)
+  setDefault(stepSize, 1.0)
+
+  /** @group setParam */
   def setRegParam(value: Double): this.type = set(regParam, value)
+  setDefault(regParam, 0.01)
 
   /** @group setParam */
   def setMiniBatchFraction(value: Double): this.type = set(miniBatchFraction, value)
+  setDefault(miniBatchFraction, 1.0)
+
+  /** @group setParam */
+  def setThreshold(value: Option[Double]): this.type = set(threshold, value)
+  setDefault(threshold, None)
 
   override def copy(extra: ParamMap): SVM = defaultCopy(extra)
 
@@ -106,11 +123,16 @@ class SVM(override val uid: String)
           LabeledPoint(row.getDouble(1), row.getAs[Vector](0))
       }
 
-    val mllibModel = SVMWithSGD.train(labeledPoints,
+    var mllibModel = SVMWithSGD.train(labeledPoints,
       $(numIterations),
       $(stepSize),
       $(regParam),
       $(miniBatchFraction))
+
+    mllibModel = $(threshold) match {
+      case Some(t) => mllibModel.setThreshold(t)
+      case None => mllibModel
+    }
 
     new SVMModel(mllibModel)
   }
