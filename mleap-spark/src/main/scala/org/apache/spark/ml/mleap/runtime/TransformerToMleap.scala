@@ -4,6 +4,7 @@ import com.truecar.mleap.core.util.Atom
 import com.truecar.mleap.runtime.transformer
 import org.apache.spark.ml.classification.RandomForestClassificationModel
 import org.apache.spark.ml.feature.{IndexToString, StandardScalerModel, StringIndexerModel, VectorAssembler}
+import org.apache.spark.ml.mleap.classification.SVMModel
 import org.apache.spark.ml.regression.{LinearRegressionModel, RandomForestRegressionModel}
 import org.apache.spark.ml.{PipelineModel, Transformer}
 
@@ -44,6 +45,7 @@ trait TransformerToMleapSupport {
   implicit val transformerTransformerToMleap = transformerToMleap
 
   implicit val linearRegressionTransformerToMleap = linearRegression
+  implicit val supportVectorMachineToMleap = supportVectorMachine
   implicit val standardScalerTransformerToMleap = standardScaler
   implicit val stringIndexerTransformerToMleap = stringIndexer
   implicit val indexToStringTransformerToMleap = indexToString
@@ -69,6 +71,7 @@ object MleapTransformer {
   }
 
   val linearRegression = addTransformerToMleap(classOf[LinearRegressionModel], LinearRegressionModelToMleap)
+  val supportVectorMachine = addTransformerToMleap(classOf[SVMModel], SupportVectorMachineToMleap)
   val standardScaler = addTransformerToMleap(classOf[StandardScalerModel], StandardScalerModelToMleap)
   val stringIndexer = addTransformerToMleap(classOf[StringIndexerModel], StringIndexerModelToMleap)
   val indexToString = addTransformerToMleap(classOf[IndexToString], IndexToStringToMleap)

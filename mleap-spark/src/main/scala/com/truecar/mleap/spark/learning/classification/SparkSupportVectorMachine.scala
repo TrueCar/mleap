@@ -11,8 +11,12 @@ object SparkSupportVectorMachine extends EstimatorToSpark[SupportVectorMachineEs
   override def toSpark(e: SupportVectorMachineEstimator): SVM = {
     new SVM().setStepSize(e.stepSize)
       .setNumIterations(e.numIterations)
+      .setFitIntercept(e.fitIntercept)
       .setRegParam(e.regParam)
       .setMiniBatchFraction(e.miniBatchFraction)
       .setThreshold(e.threshold)
+      .setFeaturesCol(e.featuresCol)
+      .setLabelCol(e.labelCol)
+      .setPredictionCol(e.predictionCol)
   }
 }

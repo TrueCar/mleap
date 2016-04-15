@@ -5,6 +5,7 @@ package com.truecar.mleap.runtime.estimator
   */
 case class SupportVectorMachineEstimator(name: String = Estimator.createName("supportVectorMachine"),
                                          numIterations: Int,
+                                         fitIntercept: Boolean = true,
                                          stepSize: Double = 1.0,
                                          regParam: Double = 0.01,
                                          miniBatchFraction: Double = 1.0,
