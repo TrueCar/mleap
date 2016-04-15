@@ -13,7 +13,7 @@ import ml.bundle.support.v1.core.tree.node.LinearNodeSerializer
 import ml.bundle.support.v1.runtime
 import ml.bundle.support.v1.runtime.classification.RandomForestClassificationModelSerializer
 import ml.bundle.support.v1.runtime.regression.RandomForestRegressionModelSerializer
-import ml.bundle.v1.runtime.{feature, regression}
+import ml.bundle.v1.runtime.{feature, regression, classification}
 
 /**
   * Created by hollinwilkins on 3/8/16.
@@ -42,7 +42,9 @@ trait MlJsonSerializer extends Serializer {
   val randomForestClassificationModelSerializer: BundleSerializer[RandomForestClassificationModel] = conversionSerializer[RandomForestClassificationModel, runtime.classification.RandomForestClassificationModel[Node]](
     RandomForestClassificationModelSerializer(mlRandomForestClassificationModelMetaDataSerializer,
     randomForestClassificationSerializer))
+  val supportVectorMachineModelSerializer: StreamSerializer[SupportVectorMachineModel] = conversionSerializer[SupportVectorMachineModel, classification.SupportVectorMachineModel.SupportVectorMachineModel](mlSupportVectorMachineModelSerializer)
 
+  addSerializer(supportVectorMachineModelSerializer)
   addSerializer(randomForestClassificationModelSerializer)
 
   // feature

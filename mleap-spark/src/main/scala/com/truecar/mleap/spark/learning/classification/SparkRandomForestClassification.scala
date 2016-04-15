@@ -1,4 +1,4 @@
-package com.truecar.mleap.spark.learning.regression
+package com.truecar.mleap.spark.learning.classification
 
 import com.truecar.mleap.runtime.estimator.RandomForestClassificationEstimator
 import com.truecar.mleap.spark.learning.EstimatorToSpark

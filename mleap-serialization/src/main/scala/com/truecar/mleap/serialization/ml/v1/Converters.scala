@@ -9,6 +9,7 @@ import ml.bundle.support.v1.runtime.PipelineModel
 import ml.bundle.support.v1.runtime.regression.RandomForestRegressionModel
 import ml.bundle.support.v1.core.tree.node.Node
 import ml.bundle.support.v1.runtime.classification.RandomForestClassificationModel
+import ml.bundle.v1.core.classification.SupportVectorMachine.SupportVectorMachine
 import ml.bundle.v1.core.feature.HashingTermFrequency.HashingTermFrequency
 import ml.bundle.v1.core.feature.StandardScaler.StandardScaler
 import ml.bundle.v1.core.feature.StringIndexer.StringIndexer
@@ -23,6 +24,7 @@ import ml.bundle.v1.core.tree.Split.Split
 import ml.bundle.v1.core.tree.node.InternalNodeData.InternalNodeData
 import ml.bundle.v1.core.tree.node.LeafNodeData.LeafNodeData
 import ml.bundle.v1.core.tree.node.NodeData.NodeData
+import ml.bundle.v1.runtime.classification.SupportVectorMachineModel.SupportVectorMachineModel
 import ml.bundle.v1.runtime.feature.HashingTermFrequencyModel.HashingTermFrequencyModel
 import ml.bundle.v1.runtime.feature.StandardScalerModel.StandardScalerModel
 import ml.bundle.v1.runtime.feature.StringIndexerModel.StringIndexerModel
@@ -38,20 +40,18 @@ trait Converters {
   import scala.language.implicitConversions
 
   implicit def mleapVectorToMl(vector: linalg.Vector): Vector = vector match {
-    case linalg.DenseVector(values) => Vector(dense = Some(DenseVector(values)))
-    case linalg.SparseVector(size, indices, values) => Vector(sparse = Some(SparseVector(size, indices, values)))
+    case linalg.DenseVector(values) => Vector(Vector.Data.Dense(DenseVector(values)))
+    case linalg.SparseVector(size, indices, values) => Vector(Vector.Data.Sparse(SparseVector(size, indices, values)))
   }
 
   implicit def mlVectorToMleap(vector: Vector): linalg.Vector = {
-    vector.dense match {
-      case Some(DenseVector(values)) => linalg.DenseVector(values.toArray)
-      case None =>
-        vector.sparse match {
-          case Some(SparseVector(size, indices, values)) =>
-            linalg.SparseVector(size, indices.toArray, values.toArray)
-          case None =>
-            throw new Error("Could not convert to MLeap vector")
-        }
+    if(vector.data.isDense) {
+      linalg.DenseVector(vector.data.dense.get.values.toArray)
+    } else if(vector.data.isSparse) {
+      val sparse = vector.data.sparse.get
+      linalg.SparseVector(sparse.size, sparse.indices.toArray, sparse.values.toArray)
+    } else {
+      throw new Error("Could not convert to MLeap vector")
     }
   }
 
@@ -213,6 +213,26 @@ trait Converters {
 
   implicit def mlLinearRegressionModelToMleap(model: LinearRegressionModel): transformer.LinearRegressionModel = {
     transformer.LinearRegressionModel(featuresCol = model.featuresCol,
+      predictionCol = model.predictionCol,
+      model = model.model)
+  }
+
+  implicit def mleapSupportVectorMachineToMl(model: classification.SupportVectorMachine): SupportVectorMachine = {
+    SupportVectorMachine(model.coefficients, model.intercept)
+  }
+
+  implicit def mlSupportVectorMachineToMleap(model: SupportVectorMachine): classification.SupportVectorMachine = {
+    classification.SupportVectorMachine(model.coefficients, model.intercept)
+  }
+
+  implicit def mleapSupportVectorMachineModelToMl(model: transformer.SupportVectorMachineModel): SupportVectorMachineModel = {
+    SupportVectorMachineModel(featuresCol = model.featuresCol,
+      predictionCol = model.predictionCol,
+      model = model.model)
+  }
+
+  implicit def mlSupportVectorMachineModelToMleap(model: SupportVectorMachineModel): transformer.SupportVectorMachineModel = {
+    transformer.SupportVectorMachineModel(featuresCol = model.featuresCol,
       predictionCol = model.predictionCol,
       model = model.model)
   }

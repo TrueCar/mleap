@@ -2,8 +2,9 @@ package com.truecar.mleap.spark.learning
 
 import com.truecar.mleap.core.util.Atom
 import com.truecar.mleap.runtime.estimator._
+import com.truecar.mleap.spark.learning.classification.SparkRandomForestClassification
 import com.truecar.mleap.spark.learning.feature._
-import com.truecar.mleap.spark.learning.regression.{SparkLinearRegression, SparkRandomForestClassification, SparkRandomForestRegression}
+import com.truecar.mleap.spark.learning.regression.{SparkLinearRegression, SparkRandomForestRegression}
 
 /**
   * Created by hollinwilkins on 12/4/15.
