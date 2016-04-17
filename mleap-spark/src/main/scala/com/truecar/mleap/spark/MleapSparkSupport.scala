@@ -2,9 +2,7 @@ package com.truecar.mleap.spark
 
 import com.truecar.mleap.core.linalg
 import com.truecar.mleap.runtime.transformer.{Transformer => MleapTransformer}
-import com.truecar.mleap.runtime.estimator.{Estimator => MleapEstimator}
 import com.truecar.mleap.runtime.{types, Row => MleapRow}
-import com.truecar.mleap.spark.learning.{EstimatorToSpark, EstimatorToSparkSupport, MleapEstimatorWrapper}
 import org.apache.spark.ml.classification.DecisionTreeClassificationModel
 import org.apache.spark.ml.mleap.converter._
 import org.apache.spark.ml.mleap.runtime.{DecisionTreeClassificationModelToMleap, DecisionTreeRegressionModelToMleap, TransformerToMleap, TransformerToMleapSupport}
@@ -18,13 +16,9 @@ import org.apache.spark.sql.{DataFrame, SQLContext}
 /**
   * Created by hwilkins on 11/5/15.
   */
-trait MleapSparkSupport extends TransformerToMleapSupport with EstimatorToSparkSupport {
+trait MleapSparkSupport extends TransformerToMleapSupport {
   import scala.language.implicitConversions
 
-  implicit def estimatorToSpark[E <: com.truecar.mleap.runtime.estimator.Estimator](e: E)
-                                                                                   (implicit estimatorToSpark: EstimatorToSpark[E]): PipelineStage = {
-    estimatorToSpark.toSpark(e)
-  }
   implicit def transformerToMleap[T <: Transformer](transformer: T)
                                  (implicit transformerToMleap: TransformerToMleap[T]): MleapTransformer = {
     transformerToMleap.toMleap(transformer)
@@ -32,10 +26,7 @@ trait MleapSparkSupport extends TransformerToMleapSupport with EstimatorToSparkS
   implicit def mleapTransformerWrapper[T <: MleapTransformer](t: T): MleapTransformerWrapper[T] = {
     MleapTransformerWrapper(t)
   }
-  implicit def mleapEstimatorWrapper[E <: MleapEstimator](e: E)
-                                                         (implicit estimatorToSpark: EstimatorToSpark[E]): MleapEstimatorWrapper[E] = {
-    MleapEstimatorWrapper(e)
-  }
+
   implicit def vectorToSpark(vector: linalg.Vector): VectorToSpark = VectorToSpark(vector)
   implicit def vectorToMleap(vector: Vector): VectorToMleap = VectorToMleap(vector)
   implicit def dataFrameToMleap(dataset: DataFrame): DataFrameToMleap = DataFrameToMleap(dataset)
