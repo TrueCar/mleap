@@ -12,14 +12,14 @@ class CategoricalSplitSpec extends FunSpec {
       describe("when isLeft is true") {
         describe("when the feature is in the list") {
           it("returns true") {
-            val split = CategoricalSplit(1, Array(1.0, 2.0), isLeft = true)
+            val split = CategoricalSplit(1, 5, Array(1.0, 2.0), isLeft = true)
             assert(split.shouldGoLeft(linalg.Vector.dense(Array(0.0, 2.0))))
           }
         }
 
         describe("when the feature is not in the list") {
           it("returns false") {
-            val split = CategoricalSplit(1, Array(1.0, 2.0), isLeft = true)
+            val split = CategoricalSplit(1, 5, Array(1.0, 2.0), isLeft = true)
             assert(!split.shouldGoLeft(linalg.Vector.dense(Array(0.0, 3.0))))
           }
         }
@@ -28,14 +28,14 @@ class CategoricalSplitSpec extends FunSpec {
       describe("when isLeft is false") {
         describe("when the feature is in the list") {
           it("returns false") {
-            val split = CategoricalSplit(1, Array(1.0, 2.0), isLeft = false)
+            val split = CategoricalSplit(1, 5, Array(1.0, 2.0), isLeft = false)
             assert(!split.shouldGoLeft(linalg.Vector.dense(Array(0.0, 1.0))))
           }
         }
 
         describe("when the feature is not in the list") {
           it("returns true") {
-            val split = CategoricalSplit(1, Array(1.0, 2.0), isLeft = false)
+            val split = CategoricalSplit(1, 5, Array(1.0, 2.0), isLeft = false)
             assert(split.shouldGoLeft(linalg.Vector.dense(Array(0.0, 3.0))))
           }
         }
@@ -46,14 +46,14 @@ class CategoricalSplitSpec extends FunSpec {
       describe("when isLeft is true") {
         describe("when the feature is in the list") {
           it("returns true") {
-            val split = CategoricalSplit(1, Array(1.0, 2.0), isLeft = true)
+            val split = CategoricalSplit(1, 5, Array(1.0, 2.0), isLeft = true)
             assert(split.shouldGoLeft(1, Array()))
           }
         }
 
         describe("when the feature is not in the list") {
           it("returns false") {
-            val split = CategoricalSplit(1, Array(1.0, 2.0), isLeft = true)
+            val split = CategoricalSplit(1, 5, Array(1.0, 2.0), isLeft = true)
             assert(!split.shouldGoLeft(3, Array()))
           }
         }
@@ -62,14 +62,14 @@ class CategoricalSplitSpec extends FunSpec {
       describe("when isLeft is false") {
         describe("when the feature is in the list") {
           it("returns false") {
-            val split = CategoricalSplit(1, Array(1.0, 2.0), isLeft = false)
+            val split = CategoricalSplit(1, 5, Array(1.0, 2.0), isLeft = false)
             assert(!split.shouldGoLeft(2, Array()))
           }
         }
 
         describe("when the feature is not in the list") {
           it("returns true") {
-            val split = CategoricalSplit(1, Array(1.0, 2.0), isLeft = false)
+            val split = CategoricalSplit(1, 5, Array(1.0, 2.0), isLeft = false)
             assert(split.shouldGoLeft(3, Array()))
           }
         }
