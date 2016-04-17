@@ -5,10 +5,12 @@ import com.truecar.mleap.runtime.transformer.{Transformer => MleapTransformer}
 import com.truecar.mleap.runtime.{types, Row => MleapRow}
 import org.apache.spark.ml.classification.DecisionTreeClassificationModel
 import org.apache.spark.ml.mleap.converter._
-import org.apache.spark.ml.mleap.runtime.{DecisionTreeClassificationModelToMleap, DecisionTreeRegressionModelToMleap, TransformerToMleap, TransformerToMleapSupport}
+import org.apache.spark.ml.mleap.converter.runtime.{BaseTransformerConverter, TransformerToMleap}
+import org.apache.spark.ml.mleap.converter.runtime.classification.DecisionTreeClassificationModelToMleap
+import org.apache.spark.ml.mleap.converter.runtime.regression.DecisionTreeRegressionModelToMleap
 import org.apache.spark.ml.regression.DecisionTreeRegressionModel
 import org.apache.spark.ml.tree._
-import org.apache.spark.ml.{PipelineStage, Transformer}
+import org.apache.spark.ml.Transformer
 import org.apache.spark.mllib.linalg._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, SQLContext}
@@ -16,13 +18,15 @@ import org.apache.spark.sql.{DataFrame, SQLContext}
 /**
   * Created by hwilkins on 11/5/15.
   */
-trait MleapSparkSupport extends TransformerToMleapSupport {
+trait MleapSparkSupport extends BaseTransformerConverter {
   import scala.language.implicitConversions
 
-  implicit def transformerToMleap[T <: Transformer](transformer: T)
-                                 (implicit transformerToMleap: TransformerToMleap[T]): MleapTransformer = {
-    transformerToMleap.toMleap(transformer)
+  implicit def transformerToMleapLifted[T <: Transformer]
+  (t: T)
+  (implicit transformerToMleap: TransformerToMleap[T, _ <: MleapTransformer]): MleapTransformer = {
+    transformerToMleap.toMleapLifted(t)
   }
+
   implicit def mleapTransformerWrapper[T <: MleapTransformer](t: T): MleapTransformerWrapper[T] = {
     MleapTransformerWrapper(t)
   }
