@@ -14,7 +14,7 @@ class RandomForestRegressionSpec extends FunSpec {
       val tree2 = buildDecisionTree(.75, 1, goLeft = false)
       val tree3 = buildDecisionTree(.1, 2, goLeft = true)
 
-      val regression = RandomForestRegression(Seq(tree1, tree2, tree3), Seq(.1, .5, .5))
+      val regression = RandomForestRegression(Seq(tree1, tree2, tree3), 5)
       val features = linalg.Vector.dense(Array(.2, .8, .4))
 
       assert(tree1.predict(features) == .5)
@@ -34,6 +34,6 @@ class RandomForestRegressionSpec extends FunSpec {
     } else {
       InternalNode(.77, 6.7, 3.4, node2, node1, split)
     }
-    DecisionTreeRegression(node)
+    DecisionTreeRegression(node, 5)
   }
 }
