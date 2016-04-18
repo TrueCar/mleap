@@ -1,6 +1,6 @@
 package com.truecar.mleap.runtime.transformer.builder
 
-import com.truecar.mleap.runtime.types.{StructType, DataType}
+import com.truecar.mleap.runtime.types.DataType
 import com.truecar.mleap.runtime.Row
 
 import scala.util.{Failure, Try}

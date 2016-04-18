@@ -1,9 +1,0 @@
-package ml.runtime.regression;
-
-import "ml/core/regression/LinearRegression.proto";
-
-message LinearRegressionModel {
-    required string featuresCol = 1;
-    required string predictionCol = 2;
-    required ml.core.regression.LinearRegression model = 3;
-}

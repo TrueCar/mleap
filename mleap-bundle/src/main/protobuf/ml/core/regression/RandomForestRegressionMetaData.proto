@@ -1,6 +1,0 @@
-package ml.core.regression;
-
-message RandomForestRegressionMetaData {
-    required int32 size = 1;
-    repeated double treeWeights = 2;
-}

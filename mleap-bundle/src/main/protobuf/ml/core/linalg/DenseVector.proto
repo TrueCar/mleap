@@ -1,5 +1,0 @@
-package ml.core.linalg;
-
-message DenseVector {
-    repeated double values = 1;
-}

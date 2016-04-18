@@ -1,6 +1,0 @@
-package ml.runtime.regression;
-
-message RandomForestRegressionModelMetaData {
-    required string featuresCol = 1;
-    required string predictionCol = 2;
-}

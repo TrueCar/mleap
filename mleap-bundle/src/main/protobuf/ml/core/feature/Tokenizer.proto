@@ -1,5 +1,0 @@
-package ml.core.feature;
-
-message Tokenizer {
-    required string regex = 1;
-}

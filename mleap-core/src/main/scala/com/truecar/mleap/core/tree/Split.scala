@@ -3,8 +3,8 @@ package com.truecar.mleap.core.tree
 import com.truecar.mleap.core.linalg.Vector
 
 /**
- * Created by hwilkins on 11/8/15.
- */
+  * Created by hwilkins on 11/8/15.
+  */
 object Split {
   val categoricalSplitName = "CategoricalSplit"
   val continuousSplitName = "ContinuousSplit"
@@ -18,6 +18,7 @@ sealed trait Split extends Serializable {
 }
 
 final case class CategoricalSplit(featureIndex: Int,
+                                  numCategories: Int,
                                   categories: Array[Double],
                                   isLeft: Boolean) extends Split {
   override def shouldGoLeft(features: Vector): Boolean = {

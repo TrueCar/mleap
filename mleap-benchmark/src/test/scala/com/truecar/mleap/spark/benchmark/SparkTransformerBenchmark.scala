@@ -4,7 +4,6 @@ import java.io.{FileInputStream, File}
 
 import com.esotericsoftware.kryo.io.Input
 import com.truecar.mleap.runtime.LocalLeapFrame
-import com.truecar.mleap.serialization.mleap.json.MleapSimpleJsonSerializer
 import com.truecar.mleap.spark.benchmark.util.SparkSerializer
 import org.apache.spark.sql.{Row, SQLContext}
 import org.apache.spark.{SparkContext, SparkConf}
@@ -16,6 +15,8 @@ import org.scalameter.picklers.Implicits._
 import org.apache.log4j.Logger
 import org.apache.log4j.Level
 import com.truecar.mleap.spark.MleapSparkSupport._
+import spray.json._
+import com.truecar.mleap.serialization.mleap.v1.MleapJsonSupport._
 
 /**
   * Created by hwilkins on 3/3/16.
@@ -28,7 +29,6 @@ object SparkTransformerBenchmark extends Bench.ForkedTime {
       new Measurer.Default)
   }
 
-  val mleapSerializer = MleapSimpleJsonSerializer
   val classLoader = getClass.getClassLoader
   val regressionFile = new File("/tmp/spark.transformer.kryo")
   val frameFile = new File("/tmp/frame.json")
@@ -37,9 +37,8 @@ object SparkTransformerBenchmark extends Bench.ForkedTime {
   val input = new Input(inputStream)
 
   val regression: Transformer = SparkSerializer().read(input)
-  val frameInputStream = new FileInputStream(frameFile)
-  val frame = mleapSerializer.deserialize[LocalLeapFrame](frameInputStream)
-  frameInputStream.close()
+  val lines = scala.io.Source.fromFile(frameFile).mkString
+  val frame = lines.parseJson.convertTo[LocalLeapFrame]
 
   Logger.getLogger("org").setLevel(Level.OFF)
   Logger.getLogger("akka").setLevel(Level.OFF)
@@ -50,12 +49,12 @@ object SparkTransformerBenchmark extends Bench.ForkedTime {
   val sc = new SparkContext(sparkConf)
   val sqlContext = new SQLContext(sc)
 
-  val rdd = frame.dataset.data.map(a => Row(a.data: _*)).toList.asJava
+  val rdd = frame.dataset.data.map(a => Row(a.toSeq: _*)).toList.asJava
   val schema = frame.schema.toSpark
   val sparkFrame = sqlContext.createDataFrame(rdd, schema)
 
   val ranges = for {
-    size <- Gen.range("size")(100, 700, 200)
+    size <- Gen.range("size")(1000, 10000, 1000)
   } yield 0 until size
 
   measure method "transform" in {

@@ -1,9 +1,0 @@
-package ml.core.tree;
-
-import "ml/core/tree/InternalNodeData.proto";
-import "ml/core/tree/LeafNodeData.proto";
-
-message NodeData {
-    optional InternalNodeData internal = 1;
-    optional LeafNodeData leaf = 2;
-}
