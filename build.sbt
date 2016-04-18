@@ -4,9 +4,7 @@ updateOptions := updateOptions.value.withCachedResolution(true)
 
 lazy val `root` = project.in(file("."))
   .settings(Common.settings)
-  .settings(publishArtifact in (Compile, packageBin) := false,
-    publishArtifact in (Compile, packageDoc) := false,
-    publishArtifact in (Compile, packageSrc) := false)
+  .settings(publishArtifact := false)
   .aggregate(`mleap-core`, `mleap-runtime`,
     `mleap-serialization`, `mleap-spark`)
 
