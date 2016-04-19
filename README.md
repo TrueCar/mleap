@@ -14,12 +14,14 @@ MLeap makes deploying your Spark ML pipelines with 3 core functions:
 
 ## Setup
 
-### For Runtime Only
+### Link with Maven or SBT
+
+MLeap is cross-compiled for Scala 2.10 and 2.11, so just replace 2.10 with 2.11 wherever you see it if you are running Scala version 2.11 and using a POM file for dependency management. Otherwise, use the `%%` operator if you are using SBT and the correct Scala version will be used.
 
 #### SBT
 
 ```
-libraryDependencies += "com.truecar.mleap" %% "mleap-runtime" % "0.1.0"
+libraryDependencies += "com.truecar.mleap" %% "mleap-runtime" % "0.1.3"
 ```
 
 #### Maven
@@ -28,16 +30,16 @@ libraryDependencies += "com.truecar.mleap" %% "mleap-runtime" % "0.1.0"
 <dependency>
     <groupId>com.truecar.mleap</groupId>
     <artifactId>mleap-runtime_2.10</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.3</version>
 </dependency>
 ```
 
-### For Spark Export and Learning
+### For Spark Integration
 
 #### SBT
 
 ```
-libraryDependencies += "com.truecar.mleap" %% "mleap-spark" % "0.1.0"
+libraryDependencies += "com.truecar.mleap" %% "mleap-spark" % "0.1.3"
 ```
 
 #### Maven
@@ -46,8 +48,16 @@ libraryDependencies += "com.truecar.mleap" %% "mleap-spark" % "0.1.0"
 <dependency>
     <groupId>com.truecar.mleap</groupId>
     <artifactId>mleap-spark_2.10</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.3</version>
 </dependency>
+```
+
+### Spark Packages
+
+MLeap is now a [Spark Package](http://spark-packages.org/package/TrueCar/mleap). The package includes `mleap-spark` and `mleap-serialization`, so you should have full functionality with it. Here is how you can run a Spark shell with MLeap loaded.
+
+```bash
+$ bin/spark-shell --packages com.truecar.mleap:mleap-package_2.10:0.1.3
 ```
 
 ## Modules
