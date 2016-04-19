@@ -4,7 +4,7 @@ import com.typesafe.sbt.pgp.PgpKeys._
 import com.trueaccord.scalapb.ScalaPbPlugin
 
 object Common {
-  val appVersion = "0.1.1"
+  val appVersion = "0.1.3"
 
   val settings: Seq[Def.Setting[_]] = Seq(
     version := appVersion,
@@ -34,9 +34,9 @@ object Common {
     publishArtifact in Test := false,
     pomIncludeRepository := { _ => false },
     licenses := Seq("Apache 2.0 License" -> url("http://www.apache.org/licenses/LICENSE-2.0.html")),
-    homepage := Some(url("https://github.com/combust-ml/bundle-scala")),
-    scmInfo := Some(ScmInfo(url("https://github.com/combust-ml/bundle-scala.git"),
-      "scm:git:git@github.com:combust-ml/bundle-scala.git")),
+    homepage := Some(url("https://github.com/TrueCar/mleap")),
+    scmInfo := Some(ScmInfo(url("https://github.com/TrueCar/mleap.git"),
+      "scm:git:git@github.com:TrueCar/mleap.git")),
     developers := List(Developer("hollinwilkins",
       "Hollin Wilkins",
       "hollinrwilkins@gmail.com",

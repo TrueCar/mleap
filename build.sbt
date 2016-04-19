@@ -6,7 +6,8 @@ lazy val `root` = project.in(file("."))
   .settings(Common.settings)
   .settings(publishArtifact := false)
   .aggregate(`mleap-core`, `mleap-runtime`,
-    `mleap-serialization`, `mleap-spark`)
+    `mleap-serialization`, `mleap-spark`,
+    `mleap-package`)
 
 lazy val `mleap-core` = project.in(file("mleap-core"))
   .settings(Common.settings)
@@ -30,7 +31,12 @@ lazy val `mleap-spark` = project.in(file("mleap-spark"))
   .settings(Common.settings)
   .settings(Common.sonatypeSettings)
   .settings(libraryDependencies ++= Dependencies.mleapSparkDependencies)
-  .dependsOn(`mleap-runtime`, `mleap-serialization`)
+  .dependsOn(`mleap-runtime`)
+
+lazy val `mleap-package` = project
+  .settings(Common.settings)
+  .settings(Common.sonatypeSettings)
+  .dependsOn(`mleap-spark`, `mleap-serialization`)
 
 lazy val `mleap-benchmark` = project.in(file("mleap-benchmark"))
   .settings(Common.settings)
