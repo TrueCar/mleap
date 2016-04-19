@@ -33,6 +33,7 @@ object Dependencies {
   lazy val mleapSparkDependencies = mleapCoreDependencies
     .union(sparkDependencies)
     .union(bundleMlDependencies)
+    .union(mleapSerializationDependencies)
     .union(Seq("com.typesafe" % "config" % "1.2.1"))
 
   lazy val mleapBenchmarkDependencies = mleapSparkDependencies
