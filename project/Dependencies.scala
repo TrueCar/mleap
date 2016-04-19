@@ -25,18 +25,13 @@ object Dependencies {
   lazy val mleapCoreDependencies = baseDependencies.union(Seq("org.scalanlp" %% "breeze" % "0.11.2",
     "org.scalanlp" %% "breeze-natives" % "0.11.2"))
 
-  lazy val mleapRuntimeDependencies = mleapCoreDependencies
+  lazy val mleapRuntimeDependencies = Seq()
 
-  lazy val mleapSerializationDependencies = mleapRuntimeDependencies
-    .union(bundleMlDependencies)
+  lazy val mleapSerializationDependencies = bundleMlDependencies
 
-  lazy val mleapSparkDependencies = mleapCoreDependencies
-    .union(sparkDependencies)
+  lazy val mleapSparkDependencies = sparkDependencies
     .union(bundleMlDependencies)
-    .union(mleapSerializationDependencies)
     .union(Seq("com.typesafe" % "config" % "1.2.1"))
 
-  lazy val mleapBenchmarkDependencies = mleapSparkDependencies
-    .union(mleapSerializationDependencies)
-    .union(benchmarkDependencies)
+  lazy val mleapBenchmarkDependencies = benchmarkDependencies
 }

@@ -30,7 +30,12 @@ lazy val `mleap-spark` = project.in(file("mleap-spark"))
   .settings(Common.settings)
   .settings(Common.sonatypeSettings)
   .settings(libraryDependencies ++= Dependencies.mleapSparkDependencies)
-  .dependsOn(`mleap-runtime`, `mleap-serialization`)
+  .dependsOn(`mleap-runtime`)
+
+lazy val `mleap-package` = project
+  .settings(Common.settings)
+  .settings(Common.sonatypeSettings)
+  .dependsOn(`mleap-spark`, `mleap-serialization`)
 
 lazy val `mleap-benchmark` = project.in(file("mleap-benchmark"))
   .settings(Common.settings)
