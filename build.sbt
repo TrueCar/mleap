@@ -6,7 +6,8 @@ lazy val `root` = project.in(file("."))
   .settings(Common.settings)
   .settings(publishArtifact := false)
   .aggregate(`mleap-core`, `mleap-runtime`,
-    `mleap-serialization`, `mleap-spark`)
+    `mleap-serialization`, `mleap-spark`,
+    `mleap-package`)
 
 lazy val `mleap-core` = project.in(file("mleap-core"))
   .settings(Common.settings)
