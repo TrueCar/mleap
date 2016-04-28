@@ -6,8 +6,8 @@ import com.truecar.mleap.spark.SparkDataset
 import com.truecar.mleap.runtime.types
 import com.truecar.mleap.spark.SparkLeapFrame
 import org.apache.spark.ml.mleap
-import org.apache.spark.mllib.linalg.VectorUDT
-import org.apache.spark.sql.{Row, DataFrame}
+import org.apache.spark.mllib.linalg.{Vector, VectorUDT}
+import org.apache.spark.sql.{DataFrame, Row}
 import org.apache.spark.sql.types._
 import com.truecar.mleap.runtime.{Row => MleapRow}
 
@@ -19,7 +19,7 @@ case class DataFrameToMleap(dataset: DataFrame) {
     val mleapFields = dataset.schema.fields.flatMap {
       field =>
         field.dataType match {
-          case _: NumericType | BooleanType | StringType => Seq(types.StructField(field.name, types.DoubleType))
+          case _: NumericType | BooleanType => Seq(types.StructField(field.name, types.DoubleType))
           case _: VectorUDT => Seq(types.StructField(field.name, types.VectorType))
           case _: StringType => Seq(types.StructField(field.name, types.StringType))
           case dataType: ArrayType =>
@@ -43,7 +43,7 @@ case class DataFrameToMleap(dataset: DataFrame) {
         field.dataType match {
           case types.DoubleType => dataset.col(field.name).cast(DoubleType).as(s"mleap.${field.name}")
           case types.StringType => dataset.col(field.name).cast(StringType).as(s"mleap.${field.name}")
-          case types.VectorType => dataset.col(field.name).cast(new mleap.VectorUDT()).as(s"mleap.${field.name}")
+          case types.VectorType => dataset.col(field.name).as(s"mleap.${field.name}")
           case types.StringArrayType => dataset.col(field.name).cast(new ArrayType(StringType, containsNull = false)).as(s"mleap.${field.name}")
         }
     }
@@ -51,14 +51,16 @@ case class DataFrameToMleap(dataset: DataFrame) {
     val castDataset = dataset.select(cols: _*)
 
     val sparkIndices = sparkSchema.fields.indices
-    val mleapIndices = (sparkSchema.fields.length until (sparkSchema.fields.length + schema.fields.length)).toArray
+    val mleapIndices = sparkSchema.fields.length until (sparkSchema.fields.length + schema.fields.length)
 
     val rdd = castDataset.rdd.map {
       row =>
-        // finish converting Spark data structure to MLeap
-        // TODO: make a Spark UDT for MleapVector and just
-        // cast like we do for numeric types
-        val mleapValues = mleapIndices.map(row.get)
+        val mleapValues = mleapIndices.map {
+          index => row.get(index) match {
+            case vector: Vector => VectorToMleap(vector).toMleap
+            case value => value
+          }
+        }
         val mleapRow = MleapRow(mleapValues: _*)
         val sparkValues: IndexedSeq[Any] = sparkIndices.map(row.get)
 
