@@ -21,7 +21,7 @@ MLeap is cross-compiled for Scala 2.10 and 2.11, so just replace 2.10 with 2.11 
 #### SBT
 
 ```
-libraryDependencies += "com.truecar.mleap" %% "mleap-runtime" % "0.1.3"
+libraryDependencies += "com.truecar.mleap" %% "mleap-runtime" % "0.1.4"
 ```
 
 #### Maven
@@ -30,7 +30,7 @@ libraryDependencies += "com.truecar.mleap" %% "mleap-runtime" % "0.1.3"
 <dependency>
     <groupId>com.truecar.mleap</groupId>
     <artifactId>mleap-runtime_2.10</artifactId>
-    <version>0.1.3</version>
+    <version>0.1.4</version>
 </dependency>
 ```
 
@@ -39,7 +39,7 @@ libraryDependencies += "com.truecar.mleap" %% "mleap-runtime" % "0.1.3"
 #### SBT
 
 ```
-libraryDependencies += "com.truecar.mleap" %% "mleap-spark" % "0.1.3"
+libraryDependencies += "com.truecar.mleap" %% "mleap-spark" % "0.1.4"
 ```
 
 #### Maven
@@ -48,7 +48,7 @@ libraryDependencies += "com.truecar.mleap" %% "mleap-spark" % "0.1.3"
 <dependency>
     <groupId>com.truecar.mleap</groupId>
     <artifactId>mleap-spark_2.10</artifactId>
-    <version>0.1.3</version>
+    <version>0.1.4</version>
 </dependency>
 ```
 
@@ -57,7 +57,7 @@ libraryDependencies += "com.truecar.mleap" %% "mleap-spark" % "0.1.3"
 MLeap is now a [Spark Package](http://spark-packages.org/package/TrueCar/mleap). The package includes `mleap-spark` and `mleap-serialization`, so you should have full functionality with it. Here is how you can run a Spark shell with MLeap loaded.
 
 ```bash
-$ bin/spark-shell --packages com.truecar.mleap:mleap-package_2.10:0.1.3
+$ bin/spark-shell --packages com.truecar.mleap:mleap-package_2.10:0.1.4
 ```
 
 ## Modules
