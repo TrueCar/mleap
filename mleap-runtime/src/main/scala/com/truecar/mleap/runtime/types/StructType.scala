@@ -11,22 +11,22 @@ object StructType {
 
   def withFields(fields: StructField *): StructType = StructType(fields.toSeq)
 
-  def apply(fields:Seq[StructField]): StructType = StructType(fields,
-                                                  fields.map(_.name).zipWithIndex.toMap,
-                                                  fields.map(_.name).zip(fields).toMap )
+  def apply(fields: Seq[StructField]): StructType = StructType(fields,
+    fields.map(_.name).zipWithIndex.toMap,
+    fields.map(_.name).zip(fields).toMap )
 }
 
+// TODO: add access modifiers to tryIndicesOf, selectIndices, dropIndex.
 /**
   *
   * @param fields
   * @param nameToIndex
   * @param nameToField
   */
-// todo: add access modifiers to tryIndicesOf, selectIndices, dropIndex.
 case class StructType private (fields: Seq[StructField],
-                      private val nameToIndex: Map[String, Int],
-                      private val nameToField: Map[String, StructField])
-                                                                  extends Serializable {
+                               private val nameToIndex: Map[String, Int],
+                               private val nameToField: Map[String, StructField])
+  extends Serializable {
 
   def apply(name: String): StructField = nameToField(name)
   def getField(name: String): Option[StructField] = nameToField.get(name)
@@ -43,8 +43,8 @@ case class StructType private (fields: Seq[StructField],
     val key = field.name
 
     StructType(fields :+ field,
-               nameToIndex + (key -> fields.length),
-               nameToField + (key -> field))
+      nameToIndex + (key -> fields.length),
+      nameToField + (key -> field))
   }
 
   def select(fieldNames: String *): Try[StructType] = {
@@ -59,9 +59,7 @@ case class StructType private (fields: Seq[StructField],
   def selectIndices(indices: Int *): StructType = {
     val selection = indices.map(fields)
 
-    StructType(selection,
-               nameToIndex.filter(p => indices.contains(p._2)),
-               nameToField.filter(p => selection.contains(p._2)))
+    StructType(selection)
   }
 
   def indicesOf(fieldNames: String *): Seq[Int] = fieldNames.map(nameToIndex)
@@ -90,11 +88,7 @@ case class StructType private (fields: Seq[StructField],
     * @return StructType with field dropped.
     */
   def dropIndex(index: Int): StructType = {
-    val key = fields(index).name
-
-    StructType(fields.drop(index),
-               nameToIndex - key,
-               nameToField - key)
+    StructType(fields.take(index) ++ fields.drop(index + 1))
   }
 
   def tryIndexOf(name: String): Try[Int] = {

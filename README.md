@@ -14,12 +14,14 @@ MLeap makes deploying your Spark ML pipelines with 3 core functions:
 
 ## Setup
 
-### For Runtime Only
+### Link with Maven or SBT
+
+MLeap is cross-compiled for Scala 2.10 and 2.11, so just replace 2.10 with 2.11 wherever you see it if you are running Scala version 2.11 and using a POM file for dependency management. Otherwise, use the `%%` operator if you are using SBT and the correct Scala version will be used.
 
 #### SBT
 
 ```
-libraryDependencies += "com.truecar.mleap" %% "mleap-runtime" % "0.1-SNAPSHOT"
+libraryDependencies += "com.truecar.mleap" %% "mleap-runtime" % "0.1.4"
 ```
 
 #### Maven
@@ -28,16 +30,16 @@ libraryDependencies += "com.truecar.mleap" %% "mleap-runtime" % "0.1-SNAPSHOT"
 <dependency>
     <groupId>com.truecar.mleap</groupId>
     <artifactId>mleap-runtime_2.10</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1.4</version>
 </dependency>
 ```
 
-### For Spark Export and Learning
+### For Spark Integration
 
 #### SBT
 
 ```
-libraryDependencies += "com.truecar.mleap" %% "mleap-spark" % "0.1-SNAPSHOT"
+libraryDependencies += "com.truecar.mleap" %% "mleap-spark" % "0.1.4"
 ```
 
 #### Maven
@@ -46,23 +48,32 @@ libraryDependencies += "com.truecar.mleap" %% "mleap-spark" % "0.1-SNAPSHOT"
 <dependency>
     <groupId>com.truecar.mleap</groupId>
     <artifactId>mleap-spark_2.10</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1.4</version>
 </dependency>
+```
+
+### Spark Packages
+
+MLeap is now a [Spark Package](http://spark-packages.org/package/TrueCar/mleap). The package includes `mleap-spark` and `mleap-serialization`, so you should have full functionality with it. Here is how you can run a Spark shell with MLeap loaded.
+
+```bash
+$ bin/spark-shell --packages com.truecar.mleap:mleap-package_2.10:0.1.4
 ```
 
 ## Modules
 
-MLeap is broken into 3 modules:
+MLeap is broken into 4 modules:
 
 1. mleap-core - Core execution building blocks, includes runtime for executing linear regressions, random forest models, logisitic regressions, assembling feature vectors, string indexing, one hot encoding, etc. It provides a core linear algebra system for all of these tasks.
-2. mleap-runtime - Provides LeapFrame, which is essentially a lightweight DataFrame without any dependencies on the Spark libraries. LeapFrames support 3 data types: double, string, and vector. Also provides MLeap Transformers for executing ML pipelines on LeapFrames. Spark ML pipelines get converted to MLeap pipelines which are provided with this library. This module provides serialization for all pipeline obects. This module also includes serializable case class estimators for all supported transformers.
+2. mleap-runtime - Provides LeapFrame, which is essentially a lightweight DataFrame without any dependencies on the Spark libraries. LeapFrames support 3 data types: double, string, and vector. Also provides MLeap Transformers for executing ML pipelines on LeapFrames. Spark ML pipelines get converted to MLeap pipelines which are provided with this library.
 3. mleap-spark - Provides Spark/MLeap integration. SparkLeapFrame is an implementation of LeapFrame with a Spark RDD backing the data so you can execute MLeap transformers on a Spark cluster. Provides conversion from Spark Transformers to MLeap Transformers. Provides conversion from MLeap Estimators to Spark Estimators. This allows a very intuitive usage of MLeap without worrying about how Spark is being used under the hood: MLeap Estimator -> Spark Estimator -> Spark Transformer -> MLeap Transformer.
+4. mleap-serialization - Provides serialization for MLeap and Spark models to common JSON/Protobuf format.
 
 ## Example
 
 Please see the [mleap-demo](https://github.com/TrueCar/mleap-demo) project for an example of building and using a pipeline with MLeap.
 
-## Supported Estimators/Transformers
+## Supported Transformers
 
 Currently MLeap only supports a select set of estimators/transformers in Spark as a proof of concept.
 
@@ -79,20 +90,21 @@ Currently MLeap only supports a select set of estimators/transformers in Spark a
 * LinearRegression
 * RandomForestRegressor
 
+### Classification
+
+* RandomForestClassification
+* SupportVectorMachine (Must Use Estimator Provided with mleap-spark)
+
 ### Miscellaneous
 
 * Pipeline
 
 ## Future of MLeap
 
-It would be great to guarantee that executing a Spark Transformer is equivalent to executing an MLeap Transformer. In order to absolutely guarantee this, there are two options:
-
-1. Use the same underlying runtime in MLeap as in Spark. In this case, we would modify Spark Transformers to use the obects in mleap-core for execution.
-2. Have Spark Estimators train MLeap Transformers.
-
-The 2nd option is the most desirable, as there is then no need for the conversion libraries from Spark to MLeap. This option is also a large undertaking, as MLeap Transformers only understand doubles, strings, and vectors. They also do not use meta data to aid in their execution, which certain Spark Transformers depend on. 
-
-The easier, perhaps more natural route to take would be to implement option 1 first. Then, once option 1 is implemented and merged into Spark master, start working on option 2 to complete the unification of ML pipeline execution.
+1. Provide Python/R bindings
+2. Unify linear algebra and core ML models library with Spark
+3. Deploy outside of the JVM to embedded systems
+4. Full support for all Spark transformers
 
 ## Contributing
 
@@ -109,7 +121,7 @@ There are a few ways to contribute to MLeap.
 
 * Hollin Wilkins (hollinrwilkins@gmail.com)
 * Mikhail Semeniuk (seme0021@gmail.com)
-* Ram Sriharsha (rsriharsha@hortonworks.com)
+* Ram Sriharsha (ram@databricks.com)
 
 ## License
 

@@ -3,7 +3,7 @@ package com.truecar.mleap.runtime.transformer
 import com.truecar.mleap.core.feature.StringIndexer
 import com.truecar.mleap.runtime.attribute.{CategoricalAttribute, AttributeSchema}
 import com.truecar.mleap.runtime.transformer.builder.TransformBuilder
-import com.truecar.mleap.runtime.types.{StringType, DoubleType}
+import com.truecar.mleap.runtime.types.DoubleType
 import com.truecar.mleap.runtime.transformer.builder.TransformBuilder.Ops
 
 import scala.util.Try
@@ -24,4 +24,8 @@ case class StringIndexerModel(inputCol: String,
   override def transformAttributeSchema(schema: AttributeSchema): AttributeSchema = {
     schema.withField(outputCol, CategoricalAttribute())
   }
+
+  def toReverse: ReverseStringIndexerModel = ReverseStringIndexerModel(inputCol,
+    outputCol,
+    indexer.toReverse)
 }

@@ -1,5 +1,0 @@
-package ml.core.feature;
-
-message StringIndexer {
-    repeated string strings = 1;
-}

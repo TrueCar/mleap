@@ -24,8 +24,9 @@ case class StandardScaler(std: Option[linalg.Vector],
             linalg.Vector.dense(vs)
           case SparseVector(size, indices, values) =>
             val vs = values.clone()
+            val nnz = vs.length
             var i = 0
-            while (i < size) {
+            while (i < nnz) {
               vs(i) *= (if (stdV(indices(i)) != 0.0) 1.0 / stdV(indices(i)) else 0.0)
               i += 1
             }
