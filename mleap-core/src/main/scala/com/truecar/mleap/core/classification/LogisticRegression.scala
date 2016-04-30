@@ -6,13 +6,9 @@ import com.truecar.mleap.core.linalg.{BLAS, Vector}
 /**
   * Binary Logistic Regression
   */
-case class BinaryLogisticRegression(coefficients: Vector,
+case class LogisticRegression(coefficients: Vector,
                               intercept: Double,
                               threshold: Double = 0.5) extends Serializable{
-
-  val numFeatures = coefficients.size
-  val numClasses = 2
-
   /** Computes the mean of the response variable given the predictors. */
   private def margin(features: Vector): Double = {
     BLAS.dot(features, coefficients) + intercept
@@ -28,6 +24,6 @@ case class BinaryLogisticRegression(coefficients: Vector,
   }
 
   def apply(features: Vector): Double = {
-    if (score(features) > threshold) 1 else 0
+    if (score(features) > threshold) 1.0 else 0.0
   }
 }
