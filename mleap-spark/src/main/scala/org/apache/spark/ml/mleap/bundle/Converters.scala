@@ -6,6 +6,8 @@ import ml.bundle.support.v1.core.tree.node.Node
 import ml.bundle.support.v1.runtime
 import ml.bundle.support.v1.runtime.classification.RandomForestClassificationModel
 import ml.bundle.support.v1.runtime.regression.RandomForestRegressionModel
+import ml.bundle.v1.core.classification.LogisticRegression.LogisticRegression
+import ml.bundle.v1.core.classification.SupportVectorMachine.SupportVectorMachine
 import ml.bundle.v1.core.feature.HashingTermFrequency.HashingTermFrequency
 import ml.bundle.v1.core.feature.ReverseStringIndexer.ReverseStringIndexer
 import ml.bundle.v1.core.feature.StandardScaler.StandardScaler
@@ -20,6 +22,8 @@ import ml.bundle.v1.core.tree.Split.Split
 import ml.bundle.v1.core.tree.node.InternalNodeData.InternalNodeData
 import ml.bundle.v1.core.tree.node.LeafNodeData.LeafNodeData
 import ml.bundle.v1.core.tree.node.NodeData.NodeData
+import ml.bundle.v1.runtime.classification.LogisticRegressionModel.LogisticRegressionModel
+import ml.bundle.v1.runtime.classification.SupportVectorMachineModel.SupportVectorMachineModel
 import ml.bundle.v1.runtime.feature.HashingTermFrequencyModel.HashingTermFrequencyModel
 import ml.bundle.v1.runtime.feature.ReverseStringIndexerModel.ReverseStringIndexerModel
 import ml.bundle.v1.runtime.feature.StandardScalerModel.StandardScalerModel
@@ -27,8 +31,10 @@ import ml.bundle.v1.runtime.feature.StringIndexerModel.StringIndexerModel
 import ml.bundle.v1.runtime.feature.TokenizerModel.TokenizerModel
 import ml.bundle.v1.runtime.feature.VectorAssemblerModel.VectorAssemblerModel
 import ml.bundle.v1.runtime.regression.LinearRegressionModel.LinearRegressionModel
-import org.apache.spark.ml.{tree, feature, regression, classification, PipelineModel, Transformer}
+import org.apache.spark.ml.mleap.classification.SVMModel
+import org.apache.spark.ml.{PipelineModel, Transformer, classification, feature, regression, tree}
 import org.apache.spark.ml.util.Identifiable
+import org.apache.spark.mllib
 import org.apache.spark.mllib.linalg
 import org.apache.spark.mllib.tree.impurity.GiniCalculator
 
@@ -272,6 +278,33 @@ trait Converters {
     new regression.RandomForestRegressionModel(trees, model.model.numFeatures)
       .setFeaturesCol(model.featuresCol)
       .setPredictionCol(model.predictionCol)
+  }
+
+  implicit def sparkLogisticRegressionModelToMl(model: classification.LogisticRegressionModel): LogisticRegressionModel = {
+    val m = LogisticRegression(model.coefficients, model.intercept, model.getThreshold)
+    LogisticRegressionModel(featuresCol = model.getFeaturesCol,
+      predictionCol = model.getPredictionCol,
+      model = m)
+  }
+
+  implicit def mlLogisticRegressionModelToSpark(model: LogisticRegressionModel): classification.LogisticRegressionModel = {
+    new classification.LogisticRegressionModel(Identifiable.randomUID("logisticRegressionModel"),
+      model.model.coefficients,
+      model.model.intercept)
+      .setFeaturesCol(model.featuresCol)
+      .setPredictionCol(model.predictionCol)
+  }
+
+  implicit def sparkSupportVectorMachineModelToMl(model: SVMModel): SupportVectorMachineModel = {
+    val m = SupportVectorMachine(model.model.weights, model.model.intercept, model.getThreshold)
+    SupportVectorMachineModel(featuresCol = model.getFeaturesCol,
+      predictionCol = model.getPredictionCol,
+      model = m)
+  }
+
+  implicit def mlSupportVectorMachineModelToSpark(model: SupportVectorMachineModel): SVMModel = {
+    val m = new mllib.classification.SVMModel(model.model.coefficients, model.model.intercept)
+    new SVMModel(m)
   }
 
   implicit def sparkDecisionTreeClassificationToMl(model: classification.DecisionTreeClassificationModel): DecisionTreeClassification[tree.Node] = {

@@ -42,8 +42,10 @@ trait MlJsonSerializer extends Serializer {
   val randomForestClassificationModelSerializer: BundleSerializer[RandomForestClassificationModel] = conversionSerializer[RandomForestClassificationModel, runtime.classification.RandomForestClassificationModel[Node]](
     RandomForestClassificationModelSerializer(mlRandomForestClassificationModelMetaDataSerializer,
     randomForestClassificationSerializer))
+  val logisticRegressionModelSerializer: StreamSerializer[LogisticRegressionModel] = conversionSerializer[LogisticRegressionModel, classification.LogisticRegressionModel.LogisticRegressionModel](mlLogisticRegressionModelSerializer)
   val supportVectorMachineModelSerializer: StreamSerializer[SupportVectorMachineModel] = conversionSerializer[SupportVectorMachineModel, classification.SupportVectorMachineModel.SupportVectorMachineModel](mlSupportVectorMachineModelSerializer)
 
+  addSerializer(logisticRegressionModelSerializer)
   addSerializer(supportVectorMachineModelSerializer)
   addSerializer(randomForestClassificationModelSerializer)
 
