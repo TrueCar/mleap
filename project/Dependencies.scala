@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
   val sparkVersion = "1.6.0"
   val akkaVersion = "2.4.1"
-  val bundleMlVersion = "0.1.0"
+  val bundleMlVersion = "0.1.1-SNAPSHOT"
 
   lazy val benchmarkDependencies = Seq("com.storm-enroute" %% "scalameter" % "0.7" % "test")
 

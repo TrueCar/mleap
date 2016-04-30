@@ -9,6 +9,7 @@ import ml.bundle.support.v1.runtime.PipelineModel
 import ml.bundle.support.v1.runtime.regression.RandomForestRegressionModel
 import ml.bundle.support.v1.core.tree.node.Node
 import ml.bundle.support.v1.runtime.classification.RandomForestClassificationModel
+import ml.bundle.v1.core.classification.LogisticRegression.LogisticRegression
 import ml.bundle.v1.core.classification.SupportVectorMachine.SupportVectorMachine
 import ml.bundle.v1.core.feature.HashingTermFrequency.HashingTermFrequency
 import ml.bundle.v1.core.feature.StandardScaler.StandardScaler
@@ -24,6 +25,7 @@ import ml.bundle.v1.core.tree.Split.Split
 import ml.bundle.v1.core.tree.node.InternalNodeData.InternalNodeData
 import ml.bundle.v1.core.tree.node.LeafNodeData.LeafNodeData
 import ml.bundle.v1.core.tree.node.NodeData.NodeData
+import ml.bundle.v1.runtime.classification.LogisticRegressionModel.LogisticRegressionModel
 import ml.bundle.v1.runtime.classification.SupportVectorMachineModel.SupportVectorMachineModel
 import ml.bundle.v1.runtime.feature.HashingTermFrequencyModel.HashingTermFrequencyModel
 import ml.bundle.v1.runtime.feature.StandardScalerModel.StandardScalerModel
@@ -213,6 +215,26 @@ trait Converters {
 
   implicit def mlLinearRegressionModelToMleap(model: LinearRegressionModel): transformer.LinearRegressionModel = {
     transformer.LinearRegressionModel(featuresCol = model.featuresCol,
+      predictionCol = model.predictionCol,
+      model = model.model)
+  }
+
+  implicit def mleapLogisticRegressionToMl(model: classification.LogisticRegression): LogisticRegression = {
+    LogisticRegression(model.coefficients, model.intercept, model.threshold)
+  }
+
+  implicit def mlLogisticRegressionToMleap(model: LogisticRegression): classification.LogisticRegression = {
+    classification.LogisticRegression(model.coefficients, model.intercept, model.threshold)
+  }
+
+  implicit def mleapLogisticRegressionModelToMl(model: transformer.LogisticRegressionModel): LogisticRegressionModel = {
+    LogisticRegressionModel(featuresCol = model.featuresCol,
+      predictionCol = model.predictionCol,
+      model = model.model)
+  }
+
+  implicit def mlLogisticRegressionModelToMleap(model: LogisticRegressionModel): transformer.LogisticRegressionModel = {
+    transformer.LogisticRegressionModel(featuresCol = model.featuresCol,
       predictionCol = model.predictionCol,
       model = model.model)
   }

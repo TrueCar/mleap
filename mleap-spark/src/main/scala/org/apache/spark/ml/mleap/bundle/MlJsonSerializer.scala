@@ -17,7 +17,10 @@ import ml.bundle.support.ConversionSerializer._
 import ml.bundle.support.v1.core.classification.{DecisionTreeClassificationSerializer, RandomForestClassificationSerializer}
 import ml.bundle.support.v1.json.MlJsonSerializerSupport._
 import ml.bundle.support.v1.runtime.classification.{RandomForestClassificationModel, RandomForestClassificationModelSerializer}
+import ml.bundle.v1.runtime.classification.LogisticRegressionModel.LogisticRegressionModel
+import ml.bundle.v1.runtime.classification.SupportVectorMachineModel.SupportVectorMachineModel
 import ml.bundle.v1.runtime.feature.ReverseStringIndexerModel.ReverseStringIndexerModel
+import org.apache.spark.ml.mleap.classification.SVMModel
 import org.apache.spark.ml.{PipelineModel, classification, feature, regression}
 import org.apache.spark.ml.tree.Node
 
@@ -45,7 +48,11 @@ trait MlJsonSerializer extends Serializer {
     decisionTreeClassificationSerializer)
   val randomForestClassificationModelSerializer: BundleSerializer[classification.RandomForestClassificationModel] = conversionSerializer[classification.RandomForestClassificationModel, RandomForestClassificationModel[Node]](RandomForestClassificationModelSerializer(mlRandomForestClassificationModelMetaDataSerializer,
     randomForestClassificationSerializer))
+  val logisticRegressionModelSerializer: StreamSerializer[classification.LogisticRegressionModel] = conversionSerializer[classification.LogisticRegressionModel, LogisticRegressionModel](mlLogisticRegressionModelSerializer)
+  val supportVectorMachineModelSerializer: StreamSerializer[SVMModel] = conversionSerializer[SVMModel, SupportVectorMachineModel](mlSupportVectorMachineModelSerializer)
 
+  addSerializer(logisticRegressionModelSerializer)
+  addSerializer(supportVectorMachineModelSerializer)
   addSerializer(randomForestClassificationModelSerializer)
 
   // feature
