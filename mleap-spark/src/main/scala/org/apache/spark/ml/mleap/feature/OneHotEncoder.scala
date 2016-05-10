@@ -29,8 +29,7 @@ import org.apache.spark.sql.functions
  * limitations under the License.
  */
 
-class OneHotEncoderModel(override val uid: String,
-                         size: Int) extends Model[OneHotEncoderModel]
+class OneHotEncoderModel(override val uid: String, val size: Int) extends Model[OneHotEncoderModel]
   with HasInputCol with HasOutputCol with HasDropLast {
   def this(size: Int) = this(Identifiable.randomUID("oneHotEncoderModel"), size)
 
