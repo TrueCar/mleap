@@ -29,9 +29,17 @@ import org.apache.spark.sql.functions
  * limitations under the License.
  */
 
+trait OneHotEncoderBase extends HasInputCol with HasOutputCol with HasDropLast
+
 class OneHotEncoderModel(override val uid: String, val size: Int) extends Model[OneHotEncoderModel]
-  with HasInputCol with HasOutputCol with HasDropLast {
+  with OneHotEncoderBase {
   def this(size: Int) = this(Identifiable.randomUID("oneHotEncoderModel"), size)
+
+  /** @group setParam */
+  def setInputCol(value: String): this.type = set(inputCol, value)
+
+  /** @group setParam */
+  def setOutputCol(value: String): this.type = set(outputCol, value)
 
   override def copy(extra: ParamMap): OneHotEncoderModel = defaultCopy(extra)
 
@@ -123,7 +131,7 @@ class OneHotEncoderModel(override val uid: String, val size: Int) extends Model[
 }
 
 class OneHotEncoder(override val uid: String) extends Estimator[OneHotEncoderModel]
-  with HasInputCol with HasOutputCol with HasDropLast {
+  with OneHotEncoderBase {
 
   /** @group setParam */
   def setDropLast(value: Boolean): this.type = set(dropLast, value)

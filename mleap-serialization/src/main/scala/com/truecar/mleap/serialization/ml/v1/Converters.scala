@@ -12,6 +12,7 @@ import ml.bundle.support.v1.runtime.classification.RandomForestClassificationMod
 import ml.bundle.v1.core.classification.LogisticRegression.LogisticRegression
 import ml.bundle.v1.core.classification.SupportVectorMachine.SupportVectorMachine
 import ml.bundle.v1.core.feature.HashingTermFrequency.HashingTermFrequency
+import ml.bundle.v1.core.feature.OneHotEncoder.OneHotEncoder
 import ml.bundle.v1.core.feature.StandardScaler.StandardScaler
 import ml.bundle.v1.core.feature.StringIndexer.StringIndexer
 import ml.bundle.v1.core.feature.ReverseStringIndexer.ReverseStringIndexer
@@ -28,6 +29,7 @@ import ml.bundle.v1.core.tree.node.NodeData.NodeData
 import ml.bundle.v1.runtime.classification.LogisticRegressionModel.LogisticRegressionModel
 import ml.bundle.v1.runtime.classification.SupportVectorMachineModel.SupportVectorMachineModel
 import ml.bundle.v1.runtime.feature.HashingTermFrequencyModel.HashingTermFrequencyModel
+import ml.bundle.v1.runtime.feature.OneHotEncoderModel.OneHotEncoderModel
 import ml.bundle.v1.runtime.feature.StandardScalerModel.StandardScalerModel
 import ml.bundle.v1.runtime.feature.StringIndexerModel.StringIndexerModel
 import ml.bundle.v1.runtime.feature.ReverseStringIndexerModel.ReverseStringIndexerModel
@@ -196,6 +198,26 @@ trait Converters {
   implicit def mlTokenizerModelToMleap(model: TokenizerModel): transformer.TokenizerModel = {
     transformer.TokenizerModel(inputCol = model.inputCol,
       outputCol = model.outputCol)
+  }
+
+  implicit def mleapOneHotEncoderToMl(model: feature.OneHotEncoder): OneHotEncoder = {
+    OneHotEncoder(model.size)
+  }
+
+  implicit def mlOneHotEncoderToMleap(model: OneHotEncoder): feature.OneHotEncoder = {
+    feature.OneHotEncoder(model.size)
+  }
+
+  implicit def mleapOneHotEncoderModelToMl(model: transformer.OneHotEncoderModel): OneHotEncoderModel = {
+    OneHotEncoderModel(inputCol = model.inputCol,
+      outputCol = model.outputCol,
+      model = model.model)
+  }
+
+  implicit def mlOneHotEncoderModelToMleap(model: OneHotEncoderModel): transformer.OneHotEncoderModel = {
+    transformer.OneHotEncoderModel(inputCol = model.inputCol,
+      outputCol = model.outputCol,
+      model = model.model)
   }
 
   implicit def mleapLinearRegressionToMl(model: regression.LinearRegression): LinearRegression = {

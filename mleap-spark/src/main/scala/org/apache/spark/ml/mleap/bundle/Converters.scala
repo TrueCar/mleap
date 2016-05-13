@@ -9,6 +9,7 @@ import ml.bundle.support.v1.runtime.regression.RandomForestRegressionModel
 import ml.bundle.v1.core.classification.LogisticRegression.LogisticRegression
 import ml.bundle.v1.core.classification.SupportVectorMachine.SupportVectorMachine
 import ml.bundle.v1.core.feature.HashingTermFrequency.HashingTermFrequency
+import ml.bundle.v1.core.feature.OneHotEncoder.OneHotEncoder
 import ml.bundle.v1.core.feature.ReverseStringIndexer.ReverseStringIndexer
 import ml.bundle.v1.core.feature.StandardScaler.StandardScaler
 import ml.bundle.v1.core.feature.StringIndexer.StringIndexer
@@ -25,6 +26,7 @@ import ml.bundle.v1.core.tree.node.NodeData.NodeData
 import ml.bundle.v1.runtime.classification.LogisticRegressionModel.LogisticRegressionModel
 import ml.bundle.v1.runtime.classification.SupportVectorMachineModel.SupportVectorMachineModel
 import ml.bundle.v1.runtime.feature.HashingTermFrequencyModel.HashingTermFrequencyModel
+import ml.bundle.v1.runtime.feature.OneHotEncoderModel.OneHotEncoderModel
 import ml.bundle.v1.runtime.feature.ReverseStringIndexerModel.ReverseStringIndexerModel
 import ml.bundle.v1.runtime.feature.StandardScalerModel.StandardScalerModel
 import ml.bundle.v1.runtime.feature.StringIndexerModel.StringIndexerModel
@@ -32,7 +34,7 @@ import ml.bundle.v1.runtime.feature.TokenizerModel.TokenizerModel
 import ml.bundle.v1.runtime.feature.VectorAssemblerModel.VectorAssemblerModel
 import ml.bundle.v1.runtime.regression.LinearRegressionModel.LinearRegressionModel
 import org.apache.spark.ml.mleap.classification.SVMModel
-import org.apache.spark.ml.{PipelineModel, Transformer, classification, feature, regression, tree}
+import org.apache.spark.ml._
 import org.apache.spark.ml.util.Identifiable
 import org.apache.spark.mllib
 import org.apache.spark.mllib.linalg
@@ -187,6 +189,18 @@ trait Converters {
       .setOutputCol(model.outputCol)
   }
 
+  implicit def sparkOneHotEncoderModelToMl(model: mleap.feature.OneHotEncoderModel): OneHotEncoderModel = {
+    val m = OneHotEncoder(model.size)
+    OneHotEncoderModel(inputCol = model.getInputCol,
+      outputCol = model.getOutputCol,
+      model = m)
+  }
+
+  implicit def mlOneHotEncodeModelToSpark(model: OneHotEncoderModel): mleap.feature.OneHotEncoderModel = {
+    new mleap.feature.OneHotEncoderModel(model.model.size)
+      .setInputCol(model.inputCol)
+      .setOutputCol(model.outputCol)
+  }
 
   implicit def sparkLinearRegressionModelToMl(model: regression.LinearRegressionModel): LinearRegressionModel = {
     val linearRegression = LinearRegression(model.coefficients, model.intercept)
