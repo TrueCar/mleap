@@ -6,8 +6,9 @@ import org.apache.spark.ml.classification.{LogisticRegressionModel, RandomForest
 import org.apache.spark.ml.feature.{IndexToString, StandardScalerModel, StringIndexerModel, VectorAssembler}
 import org.apache.spark.ml.mleap.classification.SVMModel
 import org.apache.spark.ml.mleap.converter.runtime.classification.{LogisticRegressionModelToMleap, RandomForestClassificationModelToMleap, SupportVectorMachineModelToMleap}
-import org.apache.spark.ml.mleap.converter.runtime.feature.{IndexToStringToMleap, StandardScalerModelToMleap, StringIndexerModelToMleap, VectorAssemblerModelToMleap}
+import org.apache.spark.ml.mleap.converter.runtime.feature._
 import org.apache.spark.ml.mleap.converter.runtime.regression.{LinearRegressionModelToMleap, RandomForestRegressionModelToMleap}
+import org.apache.spark.ml.mleap.feature.OneHotEncoderModel
 import org.apache.spark.ml.regression.{LinearRegressionModel, RandomForestRegressionModel}
 
 /**
@@ -29,6 +30,8 @@ trait BaseTransformerConverter extends SparkTransformerConverter {
     addConverter(SupportVectorMachineModelToMleap)
 
   //feature
+  implicit val mleapOneHotEncoderToMleap: TransformerToMleap[OneHotEncoderModel, transformer.OneHotEncoderModel] =
+    addConverter(OneHotEncoderToMleap)
   implicit val mleapIndexToStringToMleap: TransformerToMleap[IndexToString, transformer.ReverseStringIndexerModel] =
     addConverter(IndexToStringToMleap)
   implicit val mleapStandardScalerModelToMleap: TransformerToMleap[StandardScalerModel, transformer.StandardScalerModel] =

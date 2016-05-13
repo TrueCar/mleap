@@ -50,6 +50,7 @@ trait MlJsonSerializer extends Serializer {
   addSerializer(randomForestClassificationModelSerializer)
 
   // feature
+  val oneHotEncoderModelSerializer: StreamSerializer[OneHotEncoderModel] = conversionSerializer[OneHotEncoderModel, feature.OneHotEncoderModel.OneHotEncoderModel](mlOneHotEncoderModelSerializer)
   val hashingTermFrequencyModelSerializer: StreamSerializer[HashingTermFrequencyModel] = conversionSerializer[HashingTermFrequencyModel, feature.HashingTermFrequencyModel.HashingTermFrequencyModel](mlHashingTermFrequencyModelSerializer)
   val standardScalerModelSerializer: StreamSerializer[StandardScalerModel] = conversionSerializer[StandardScalerModel, feature.StandardScalerModel.StandardScalerModel](mlStandardScalerModelSerializer)
   val stringIndexerModelSerializer: StreamSerializer[StringIndexerModel] = conversionSerializer[StringIndexerModel, feature.StringIndexerModel.StringIndexerModel](mlStringIndexerModelSerializer)
@@ -57,6 +58,7 @@ trait MlJsonSerializer extends Serializer {
   val tokenizerModelSerializer: StreamSerializer[TokenizerModel] = conversionSerializer[TokenizerModel, feature.TokenizerModel.TokenizerModel](mlTokenizerModelSerializer)
   val vectorAssemblerModelSerializer: StreamSerializer[VectorAssemblerModel] = conversionSerializer[VectorAssemblerModel, feature.VectorAssemblerModel.VectorAssemblerModel](mlVectorAssemblerModelSerializer)
 
+  addSerializer(oneHotEncoderModelSerializer)
   addSerializer(hashingTermFrequencyModelSerializer)
   addSerializer(standardScalerModelSerializer)
   addSerializer(stringIndexerModelSerializer)
@@ -75,7 +77,7 @@ object MlJsonSerializer extends MlJsonSerializer {
   val supportedVersions = Set("0.1-SNAPSHOT")
 
   override val namespace: String = "ml.bundle.json"
-  override val version: String = "0.1-SNAPSHOT"
+  override val version: String = "0.1.1-SNAPSHOT"
 
   override def isCompatibleVersion(otherVersion: String): Boolean = supportedVersions.contains(otherVersion)
 }
