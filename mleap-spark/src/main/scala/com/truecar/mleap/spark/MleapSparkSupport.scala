@@ -34,7 +34,6 @@ trait MleapSparkSupport extends BaseTransformerConverter {
   implicit def vectorToSpark(vector: linalg.Vector): VectorToSpark = VectorToSpark(vector)
   implicit def vectorToMleap(vector: Vector): VectorToMleap = VectorToMleap(vector)
   implicit def dataFrameToMleap(dataset: DataFrame): DataFrameToMleap = DataFrameToMleap(dataset)
-  implicit def decisionTreeRegressionModelToMleap(tree: DecisionTreeRegressionModel): DecisionTreeRegressionModelToMleap = DecisionTreeRegressionModelToMleap(tree)
   implicit def decisionTreeClassificationModelToMleap(tree: DecisionTreeClassificationModel): DecisionTreeClassificationModelToMleap = DecisionTreeClassificationModelToMleap(tree)
   implicit def nodeToMleap(node: Node): NodeToMleap = NodeToMleap(node)
   implicit def splitToMleap(split: Split): SplitToMleap = SplitToMleap(split)

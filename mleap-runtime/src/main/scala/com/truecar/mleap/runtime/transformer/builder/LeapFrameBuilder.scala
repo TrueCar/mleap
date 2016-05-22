@@ -35,9 +35,11 @@ object LeapFrameBuilder {
           frame2 => t.copy(frame = frame2)
         }
       }
+
       override def withSelect(t: LeapFrameBuilder[T], fieldNames: Seq[String]): Try[LeapFrameBuilder[T]] = {
         LeapFrame.select(t.frame, fieldNames: _*).map(frame => LeapFrameBuilder(frame))
       }
+
       override def withDrop(t: LeapFrameBuilder[T], name: String): Try[LeapFrameBuilder[T]] = {
         LeapFrame.dropField(t.frame, name).map(frame => LeapFrameBuilder(frame))
       }

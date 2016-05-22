@@ -7,9 +7,9 @@ import org.apache.spark.ml.feature.{IndexToString, StandardScalerModel, StringIn
 import org.apache.spark.ml.mleap.classification.SVMModel
 import org.apache.spark.ml.mleap.converter.runtime.classification.{LogisticRegressionModelToMleap, RandomForestClassificationModelToMleap, SupportVectorMachineModelToMleap}
 import org.apache.spark.ml.mleap.converter.runtime.feature._
-import org.apache.spark.ml.mleap.converter.runtime.regression.{LinearRegressionModelToMleap, RandomForestRegressionModelToMleap}
+import org.apache.spark.ml.mleap.converter.runtime.regression.{DecisionTreeRegressionModelToMleap, LinearRegressionModelToMleap, RandomForestRegressionModelToMleap}
 import org.apache.spark.ml.mleap.feature.OneHotEncoderModel
-import org.apache.spark.ml.regression.{LinearRegressionModel, RandomForestRegressionModel}
+import org.apache.spark.ml.regression.{DecisionTreeRegressionModel, LinearRegressionModel, RandomForestRegressionModel}
 
 /**
   * Created by hollinwilkins on 4/17/16.
@@ -18,6 +18,8 @@ trait BaseTransformerConverter extends SparkTransformerConverter {
   // regression
   implicit val mleapLinearRegressionModelToMleap: TransformerToMleap[LinearRegressionModel, transformer.LinearRegressionModel] =
     addConverter(LinearRegressionModelToMleap)
+  implicit val mleapDecisionTreeRegressionModelToMleap: TransformerToMleap[DecisionTreeRegressionModel, transformer.DecisionTreeRegressionModel] =
+    addConverter(DecisionTreeRegressionModelToMleap)
   implicit val mleapRandomForestRegressionModelToMleap: TransformerToMleap[RandomForestRegressionModel, transformer.RandomForestRegressionModel] =
     addConverter(RandomForestRegressionModelToMleap)
 
