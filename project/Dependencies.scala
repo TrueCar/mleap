@@ -5,8 +5,6 @@ object Dependencies {
   val akkaVersion = "2.4.1"
   val bundleMlVersion = "0.1.1-SNAPSHOT"
 
-  lazy val benchmarkDependencies = Seq("com.storm-enroute" %% "scalameter" % "0.7" % "test")
-
   lazy val baseDependencies = Seq("org.scalatest" %% "scalatest" % "3.0.0-M15" % "test")
 
   lazy val sparkDependencies = Seq(
@@ -32,6 +30,4 @@ object Dependencies {
   lazy val mleapSparkDependencies = sparkDependencies
     .union(bundleMlDependencies)
     .union(Seq("com.typesafe" % "config" % "1.2.1"))
-
-  lazy val mleapBenchmarkDependencies = benchmarkDependencies
 }
