@@ -69,7 +69,7 @@ class OneHotEncoderModel(override val uid: String, val size: Int) extends Model[
     }
     val metadata = outputAttrGroup.toMetadata()
 
-    dataset.select(dataset.col("*"), encode(dataset.col(inputColName)).cast(DoubleType).as(outputColName, metadata))
+    dataset.select(dataset.col("*"), encode(dataset.col(inputColName).cast(DoubleType)).as(outputColName, metadata))
   }
 
   @DeveloperApi
@@ -135,6 +135,7 @@ class OneHotEncoder(override val uid: String) extends Estimator[OneHotEncoderMod
 
   /** @group setParam */
   def setDropLast(value: Boolean): this.type = set(dropLast, value)
+  setDefault(dropLast -> true)
 
   /** @group setParam */
   def setInputCol(value: String): this.type = set(inputCol, value)

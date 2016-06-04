@@ -15,7 +15,7 @@ private[ml] trait HasDropLast extends Params {
     *
     * @group param
     */
-  final val dropLast: BooleanParam = new BooleanParam(this, "inputCol", "input column name")
+  final val dropLast: BooleanParam = new BooleanParam(this, "dropLast", "whether to drop the last column or not")
 
   /** @group getParam */
   final def getDropLast: Boolean = $(dropLast)
