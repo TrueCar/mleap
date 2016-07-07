@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
   val sparkVersion = "1.6.0"
   val akkaVersion = "2.4.1"
-  val bundleMlVersion = "0.1.1"
+  val bundleMlVersion = "0.1.2-SNAPSHOT"
 
   lazy val baseDependencies = Seq("org.scalatest" %% "scalatest" % "3.0.0-M15" % "test")
 
