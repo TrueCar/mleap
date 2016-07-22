@@ -11,7 +11,8 @@ import scala.util.Try
 /**
   * Created by hwilkins on 12/30/15.
   */
-case class HashingTermFrequencyModel(inputCol: String,
+case class HashingTermFrequencyModel(uid: String = Transformer.uniqueName("hashing_term_frequency"),
+                                     inputCol: String,
                                      outputCol: String,
                                      hashingTermFrequency: HashingTermFrequency) extends Transformer {
   override def build[TB: TransformBuilder](builder: TB): Try[TB] = {

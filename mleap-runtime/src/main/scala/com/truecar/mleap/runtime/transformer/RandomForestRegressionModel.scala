@@ -11,7 +11,8 @@ import scala.util.Try
 /**
   * Created by hwilkins on 11/8/15.
   */
-case class RandomForestRegressionModel(featuresCol: String,
+case class RandomForestRegressionModel(uid: String = Transformer.uniqueName("random_forest_regression"),
+                                       featuresCol: String,
                                        predictionCol: String,
                                        model: RandomForestRegression) extends Transformer {
   override def build[TB: TransformBuilder](builder: TB): Try[TB] = {

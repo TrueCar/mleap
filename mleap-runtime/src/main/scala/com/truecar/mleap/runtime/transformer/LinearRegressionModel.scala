@@ -11,7 +11,8 @@ import scala.util.Try
 /**
   * Created by hwilkins on 10/22/15.
   */
-case class LinearRegressionModel(featuresCol: String,
+case class LinearRegressionModel(uid: String = Transformer.uniqueName("linear_regression"),
+                                 featuresCol: String,
                                  predictionCol: String,
                                  model: LinearRegression) extends Transformer {
   override def build[TB: TransformBuilder](builder: TB): Try[TB] = {

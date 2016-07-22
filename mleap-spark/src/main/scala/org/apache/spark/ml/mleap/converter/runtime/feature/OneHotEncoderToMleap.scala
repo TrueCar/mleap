@@ -11,7 +11,8 @@ import org.apache.spark.ml.mleap.feature.OneHotEncoderModel
 object OneHotEncoderToMleap extends TransformerToMleap[OneHotEncoderModel, transformer.OneHotEncoderModel] {
   override def toMleap(t: OneHotEncoderModel): transformer.OneHotEncoderModel = {
     val model = OneHotEncoder(t.size)
-    transformer.OneHotEncoderModel(inputCol = t.getInputCol,
+    transformer.OneHotEncoderModel(uid = t.uid,
+      inputCol = t.getInputCol,
       outputCol = t.getOutputCol,
       model = model)
   }

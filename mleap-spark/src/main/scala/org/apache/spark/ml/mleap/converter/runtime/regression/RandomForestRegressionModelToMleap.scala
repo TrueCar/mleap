@@ -13,8 +13,9 @@ object RandomForestRegressionModelToMleap extends TransformerToMleap[RandomFores
     val trees = t.trees.asInstanceOf[Array[DecisionTreeRegressionModel]].map(tree => DecisionTreeRegressionModelToMleap(tree).toMleap)
     val model = RandomForestRegression(trees, t.numFeatures)
 
-    transformer.RandomForestRegressionModel(t.getFeaturesCol,
-      t.getPredictionCol,
-      model)
+    transformer.RandomForestRegressionModel(uid = t.uid,
+      featuresCol = t.getFeaturesCol,
+      predictionCol = t.getPredictionCol,
+      model = model)
   }
 }

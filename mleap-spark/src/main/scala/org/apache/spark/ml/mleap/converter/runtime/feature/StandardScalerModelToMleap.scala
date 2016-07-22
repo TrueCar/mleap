@@ -23,8 +23,9 @@ object StandardScalerModelToMleap extends TransformerToMleap[StandardScalerModel
       None
     }
 
-    transformer.StandardScalerModel(t.getInputCol,
-      t.getOutputCol,
-      StandardScaler(std, mean))
+    transformer.StandardScalerModel(uid = t.uid,
+      inputCol = t.getInputCol,
+      outputCol = t.getOutputCol,
+      scaler = StandardScaler(std, mean))
   }
 }

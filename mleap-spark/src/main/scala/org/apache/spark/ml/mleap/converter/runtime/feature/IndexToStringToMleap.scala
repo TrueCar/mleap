@@ -10,8 +10,9 @@ import org.apache.spark.ml.mleap.converter.runtime.TransformerToMleap
   */
 object IndexToStringToMleap extends TransformerToMleap[IndexToString, transformer.ReverseStringIndexerModel] {
   override def toMleap(t: IndexToString): transformer.ReverseStringIndexerModel = {
-    transformer.ReverseStringIndexerModel(t.getInputCol,
-      t.getOutputCol,
-      ReverseStringIndexer(t.getLabels))
+    transformer.ReverseStringIndexerModel(uid = t.uid,
+      inputCol = t.getInputCol,
+      outputCol = t.getOutputCol,
+      indexer = ReverseStringIndexer(t.getLabels))
   }
 }

@@ -16,8 +16,9 @@ object RandomForestClassificationModelToMleap extends TransformerToMleap[RandomF
       t.numFeatures,
       t.numClasses)
 
-    transformer.RandomForestClassificationModel(t.getFeaturesCol,
-      t.getPredictionCol,
-      model)
+    transformer.RandomForestClassificationModel(uid = t.uid,
+      featuresCol = t.getFeaturesCol,
+      predictionCol = t.getPredictionCol,
+      model = model)
   }
 }

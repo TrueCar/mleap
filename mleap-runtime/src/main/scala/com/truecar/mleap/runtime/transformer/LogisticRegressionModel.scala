@@ -11,9 +11,10 @@ import scala.util.Try
 /**
   * Created by hwilkins on 10/22/15.
   */
-case class LogisticRegressionModel(featuresCol: String,
-                                 predictionCol: String,
-                                 model: LogisticRegression) extends Transformer {
+case class LogisticRegressionModel(uid: String = Transformer.uniqueName("logistic_regression"),
+                                   featuresCol: String,
+                                   predictionCol: String,
+                                   model: LogisticRegression) extends Transformer {
   override def build[TB: TransformBuilder](builder: TB): Try[TB] = {
     builder.withInput(featuresCol, VectorType).flatMap {
       case(b, featuresIndex) =>

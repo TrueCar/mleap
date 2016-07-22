@@ -11,7 +11,8 @@ import scala.util.Try
 /**
   * Created by hollinwilkins on 5/10/16.
   */
-case class OneHotEncoderModel(inputCol: String,
+case class OneHotEncoderModel(uid: String = Transformer.uniqueName("one_hot_encoder"),
+                              inputCol: String,
                               outputCol: String,
                               model: OneHotEncoder) extends Transformer {
   override def build[TB: TransformBuilder](builder: TB): Try[TB] = {

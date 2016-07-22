@@ -9,7 +9,8 @@ import org.apache.spark.ml.mleap.converter.runtime.TransformerToMleap
   */
 object VectorAssemblerModelToMleap extends TransformerToMleap[VectorAssembler, transformer.VectorAssemblerModel] {
   override def toMleap(t: VectorAssembler): transformer.VectorAssemblerModel = {
-    transformer.VectorAssemblerModel(t.getInputCols,
-      t.getOutputCol)
+    transformer.VectorAssemblerModel(uid = t.uid,
+      inputCols = t.getInputCols,
+      outputCol = t.getOutputCol)
   }
 }

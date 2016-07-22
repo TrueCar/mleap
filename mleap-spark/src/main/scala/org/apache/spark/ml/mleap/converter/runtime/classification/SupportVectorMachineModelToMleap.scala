@@ -12,7 +12,8 @@ import org.apache.spark.ml.mleap.converter.runtime.TransformerToMleap
 object SupportVectorMachineModelToMleap extends TransformerToMleap[SVMModel, transformer.SupportVectorMachineModel] {
   override def toMleap(t: SVMModel): transformer.SupportVectorMachineModel = {
     val model = SupportVectorMachine(t.model.weights.toMleap, t.model.intercept)
-    transformer.SupportVectorMachineModel(featuresCol = t.getFeaturesCol,
+    transformer.SupportVectorMachineModel(uid = t.uid,
+      featuresCol = t.getFeaturesCol,
       predictionCol = t.getPredictionCol,
       model = model)
   }

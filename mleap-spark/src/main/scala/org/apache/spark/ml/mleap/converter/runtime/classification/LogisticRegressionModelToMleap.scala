@@ -12,7 +12,8 @@ import com.truecar.mleap.spark.MleapSparkSupport._
 object LogisticRegressionModelToMleap extends TransformerToMleap[LogisticRegressionModel, transformer.LogisticRegressionModel] {
   override def toMleap(t: LogisticRegressionModel): transformer.LogisticRegressionModel = {
     val model = LogisticRegression(t.coefficients.toMleap, t.intercept)
-    transformer.LogisticRegressionModel(featuresCol = t.getFeaturesCol,
+    transformer.LogisticRegressionModel(uid = t.uid,
+      featuresCol = t.getFeaturesCol,
       predictionCol = t.getPredictionCol,
       model = model)
   }

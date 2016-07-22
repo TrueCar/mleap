@@ -11,7 +11,8 @@ import scala.util.Try
 /**
   * Created by hollinwilkins on 4/14/16.
   */
-case class SupportVectorMachineModel(featuresCol: String,
+case class SupportVectorMachineModel(uid: String = Transformer.uniqueName("support_vector_machine"),
+                                     featuresCol: String,
                                      predictionCol: String,
                                      model: SupportVectorMachine) extends Transformer {
   override def build[TB: TransformBuilder](builder: TB): Try[TB] = {

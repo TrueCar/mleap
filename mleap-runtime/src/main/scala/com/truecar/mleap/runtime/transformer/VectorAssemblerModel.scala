@@ -11,7 +11,8 @@ import scala.util.Try
 /**
   * Created by hwilkins on 10/23/15.
   */
-case class VectorAssemblerModel(inputCols: Array[String],
+case class VectorAssemblerModel(uid: String = Transformer.uniqueName("vector_assembler"),
+                                inputCols: Array[String],
                                 outputCol: String) extends Transformer {
   private val assembler: VectorAssembler = VectorAssembler.default
 

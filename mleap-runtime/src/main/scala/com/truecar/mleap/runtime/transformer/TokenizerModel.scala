@@ -11,8 +11,9 @@ import scala.util.Try
 /**
   * Created by hwilkins on 12/30/15.
   */
-case class TokenizerModel(inputCol: String,
-                         outputCol: String) extends Transformer {
+case class TokenizerModel(uid: String = Transformer.uniqueName("tokenizer"),
+                          inputCol: String,
+                          outputCol: String) extends Transformer {
   override def build[TB: TransformBuilder](builder: TB): Try[TB] = {
     builder.withInput(inputCol, StringType).flatMap {
       case (b, inputIndex) =>

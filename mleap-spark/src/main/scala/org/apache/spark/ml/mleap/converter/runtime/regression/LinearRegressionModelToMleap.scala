@@ -11,9 +11,10 @@ import org.apache.spark.ml.regression.LinearRegressionModel
   */
 object LinearRegressionModelToMleap extends TransformerToMleap[LinearRegressionModel, transformer.LinearRegressionModel] {
   override def toMleap(t: LinearRegressionModel): transformer.LinearRegressionModel = {
-    transformer.LinearRegressionModel(t.getFeaturesCol,
-      t.getPredictionCol,
-      LinearRegression(t.coefficients.toMleap,
+    transformer.LinearRegressionModel(uid = t.uid,
+      featuresCol = t.getFeaturesCol,
+      predictionCol = t.getPredictionCol,
+      model = LinearRegression(t.coefficients.toMleap,
         t.intercept))
   }
 }

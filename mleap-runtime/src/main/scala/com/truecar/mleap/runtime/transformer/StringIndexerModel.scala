@@ -11,7 +11,8 @@ import scala.util.Try
 /**
   * Created by hwilkins on 10/22/15.
   */
-case class StringIndexerModel(inputCol: String,
+case class StringIndexerModel(uid: String = Transformer.uniqueName("string_indexer"),
+                              inputCol: String,
                               outputCol: String,
                               indexer: StringIndexer) extends Transformer {
   override def build[TB: TransformBuilder](builder: TB): Try[TB] = {
@@ -25,7 +26,12 @@ case class StringIndexerModel(inputCol: String,
     schema.withField(outputCol, CategoricalAttribute())
   }
 
-  def toReverse: ReverseStringIndexerModel = ReverseStringIndexerModel(inputCol,
-    outputCol,
-    indexer.toReverse)
+  def toReverse: ReverseStringIndexerModel = ReverseStringIndexerModel(inputCol = inputCol,
+    outputCol = outputCol,
+    indexer = indexer.toReverse)
+
+  def toReverse(name: String): ReverseStringIndexerModel = ReverseStringIndexerModel(uid = name,
+    inputCol = inputCol,
+    outputCol = outputCol,
+    indexer = indexer.toReverse)
 }

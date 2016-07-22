@@ -11,7 +11,8 @@ import scala.util.Try
 /**
   * Created by hollinwilkins on 3/30/16.
   */
-case class ReverseStringIndexerModel(inputCol: String,
+case class ReverseStringIndexerModel(uid: String = Transformer.uniqueName("reverse_string_indexer"),
+                                     inputCol: String,
                                      outputCol: String,
                                      indexer: ReverseStringIndexer) extends Transformer {
   override def build[TB: TransformBuilder](builder: TB): Try[TB] = {

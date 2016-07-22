@@ -391,7 +391,7 @@ trait Converters {
   }
 
   implicit def mlPipelineModelToMleap(model: PipelineModel): transformer.PipelineModel = {
-    transformer.PipelineModel(model.models.map(_.asInstanceOf[Transformer]))
+    transformer.PipelineModel(transformers = model.models.map(_.asInstanceOf[Transformer]))
   }
 }
 object Converters extends Converters
