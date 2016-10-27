@@ -1,4 +1,6 @@
-# MLeap
+## Note: This repository is no longer being maintained. Please see [https://github.com/combust-ml/mleap](https://github.com/combust-ml/mleap) for the active project.
+
+# Introduction
 
 [![Join the chat at https://gitter.im/TrueCar/mleap](https://badges.gitter.im/TrueCar/mleap.svg)](https://gitter.im/TrueCar/mleap?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
