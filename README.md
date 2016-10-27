@@ -115,7 +115,7 @@ There are a few ways to contribute to MLeap.
 * Use MLeap at your company and tell us what you think.
 * Make a feature request or report a bug in github.
 * Make a pull request for an existing feature request or bug report.
-* Join the discussion of how to get MLeap into Spark as a dependency. Our gitter is here: (insert gitter link here)
+* [Join the discussion of how to get MLeap into Spark as a dependency](https://gitter.im/combust-ml/mleap).
 
 ## Contact Information
 
